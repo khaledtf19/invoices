@@ -75,6 +75,7 @@ model Customer {
   customerNotes CustomerNote[]
 
   @@unique([number])
+  @@index([number, name])
 }
 
 // Necessary for Next auth
