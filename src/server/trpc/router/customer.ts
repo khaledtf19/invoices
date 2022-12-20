@@ -15,7 +15,12 @@ export const customerRoute = router({
         where: {
           OR: [
             { number: input.number },
-            { name: { contains: input.name, mode: "insensitive" } },
+            {
+              name: {
+                contains: input.name ? input.name : undefined,
+                mode: "insensitive",
+              },
+            },
           ],
         },
       });

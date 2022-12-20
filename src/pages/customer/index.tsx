@@ -64,24 +64,32 @@ const MakeCustomer: NextPage = () => {
       <FormInput
         name="name"
         label="Name"
+        type="text"
+        placeholder="Name"
         register={register("name")}
         error={errors.name?.message}
       />
       <FormInput
         name="number"
         label="Number"
+        type="number"
+        placeholder="13..."
         register={register("number")}
         error={errors.number?.message}
       />
       <FormInput
         name="idNumber"
         label="ID"
+        type="number"
+        placeholder="ID"
         register={register("idNumber")}
         error={errors.idNumber?.message}
       />
       <FormInput
         name="mobile"
         label="Mobile"
+        type="number"
+        placeholder="Mobile"
         register={register("mobile")}
         error={errors.mobile?.message}
       />
