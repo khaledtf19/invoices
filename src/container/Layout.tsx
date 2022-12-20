@@ -7,7 +7,7 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
       <header>
         <Navbar />
       </header>
-      <main className=" min-h-screen bg-white px-32 pt-12 text-black">
+      <main className=" flex min-h-screen flex-col items-center bg-white px-32 pt-16 text-black">
         {children}
       </main>
     </>

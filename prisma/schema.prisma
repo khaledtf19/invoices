@@ -69,9 +69,9 @@ model CustomerNote {
 model Customer {
   id            String         @id @default(cuid())
   name          String
-  number        Int
+  number        Int?
   mobile        Int[]
-  idNumber      BigInt
+  idNumber      Int?
   customerNotes CustomerNote[]
 
   @@unique([number])

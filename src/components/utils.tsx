@@ -1,21 +1,38 @@
-import type { Dispatch, FC, SetStateAction } from "react";
+import type { ChangeEventHandler, FC } from "react";
+import type { UseFormRegisterReturn } from "react-hook-form";
 
 export const Input: FC<{
   name: string;
   label: string;
   state: string;
-  setState: Dispatch<SetStateAction<string>>;
-}> = ({ name, label, state, setState }) => {
+  onChange: ChangeEventHandler<HTMLInputElement>;
+}> = ({ name, label, state, onChange }) => {
   return (
     <div className="flex flex-col">
       <label htmlFor={name}>{label}</label>
       <input
         name={name}
         value={state}
-        onChange={(e) => {
-          setState(e.target.value);
-        }}
-        className=" border border-black outline-none "
+        onChange={onChange}
+        className="border border-indigo-900 p-1 outline-none "
+      />
+    </div>
+  );
+};
+
+export const FormInput: FC<{
+  name: string;
+  label: string;
+  register: UseFormRegisterReturn<string>;
+  error?: string;
+}> = ({ name, label, register, error }) => {
+  return (
+    <div className="flex flex-col">
+      <label htmlFor={name}>{label}</label>
+      <p className=" text-xs">{error ? error : ""}</p>
+      <input
+        className=" border border-indigo-900 p-1 outline-none "
+        {...register}
       />
     </div>
   );
