@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import { FormInput, PrimaryButton } from "../../components/utils";
 import type { CustomerInterface } from "../../types/utils.types";
 import { trpc } from "../../utils/trpc";
+import Container from "../../container/Container";
 
 const customerSchema = z.object({
   name: z.string().min(3),
@@ -34,8 +35,8 @@ const MakeCustomer: NextPage = () => {
     const customerData = {
       name: data.name,
       mobile: [Number(data.mobile)],
-      number: Number(data.number),
-      idNumber: Number(data.idNumber),
+      number: Number(data.number) ? Number(data.number) : null,
+      idNumber: Number(data.idNumber) ? Number(data.idNumber) : null,
     } as CustomerInterface;
     try {
       await mutateCustomer.mutateAsync(customerData);
@@ -58,44 +59,46 @@ const MakeCustomer: NextPage = () => {
   return (
     <form
       onSubmit={handleSubmit(onsubmit)}
-      className=" flex w-full max-w-md flex-col items-center gap-3 self-center rounded-lg border border-indigo-900  p-6 shadow-2xl drop-shadow-xl"
+      className="flex w-full flex-col items-center"
     >
-      <h1 className=" text-3xl">Create New Customer</h1>
-      <FormInput
-        name="name"
-        label="Name"
-        type="text"
-        placeholder="Name"
-        register={register("name")}
-        error={errors.name?.message}
-      />
-      <FormInput
-        name="number"
-        label="Number"
-        type="number"
-        placeholder="13..."
-        register={register("number")}
-        error={errors.number?.message}
-      />
-      <FormInput
-        name="idNumber"
-        label="ID"
-        type="number"
-        placeholder="ID"
-        register={register("idNumber")}
-        error={errors.idNumber?.message}
-      />
-      <FormInput
-        name="mobile"
-        label="Mobile"
-        type="number"
-        placeholder="Mobile"
-        register={register("mobile")}
-        error={errors.mobile?.message}
-      />
-      <div className=" w-full max-w-[100px]">
-        <PrimaryButton type="submit" label="Add" />
-      </div>
+      <Container>
+        <h1 className="text-3xl">Create New Customer</h1>
+        <FormInput
+          name="name"
+          label="Name"
+          type="text"
+          placeholder="Name"
+          register={register("name")}
+          error={errors.name?.message}
+        />
+        <FormInput
+          name="number"
+          label="Number"
+          type="number"
+          placeholder="13..."
+          register={register("number")}
+          error={errors.number?.message}
+        />
+        <FormInput
+          name="idNumber"
+          label="ID"
+          type="number"
+          placeholder="ID"
+          register={register("idNumber")}
+          error={errors.idNumber?.message}
+        />
+        <FormInput
+          name="mobile"
+          label="Mobile"
+          type="number"
+          placeholder="Mobile"
+          register={register("mobile")}
+          error={errors.mobile?.message}
+        />
+        <div className=" w-full max-w-[100px]">
+          <PrimaryButton type="submit" label="Add" />
+        </div>
+      </Container>
     </form>
   );
 };

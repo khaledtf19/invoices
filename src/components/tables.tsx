@@ -1,10 +1,13 @@
 import { type Customer } from "@prisma/client";
+import { useRouter } from "next/router";
 import type { PropsWithChildren, FC, ReactNode } from "react";
 
 export const CustomerTable: FC<{
   customers: Customer[] | undefined;
   isLoading: boolean;
 }> = ({ customers, isLoading }) => {
+  const router = useRouter();
+
   if (isLoading) {
     return <p>Loading...</p>;
   }
@@ -16,16 +19,21 @@ export const CustomerTable: FC<{
   return (
     <table className=" w-full min-w-max  border-collapse border border-violet-900">
       <THead>
-        <TR>
+        <tr>
           <th className=" border border-black p-2 text-center">Name</th>
           <TH>Number</TH>
           <TH>IDNumber</TH>
-        </TR>
+        </tr>
       </THead>
       <TBody>
         {customers?.map((customer) => (
           <TR key={customer.id}>
-            <td className=" min-w-[150px] max-w-[200px] border border-black p-2 text-center">
+            <td
+              className=" hover: min-w-[150px] max-w-[200px] cursor-pointer border border-black p-2 text-center"
+              onClick={() => {
+                router.push(`customer/${customer.id}`);
+              }}
+            >
               {customer.name}
             </td>
             <TD>{customer.number}</TD>
@@ -48,7 +56,7 @@ export const TBody: FC<PropsWithChildren> = ({ children }) => {
 };
 
 export const TR: FC<{ children: ReactNode }> = ({ children }) => {
-  return <tr className="">{children}</tr>;
+  return <tr className=" hover:bg-indigo-900  hover:text-white">{children}</tr>;
 };
 
 export const TH: FC<PropsWithChildren> = ({ children }) => {

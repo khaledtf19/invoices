@@ -3,6 +3,7 @@ import { PrimaryButton, Input } from "../../components/utils";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
 import { CustomerTable } from "../../components/tables";
+import Container from "../../container/Container";
 
 const Search = () => {
   const [name, setName] = useState<string>("");
@@ -22,7 +23,7 @@ const Search = () => {
 
   return (
     <div className="flex w-full flex-col items-center gap-6">
-      <div className=" flex w-full max-w-xs flex-col items-center gap-3 rounded-lg border border-indigo-900 p-6  shadow-2xl drop-shadow-xl">
+      <Container>
         <Input
           name="name"
           label="Name"
@@ -43,7 +44,7 @@ const Search = () => {
         <div className=" w-full max-w-[100px] ">
           <PrimaryButton type="button" label="Search" onClick={handleSearch} />
         </div>
-      </div>
+      </Container>
       <div>
         <PrimaryButton
           type="button"

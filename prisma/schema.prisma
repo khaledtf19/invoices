@@ -49,10 +49,12 @@ model InvoiceNote {
 model Invoice {
   id            String         @id @default(cuid())
   userId        String
+  customerId    String
   cost          Float
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   madeBy        User           @relation(fields: [userId], references: [id])
+  customer      Customer       @relation(fields: [customerId], references: [id])
   invoiceStatus InvoiceStatus?
   invoiceNotes  InvoiceNote[]
 }
@@ -69,10 +71,11 @@ model CustomerNote {
 model Customer {
   id            String         @id @default(cuid())
   name          String
-  number        Int?
+  number        Int
   mobile        Int[]
   idNumber      Int?
   customerNotes CustomerNote[]
+  Invoice       Invoice[]
 
   @@unique([number])
   @@index([number, name])

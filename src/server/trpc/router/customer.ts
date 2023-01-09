@@ -1,12 +1,20 @@
 import { z } from "zod";
 
 import { router, publicProcedure, protectedProcedure } from "../trpc";
+import { BigNumberLength } from "../../../utils/utils";
 
-export const customerRoute = router({
+const CustomerValidation = z.object({
+  name: z.string().max(225).min(3),
+  number: z.number().lte(BigNumberLength).min(3),
+  idNumber: z.number().lte(BigNumberLength).nullish(),
+  mobile: z.number().lte(BigNumberLength).array().max(5),
+});
+
+export const customerRouter = router({
   search: publicProcedure
     .input(
       z.object({
-        number: z.number().nullish(),
+        number: z.number().optional(),
         name: z.string().optional(),
       })
     )
@@ -27,15 +35,24 @@ export const customerRoute = router({
     }),
 
   createCustomer: protectedProcedure
-    .input(
-      z.object({
-        name: z.string(),
-        number: z.number(),
-        idNumber: z.number().nullish(),
-        mobile: z.number().array(),
-      })
-    )
+    .input(CustomerValidation)
     .mutation(async ({ input, ctx }) => {
       return await ctx.prisma.customer.create({ data: input });
+    }),
+
+  getCustomerById: protectedProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ input, ctx }) => {
+      return await ctx.prisma.customer.findUnique({
+        where: { id: input.userId },
+      });
+    }),
+  updateCustomer: protectedProcedure
+    .input(CustomerValidation)
+    .mutation(async ({ input, ctx }) => {
+      return await ctx.prisma.customer.update({
+        where: { number: input.number },
+        data: input,
+      });
     }),
 });
