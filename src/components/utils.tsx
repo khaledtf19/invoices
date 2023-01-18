@@ -1,10 +1,10 @@
+import type { ChangeEventHandler, FC, HTMLInputTypeAttribute } from "react";
 import type {
-  ChangeEventHandler,
-  FC,
-  HTMLInputTypeAttribute,
-  ReactNode,
-} from "react";
-import type { UseFormRegisterReturn } from "react-hook-form";
+  FieldError,
+  FieldErrorsImpl,
+  Merge,
+  UseFormRegisterReturn,
+} from "react-hook-form";
 import { SyncLoader } from "react-spinners";
 
 export const Input: FC<{
@@ -36,7 +36,11 @@ export const FormInput: FC<{
   name: string;
   label: string;
   register: UseFormRegisterReturn<string>;
-  error?: string;
+  error?:
+    | string
+    | FieldError
+    | Merge<FieldError, FieldErrorsImpl<any>>
+    | undefined;
   placeholder?: string;
   type: HTMLInputTypeAttribute;
 }> = ({ name, label, register, error, type, placeholder }) => {
@@ -45,7 +49,7 @@ export const FormInput: FC<{
       <label className="text-gray-700" htmlFor={name}>
         {label}:
       </label>
-      <p className=" text-xs">{error ? error : ""}</p>
+      <p className=" text-xs">{error ? String(error) : ""}</p>
       <input
         type={type}
         placeholder={placeholder}

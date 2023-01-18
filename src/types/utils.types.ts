@@ -1,8 +1,8 @@
 export interface CustomerInterface {
   name: string;
-  number: number;
-  idNumber?: number;
-  mobile: number[] | [];
+  number: bigint | null;
+  idNumber?: bigint | null;
+  mobile: bigint[] | [];
 }
 
 export const UserRoleArr = ["User", "Admin"] as const;

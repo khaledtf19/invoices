@@ -9,12 +9,12 @@ import {
   LoadingAnimation,
   PrimaryButton,
 } from "../../components/utils";
-import type { CustomerInterface } from "../../types/utils.types";
 import { trpc } from "../../utils/trpc";
 import Container from "../../container/Container";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useModalState } from "../../hooks/modalState";
+import type { Customer } from "@prisma/client";
 
 const customerSchema = z.object({
   name: z.string().min(3),
@@ -45,10 +45,14 @@ const MakeCustomer: NextPage = () => {
     console.log(data);
     const customerData = {
       name: data.name,
-      mobile: [Number(data.mobile)],
-      number: Number(data.number) ? Number(data.number) : null,
-      idNumber: Number(data.idNumber) ? Number(data.idNumber) : null,
-    } as CustomerInterface;
+      mobile: [
+        BigInt(data.number) ? BigInt(data.mobile ? data.mobile : 0) : null,
+      ],
+      number: BigInt(data.number) ? BigInt(data.number) : null,
+      idNumber: BigInt(data.idNumber ? data.idNumber : 0)
+        ? BigInt(data.idNumber ? data.idNumber : 0)
+        : null,
+    } as Customer;
     try {
       await mutateCustomer.mutateAsync(customerData);
     } catch (e) {

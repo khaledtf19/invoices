@@ -1,20 +1,19 @@
 import { z } from "zod";
 
 import { router, publicProcedure, protectedProcedure } from "../trpc";
-import { BigNumberLength } from "../../../utils/utils";
 
 const CustomerValidation = z.object({
   name: z.string().max(225).min(3),
-  number: z.number().lte(BigNumberLength).min(3),
-  idNumber: z.number().lte(BigNumberLength).nullish(),
-  mobile: z.number().lte(BigNumberLength).array().max(5),
+  number: z.bigint(),
+  idNumber: z.bigint().nullish(),
+  mobile: z.bigint().array().max(5),
 });
 
 export const customerRouter = router({
   search: publicProcedure
     .input(
       z.object({
-        number: z.number().optional(),
+        number: z.bigint().optional(),
         name: z.string().optional(),
       })
     )
@@ -22,7 +21,7 @@ export const customerRouter = router({
       return await ctx.prisma.customer.findMany({
         where: {
           OR: [
-            { number: input.number },
+            { number: Number(input.number) || undefined },
             {
               name: {
                 contains: input.name ? input.name : undefined,

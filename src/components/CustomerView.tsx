@@ -14,19 +14,15 @@ import { z } from "zod";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { trpc } from "../utils/trpc";
-import { BigNumberLength } from "../utils/utils";
 import { useModalState } from "../hooks/modalState";
 import { useRouter } from "next/router";
 import { SyncLoader } from "react-spinners";
 
 const CustomerForm = z.object({
   name: z.string().min(3),
-  number: z.number().lte(BigNumberLength).min(999999),
-  idNumber: z.number().lte(BigNumberLength).nullable(),
-  mobile: z
-    .object({ value: z.number().lte(BigNumberLength).nullable() })
-    .array()
-    .max(4),
+  number: z.bigint(),
+  idNumber: z.bigint().nullable(),
+  mobile: z.object({ value: z.bigint().nullable() }).array().max(4),
 });
 type CustomerFormType = z.infer<typeof CustomerForm>;
 
@@ -82,7 +78,7 @@ const EditMode: FC<{
   const { fields, append, remove } = useFieldArray({ control, name: "mobile" });
 
   const onSub = async (data: CustomerFormType) => {
-    const arr = data.mobile.reduce((arr: number[], obj) => {
+    const arr = data.mobile.reduce((arr: bigint[], obj) => {
       if (obj.value) {
         arr.push(obj.value);
       }

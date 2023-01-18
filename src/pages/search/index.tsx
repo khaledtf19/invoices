@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import { PrimaryButton, Input } from "../../components/utils";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
@@ -15,7 +15,10 @@ const Search = () => {
 
   const handleSearch = async () => {
     try {
-      await search.mutateAsync({ number: Number(number), name: name });
+      await search.mutateAsync({
+        number: BigInt(number) || undefined,
+        name: name,
+      });
     } catch (e) {
       console.log(e);
     }

@@ -1,9 +1,4 @@
-import type {
-  Invoice,
-  Customer,
-  InvoiceStatus,
-  InvoiceNote,
-} from "@prisma/client";
+import type { Invoice, Customer, InvoiceStatus } from "@prisma/client";
 import { useRouter } from "next/router";
 import type { PropsWithChildren, FC, ReactNode } from "react";
 import { DateFormat } from "../utils/utils";
@@ -64,8 +59,8 @@ export const CustomerTable: FC<{
             >
               {customer.name}
             </td>
-            <TD>{customer.number}</TD>
-            <TD>{customer.idNumber}</TD>
+            <TD>{String(customer.number)}</TD>
+            <TD>{String(customer.idNumber)}</TD>
           </TR>
         ))}
       </TBody>
