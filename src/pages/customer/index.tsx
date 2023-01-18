@@ -4,10 +4,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useSession } from "next-auth/react";
 
-import { FormInput, PrimaryButton } from "../../components/utils";
+import {
+  FormInput,
+  LoadingAnimation,
+  PrimaryButton,
+} from "../../components/utils";
 import type { CustomerInterface } from "../../types/utils.types";
 import { trpc } from "../../utils/trpc";
 import Container from "../../container/Container";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { useModalState } from "../../hooks/modalState";
 
 const customerSchema = z.object({
   name: z.string().min(3),
@@ -28,7 +35,11 @@ const MakeCustomer: NextPage = () => {
     resolver: zodResolver(customerSchema),
   });
 
+  const router = useRouter();
   const { data: sessionData } = useSession();
+  const { openModal } = useModalState((state) => ({
+    openModal: state.openModal,
+  }));
 
   const onsubmit = async (data: CustomerType) => {
     console.log(data);
@@ -45,6 +56,22 @@ const MakeCustomer: NextPage = () => {
     }
   };
 
+  useEffect(() => {
+    if (mutateCustomer.isSuccess) {
+      router.push(`/customer/${mutateCustomer.data.id}`);
+    }
+
+    if (mutateCustomer.error) {
+      openModal({ newText: mutateCustomer.error.message });
+    }
+  }, [
+    mutateCustomer.data?.id,
+    mutateCustomer.error,
+    mutateCustomer.isSuccess,
+    openModal,
+    router,
+  ]);
+
   if (mutateCustomer.error) {
     console.log(mutateCustomer.error.message, "message here");
   }
@@ -52,10 +79,17 @@ const MakeCustomer: NextPage = () => {
   if (!sessionData?.user)
     return (
       <div>
-        <h1>no</h1>
+        <h1>Can not show this</h1>
       </div>
     );
 
+  if (mutateCustomer.isLoading) {
+    return (
+      <Container>
+        <LoadingAnimation />
+      </Container>
+    );
+  }
   return (
     <form
       onSubmit={handleSubmit(onsubmit)}

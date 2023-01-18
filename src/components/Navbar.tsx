@@ -5,7 +5,7 @@ const Navbar = () => {
   const { data: sessionData } = useSession();
 
   return (
-    <nav className=" fixed top-0 flex min-h-[30px] w-full flex-row justify-between bg-indigo-900 px-32 py-2 text-white">
+    <nav className=" fixed top-0 z-50 flex min-h-[30px] w-full flex-row justify-between bg-indigo-900 px-32 py-2 text-white">
       <ul className="flex w-full flex-row gap-3">
         <li>
           <Link href={"/"}>Home</Link>

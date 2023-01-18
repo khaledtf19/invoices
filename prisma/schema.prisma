@@ -14,23 +14,23 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  USER
-  ADMIN
+enum UserRole {
+  User
+  Admin
 }
 
-enum Status {
-  WAITING
-  REJECTED
-  ACCEPTED
+enum InvoiceStatusEnum {
+  Waiting
+  Rejected
+  Accepted
 }
 
 model InvoiceStatus {
-  id        String  @id @default(cuid())
+  id        String            @id @default(cuid())
   invoiceId String
-  invice    Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-  status    Status  @default(WAITING)
+  status    InvoiceStatusEnum @default(Waiting)
   note      String?
+  invice    Invoice           @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
 
   @@unique([invoiceId])
 }
@@ -71,11 +71,11 @@ model CustomerNote {
 model Customer {
   id            String         @id @default(cuid())
   name          String
-  number        Int
-  mobile        Int[]
-  idNumber      Int?
+  number        BigInt
+  mobile        BigInt[]
+  idNumber      BigInt?
   customerNotes CustomerNote[]
-  Invoice       Invoice[]
+  invoices      Invoice[]
 
   @@unique([number])
   @@index([number, name])
@@ -124,7 +124,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   invoices      Invoice[]
-  role          Role           @default(USER)
+  role          UserRole       @default(User)
   customerNotes CustomerNote[]
   invoiceNotes  InvoiceNote[]
   UserBlance    UserBlance[]

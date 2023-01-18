@@ -41,12 +41,17 @@ export const customerRouter = router({
     }),
 
   getCustomerById: protectedProcedure
-    .input(z.object({ userId: z.string() }))
+    .input(z.object({ customerId: z.string() }))
     .query(async ({ input, ctx }) => {
       return await ctx.prisma.customer.findUnique({
-        where: { id: input.userId },
+        where: { id: input.customerId },
+        include: {
+          invoices: { include: { invoiceStatus: true } },
+          customerNotes: true,
+        },
       });
     }),
+
   updateCustomer: protectedProcedure
     .input(CustomerValidation)
     .mutation(async ({ input, ctx }) => {

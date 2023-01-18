@@ -1,7 +1,8 @@
-import { type FC, type ReactNode, useState } from "react";
+import { type FC, useState, useEffect } from "react";
 
 import Container from "../container/Container";
 import {
+  DataFields,
   FormInput,
   Input,
   PrimaryButton,
@@ -15,6 +16,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { trpc } from "../utils/trpc";
 import { BigNumberLength } from "../utils/utils";
 import { useModalState } from "../hooks/modalState";
+import { useRouter } from "next/router";
+import { SyncLoader } from "react-spinners";
 
 const CustomerForm = z.object({
   name: z.string().min(3),
@@ -28,13 +31,9 @@ const CustomerForm = z.object({
 type CustomerFormType = z.infer<typeof CustomerForm>;
 
 const CustomerView: FC<{
-  customerData: Customer | null | undefined;
+  customerData: Customer;
   refetch: () => void;
 }> = ({ customerData, refetch }) => {
-  // const [customerState, setCustomerState] = useState(
-  //   structuredClone(customerData) as Customer
-  // );
-
   const [toggle, setToggle] = useState(false);
 
   return (
@@ -48,7 +47,7 @@ const CustomerView: FC<{
       {toggle ? (
         <EditMode customerData={customerData} refetch={refetch} />
       ) : (
-        <ViewCustomer customerData={customerData} />
+        <ViewCustomer customerData={customerData} refetch={refetch} />
       )}
     </Container>
   );
@@ -181,25 +180,29 @@ const EditMode: FC<{
   );
 };
 
-const ViewCustomer: FC<{ customerData: Customer | null | undefined }> = ({
+const ViewCustomer: FC<{ customerData: Customer; refetch: () => void }> = ({
   customerData,
+  refetch,
 }) => {
-  const { openModal } = useModalState((state) => ({
+  const { openModal, closeModal } = useModalState((state) => ({
     openModal: state.openModal,
+    closeModal: state.closeModal,
   }));
+
+  useEffect(() => {
+    return () => {
+      closeModal();
+    };
+  }, [closeModal]);
 
   return (
     <div className=" flex w-full flex-col gap-4 ">
-      <CustomerFields label="Name">{customerData?.name}</CustomerFields>
-
-      <CustomerFields label="Number">{customerData?.number}</CustomerFields>
-
-      <CustomerFields label="ID">{customerData?.idNumber}</CustomerFields>
+      <DataFields label="Name" text={customerData.name} />
+      <DataFields label="Number" text={customerData.number} />
+      <DataFields label="ID" text={customerData.idNumber} />
 
       {customerData?.mobile.map((mNumber, i) => (
-        <CustomerFields key={i} label={`Mobile ${i + 1}`}>
-          {mNumber}
-        </CustomerFields>
+        <DataFields key={i} label={`Mobile ${i + 1}`} text={mNumber} />
       ))}
 
       <PrimaryButton
@@ -207,7 +210,7 @@ const ViewCustomer: FC<{ customerData: Customer | null | undefined }> = ({
         label="Create Invoice"
         onClick={() => {
           openModal({
-            newComponents: <ModalComponent />,
+            newComponents: <ModalComponent customerData={customerData} />,
           });
         }}
       />
@@ -215,31 +218,62 @@ const ViewCustomer: FC<{ customerData: Customer | null | undefined }> = ({
   );
 };
 
-const CustomerFields: FC<{ children: ReactNode; label: string }> = ({
-  children,
-  label,
-}) => {
-  return (
-    <div className=" flex w-full flex-col ">
-      <label className=" text-gray-700">{label}:</label>
-      <p className=" bg-gray-200 p-1 ">{children}</p>
-    </div>
-  );
-};
-
-const ModalComponent: FC = () => {
+const ModalComponent: FC<{
+  customerData: Customer;
+}> = ({ customerData }) => {
   const [cost, setCost] = useState("");
 
+  const router = useRouter();
+
+  const createInvoice = trpc.invoice.makeInvoice.useMutation();
+
+  if (createInvoice.data) {
+    router.push(`/invoice/${createInvoice.data.id}`);
+  }
+
   return (
-    <div className=" p-10">
-      <Input
-        label="Const"
-        name="const"
-        state={cost}
-        onChange={(e) => {
-          setCost(e.currentTarget.value);
-        }}
-      />
+    <div className=" flex flex-col items-center justify-center gap-5  py-5 px-20">
+      {createInvoice.isLoading ? (
+        <div className="py-10 px-16">
+          <SyncLoader color="#312e81" />
+        </div>
+      ) : (
+        <>
+          <div className="">
+            <Input
+              label="Const"
+              name="const"
+              state={cost}
+              onChange={(e) => {
+                setCost(e.target.value);
+              }}
+            />
+            {Number(cost) ? (
+              <p></p>
+            ) : (
+              <p className=" text-red-700">MUST BE A NUMBER</p>
+            )}
+          </div>
+          <div className="w-2/3">
+            <PrimaryButton
+              type="button"
+              label="Create Invoice"
+              onClick={async () => {
+                if (Number(cost) && customerData?.id) {
+                  try {
+                    await createInvoice.mutateAsync({
+                      customerId: customerData?.id,
+                      cost: Number(cost),
+                    });
+                  } catch (e) {
+                    console.log(e);
+                  }
+                }
+              }}
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 };
