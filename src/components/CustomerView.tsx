@@ -43,7 +43,7 @@ const CustomerView: FC<{
       {toggle ? (
         <EditMode customerData={customerData} refetch={refetch} />
       ) : (
-        <ViewCustomer customerData={customerData} refetch={refetch} />
+        <ViewCustomer customerData={customerData} />
       )}
     </Container>
   );
@@ -59,6 +59,10 @@ const EditMode: FC<{
 
   const mobileArr = customerData?.mobile.map((number) => ({ value: number }));
   const updateCustomer = trpc.customer.updateCustomer.useMutation();
+
+  const { openModal } = useModalState((state) => ({
+    openModal: state.openModal,
+  }));
 
   const {
     register,
@@ -95,8 +99,13 @@ const EditMode: FC<{
     } catch (e) {
       console.log(e);
     }
-    console.log("hi", data);
   };
+
+  useEffect(() => {
+    if (updateCustomer.error) {
+      openModal({ newText: updateCustomer.error.message });
+    }
+  }, [openModal, updateCustomer.error]);
 
   return (
     <form
@@ -176,10 +185,7 @@ const EditMode: FC<{
   );
 };
 
-const ViewCustomer: FC<{ customerData: Customer; refetch: () => void }> = ({
-  customerData,
-  refetch,
-}) => {
+const ViewCustomer: FC<{ customerData: Customer }> = ({ customerData }) => {
   const { openModal, closeModal } = useModalState((state) => ({
     openModal: state.openModal,
     closeModal: state.closeModal,

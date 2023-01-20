@@ -30,7 +30,7 @@ model InvoiceStatus {
   invoiceId String
   status    InvoiceStatusEnum @default(Waiting)
   note      String?
-  invice    Invoice           @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  invoice   Invoice           @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
 
   @@unique([invoiceId])
 }

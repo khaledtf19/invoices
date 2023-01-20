@@ -2,7 +2,7 @@ import { z } from "zod";
 import { router, protectedProcedure } from "../trpc";
 import { UserRoleArr, InvoiceStatusArr } from "../../../types/utils.types";
 import { TRPCError } from "@trpc/server";
-import { FC } from "react";
+import { UserRole } from "@prisma/client";
 
 export const invoiceRouter = router({
   getAllInvoices: protectedProcedure.query(async ({ ctx }) => {
@@ -57,7 +57,11 @@ export const invoiceRouter = router({
 
       return await ctx.prisma.invoiceStatus.update({
         where: { invoiceId: input.invoiceId },
-        data: { status: input.invoiceStatus, note: input.invoiceStatusNote },
+        data: {
+          status: input.invoiceStatus,
+          note: input.invoiceStatusNote,
+          invoice: { update: { updatedAt: new Date() } },
+        },
       });
     }),
 
@@ -89,4 +93,19 @@ export const invoiceRouter = router({
       await ctx.prisma.invoice.delete({ where: { id: invoice.id } });
       return { message: `this invoice has been deleted` };
     }),
+
+  getNewInvoices: protectedProcedure.query(async ({ ctx }) => {
+    if (ctx.session.user.role === UserRole.Admin) {
+      return await ctx.prisma.invoice.findMany({
+        include: { invoiceStatus: true },
+        orderBy: { createdAt: "desc" },
+      });
+    }
+
+    return ctx.prisma.invoice.findMany({
+      where: { userId: ctx.session.user.id },
+      include: { invoiceStatus: true },
+      orderBy: { createdAt: "desc" },
+    });
+  }),
 });

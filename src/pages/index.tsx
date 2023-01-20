@@ -1,11 +1,22 @@
 import { type NextPage } from "next";
-import { signIn, signOut, useSession } from "next-auth/react";
 
 import { trpc } from "../utils/trpc";
+import { InvoicesTable } from "../components/tables";
+import { LoadingAnimation } from "../components/utils";
 
 const Home: NextPage = () => {
+  const { data: invoicesData, isLoading } =
+    trpc.invoice.getNewInvoices.useQuery();
 
-  return <div></div>;
+  if (isLoading) {
+    return <LoadingAnimation />;
+  }
+
+  if (!invoicesData) {
+    return <h1>Can not show that</h1>;
+  }
+
+  return <InvoicesTable invoices={invoicesData} />;
 };
 
 export default Home;

@@ -48,10 +48,19 @@ const InvoiceView: FC<{
     if (editInvoice.isSuccess) {
       refetch();
     }
+    if (editInvoice.error) {
+      openModal({ newText: editInvoice.error.message });
+    }
     return () => {
       closeModal();
     };
-  }, [closeModal, editInvoice.isSuccess, refetch]);
+  }, [
+    closeModal,
+    editInvoice.error,
+    editInvoice.isSuccess,
+    openModal,
+    refetch,
+  ]);
 
   return (
     <Container>
@@ -162,6 +171,12 @@ const ModalDeleteComponent: FC<{ invoiceId: string; customerId: string }> = ({
       router.push(`/customer/${customerId}`);
     }
   }, [customerId, deleteInvoice.isSuccess, router]);
+
+  useEffect(() => {
+    if (deleteInvoice.error) {
+      console.log(deleteInvoice.error.message);
+    }
+  }, [deleteInvoice.error]);
 
   if (deleteInvoice.isLoading) {
     return (
