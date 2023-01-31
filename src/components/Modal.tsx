@@ -12,7 +12,7 @@ const Modal: FC = () => {
 
   return (
     <div
-      className="fixed top-0 left-0 bottom-0 flex h-full w-full  items-center justify-center bg-black bg-opacity-50  "
+      className="fixed top-0 left-0 bottom-0 flex h-full w-full  items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm  "
       onClick={closeModal}
     >
       <div

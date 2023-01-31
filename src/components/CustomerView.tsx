@@ -20,9 +20,26 @@ import { SyncLoader } from "react-spinners";
 
 const CustomerForm = z.object({
   name: z.string().min(3),
-  number: z.bigint(),
-  idNumber: z.bigint().nullable(),
-  mobile: z.object({ value: z.bigint().nullable() }).array().max(4),
+  number: z.bigint().refine((ph: bigint) => ph.toString().length > 8, {
+    message: "must be > 8",
+  }),
+  idNumber: z
+    .bigint()
+    .refine((ph: bigint) => ph.toString().length > 8, {
+      message: "must be > 8",
+    })
+    .nullable(),
+  mobile: z
+    .object({
+      value: z
+        .bigint()
+        .refine((ph: bigint) => ph.toString().length > 8, {
+          message: "must be > 8",
+        })
+        .nullable(),
+    })
+    .array()
+    .max(4),
 });
 type CustomerFormType = z.infer<typeof CustomerForm>;
 
@@ -52,7 +69,7 @@ const CustomerView: FC<{
 export default CustomerView;
 
 const EditMode: FC<{
-  customerData: Customer | null | undefined;
+  customerData: Customer;
   refetch: () => void;
 }> = ({ customerData, refetch }) => {
   const emptyField = { value: null };
@@ -72,8 +89,8 @@ const EditMode: FC<{
   } = useForm<CustomerFormType>({
     resolver: zodResolver(CustomerForm),
     defaultValues: {
-      name: customerData?.name,
-      number: customerData?.number,
+      name: customerData.name,
+      number: customerData.number,
       idNumber: customerData?.idNumber,
       mobile: mobileArr,
     },
@@ -90,6 +107,7 @@ const EditMode: FC<{
     }, []);
     try {
       await updateCustomer.mutateAsync({
+        id: customerData.id,
         name: data.name,
         number: data.number,
         idNumber: data.idNumber,
@@ -110,34 +128,34 @@ const EditMode: FC<{
   return (
     <form
       onSubmit={handleSubmit(onSub)}
-      className=" flex w-full flex-col items-center gap-2"
+      className=" flex w-full flex-col items-center gap-2 "
     >
       <FormInput
         type="text"
-        label="Name:"
+        label="Name"
         name="name"
         error={errors.name?.message}
         register={register("name")}
       />
       <FormInput
         type="number"
-        label="Number:"
+        label="Number"
         name="number"
         error={errors.number?.message}
         register={register("number", {
           setValueAs(value) {
-            return Number(value) ? Number(value) : null;
+            return value ? BigInt(value) : null;
           },
         })}
       />
       <FormInput
         type="number"
-        label="ID:"
+        label="ID"
         name="idNumber"
         error={errors.idNumber?.message}
         register={register("idNumber", {
           setValueAs(value) {
-            return Number(value) ? Number(value) : null;
+            return value ? BigInt(value) : null;
           },
         })}
       />
@@ -149,12 +167,12 @@ const EditMode: FC<{
         >
           <FormInput
             type="number"
-            label={`Mobile ${i + 1}:`}
+            label={`Mobile ${i + 1}`}
             name="idNumber"
             error={errors.mobile?.message}
             register={register(`mobile.${i}.value`, {
               setValueAs(value) {
-                return Number(value) ? Number(value) : null;
+                return BigInt(value) ? BigInt(value) : null;
               },
             })}
           />

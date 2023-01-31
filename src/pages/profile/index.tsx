@@ -1,7 +1,10 @@
+import { useSession } from "next-auth/react";
 import React from "react";
 
 const Profile = () => {
-  return <div>Profile</div>;
+  const { data: userData } = useSession();
+
+  return <div>{userData?.user?.userBalance}</div>;
 };
 
 export default Profile;

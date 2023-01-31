@@ -4,8 +4,15 @@ import { router, publicProcedure, protectedProcedure } from "../trpc";
 
 const CustomerValidation = z.object({
   name: z.string().max(225).min(3),
-  number: z.bigint(),
-  idNumber: z.bigint().nullish(),
+  number: z.bigint().refine((ph: bigint) => ph.toString().length > 8, {
+    message: "must be > 8",
+  }),
+  idNumber: z
+    .bigint()
+    .refine((ph: bigint) => ph.toString().length > 8, {
+      message: "must be > 8",
+    })
+    .nullish(),
   mobile: z.bigint().array().max(5),
 });
 
@@ -52,10 +59,32 @@ export const customerRouter = router({
     }),
 
   updateCustomer: protectedProcedure
-    .input(CustomerValidation)
+    .input(
+      z.object({
+        id: z.string(),
+        name: z.string().max(225).min(3),
+        number: z.bigint().refine((ph: bigint) => ph.toString().length > 8, {
+          message: "must be > 8",
+        }),
+        idNumber: z
+          .bigint()
+          .refine((ph: bigint) => ph.toString().length > 8, {
+            message: "must be > 8",
+          })
+          .nullish(),
+        mobile: z
+          .bigint()
+          .refine((ph: bigint) => ph.toString().length > 8, {
+            message: "must be > 8",
+          })
+          .array()
+          .max(5),
+      })
+    )
     .mutation(async ({ input, ctx }) => {
+      console.log(input);
       return await ctx.prisma.customer.update({
-        where: { number: input.number },
+        where: { id: input.id },
         data: input,
       });
     }),

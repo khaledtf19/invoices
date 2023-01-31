@@ -108,13 +108,6 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model UserBlance {
-  id     String @id @default(cuid())
-  has    Float  @default(0)
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
-}
-
 model User {
   id            String         @id @default(cuid())
   name          String?
@@ -127,7 +120,7 @@ model User {
   role          UserRole       @default(User)
   customerNotes CustomerNote[]
   invoiceNotes  InvoiceNote[]
-  UserBlance    UserBlance[]
+  userBalance    Float          @default(0)
 }
 
 model VerificationToken {

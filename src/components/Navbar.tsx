@@ -1,3 +1,4 @@
+import { UserRole } from "@prisma/client";
 import { useSession, signIn, signOut } from "next-auth/react";
 import Link from "next/link";
 
@@ -16,6 +17,11 @@ const Navbar = () => {
         <li>
           <Link href={"/search"}>Search</Link>
         </li>
+        {sessionData?.user?.role === UserRole.Admin ? (
+          <li>
+            <Link href={"/user"}>Users</Link>
+          </li>
+        ) : null}
       </ul>
       <ul className="flex w-full flex-row justify-end align-middle">
         <li

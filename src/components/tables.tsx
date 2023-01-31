@@ -2,6 +2,7 @@ import {
   type Invoice,
   type Customer,
   type InvoiceStatus,
+  type User,
   InvoiceStatusEnum,
 } from "@prisma/client";
 import { useRouter } from "next/router";
@@ -12,7 +13,7 @@ import {
   useState,
 } from "react";
 import { DateFormat } from "../utils/utils";
-import { LoadingAnimation, PrimaryButton } from "./utils";
+import { Input, LoadingAnimation, PrimaryButton } from "./utils";
 import {
   createColumnHelper,
   flexRender,
@@ -36,10 +37,11 @@ export const TBody: FC<PropsWithChildren> = ({ children }) => {
   return <tbody className=" ">{children}</tbody>;
 };
 
-export const TR: FC<{ children: ReactNode; rowId?: string }> = ({
-  children,
-  rowId,
-}) => {
+export const TR: FC<{
+  children: ReactNode;
+  rowId?: string;
+  route: "none" | "customer" | "invoice" | "user";
+}> = ({ children, rowId, route }) => {
   const router = useRouter();
 
   return (
@@ -49,7 +51,7 @@ export const TR: FC<{ children: ReactNode; rowId?: string }> = ({
       }  hover:bg-indigo-900 hover:text-white`}
       onClick={() => {
         if (rowId) {
-          router.push(`/invoice/${rowId}`);
+          router.push(`/${route}/${rowId}`);
         }
       }}
     >
@@ -58,16 +60,14 @@ export const TR: FC<{ children: ReactNode; rowId?: string }> = ({
   );
 };
 
-export const TH: FC<PropsWithChildren & { size?: number }> = ({
+export const TH: FC<PropsWithChildren & { size: number }> = ({
   children,
   size,
 }) => {
-  console.log(size);
   return (
     <th
-      className={` border border-black p-2 text-center ${
-        size ? `w-[${size}px]` : ""
-      }`}
+      className={` border border-black p-2 text-center `}
+      style={{ width: size + "px" }}
     >
       {children}
     </th>
@@ -95,15 +95,15 @@ export const CustomerTable: FC<{
   return (
     <table className=" w-full min-w-max  border-collapse border border-violet-900">
       <THead>
-        <TR>
-          <th className=" border border-black p-2 text-center">Name</th>
-          <TH>Number</TH>
-          <TH>IDNumber</TH>
+        <TR route="none">
+          <TH size={200}>Name</TH>
+          <TH size={150}>Number</TH>
+          <TH size={150}>IDNumber</TH>
         </TR>
       </THead>
       <TBody>
         {customers?.map((customer) => (
-          <TR key={customer.id}>
+          <TR key={customer.id} route="customer" rowId={customer.id}>
             <td
               className="  min-w-[150px] max-w-[200px] cursor-pointer border border-black p-2 text-center"
               onClick={() => {
@@ -185,7 +185,7 @@ export const InvoicesTable: FC<{
       <table className=" w-full min-w-max  border-collapse border border-violet-900">
         <THead>
           {table.getHeaderGroups().map((headerGroup) => (
-            <TR key={headerGroup.id}>
+            <TR key={headerGroup.id} route="none">
               {headerGroup.headers.map((header) => (
                 <TH key={header.id} size={header.getSize()}>
                   {header.isPlaceholder
@@ -206,7 +206,7 @@ export const InvoicesTable: FC<{
         </THead>
         <TBody>
           {table.getRowModel().rows.map((row) => (
-            <TR key={row.id} rowId={invoices[row.index]?.id}>
+            <TR key={row.id} rowId={invoices[row.index]?.id} route="invoice">
               {row.getVisibleCells().map((cell) => (
                 <TD key={cell.id}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -216,84 +216,179 @@ export const InvoicesTable: FC<{
           ))}
         </TBody>
       </table>
-      <div className=" flex w-full justify-end gap-6">
-        <select
-          className=" px-2 text-sm font-normal text-black"
-          value={table.getState().pagination.pageSize}
-          onChange={(e) => {
-            table.setPageSize(Number(e.target.value));
-          }}
-        >
-          {[5, 10, 20, 50].map((value) => (
-            <option key={value} value={value}>
-              {value}
-            </option>
+      <TablePag table={table} />
+    </div>
+  );
+};
+
+export const UsersTable: FC<{ users: User[] }> = ({ users }) => {
+  const columnHelper = createColumnHelper<User>();
+  const [filter, setFilter] = useState<ColumnFiltersState>([]);
+
+  const columns = [
+    columnHelper.accessor("name", {
+      size: 200,
+      cell: (info) => <span>{info.renderValue()}</span>,
+      footer: (info) => info.column.id,
+      header: () => "Name",
+    }),
+    columnHelper.accessor("email", {
+      size: 200,
+      cell: (info) => <span>{info.renderValue()}</span>,
+      header: () => "Email",
+    }),
+    columnHelper.accessor("userBalance", {
+      cell: (info) => <span>{info.renderValue()}</span>,
+      header: () => "Balance",
+    }),
+    columnHelper.accessor("role", {
+      cell: (info) => <span>{info.renderValue()}</span>,
+      header: () => "Role",
+    }),
+  ];
+
+  const table = useReactTable({
+    data: users,
+    columns,
+    state: { columnFilters: filter },
+    getCoreRowModel: getCoreRowModel(),
+    enableColumnFilters: true,
+    onColumnFiltersChange: setFilter,
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+  });
+
+  return (
+    <div className=" flex w-full flex-col gap-4">
+      <table className=" w-full min-w-max  border-collapse border border-violet-900">
+        <THead>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TR key={headerGroup.id} route="none">
+              {headerGroup.headers.map((header) => (
+                <TH key={header.id} size={header.getSize()}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                  {header.column.getCanFilter() ? (
+                    <div>
+                      <Filter column={header.column} table={table} />
+                    </div>
+                  ) : null}
+                </TH>
+              ))}
+            </TR>
           ))}
-        </select>
-        <span className="flex items-center gap-1">
-          <div>Page</div>
-          <strong>
-            {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount()}
-          </strong>
-        </span>
-        <div className=" w-24">
-          <PrimaryButton
-            label="Next"
-            onClick={() => {
-              const currPageIndex = table.getState().pagination.pageIndex;
-              if (currPageIndex + 1 !== table.getPageCount()) {
-                table.setPageIndex(currPageIndex + 1);
-              }
-            }}
-          />
-        </div>
-        <div className=" w-24">
-          <PrimaryButton
-            label="Prev"
-            onClick={() => {
-              const currPageIndex = table.getState().pagination.pageIndex;
-              if (currPageIndex !== 0) {
-                table.setPageIndex(currPageIndex - 1);
-              }
-            }}
-          />
-        </div>
+        </THead>
+        <TBody>
+          {table.getRowModel().rows.map((row) => (
+            <TR key={row.id} rowId={users[row.index]?.id} route="user">
+              {row.getVisibleCells().map((cell) => (
+                <TD key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TD>
+              ))}
+            </TR>
+          ))}
+        </TBody>
+      </table>
+      <TablePag table={table} />
+    </div>
+  );
+};
+
+const TablePag: FC<{ table: Table<any> }> = ({ table }) => {
+  return (
+    <div className=" flex w-full justify-end gap-6">
+      <select
+        className=" px-2 text-sm font-normal text-black"
+        value={table.getState().pagination.pageSize}
+        onChange={(e) => {
+          table.setPageSize(Number(e.target.value));
+        }}
+      >
+        {[5, 10, 20, 50].map((value) => (
+          <option key={value} value={value}>
+            {value}
+          </option>
+        ))}
+      </select>
+      <span className="flex items-center gap-1">
+        <div>Page</div>
+        <strong>
+          {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+        </strong>
+      </span>
+      <div className=" w-24">
+        <PrimaryButton
+          label="Next"
+          onClick={() => {
+            const currPageIndex = table.getState().pagination.pageIndex;
+            if (currPageIndex + 1 !== table.getPageCount()) {
+              table.setPageIndex(currPageIndex + 1);
+            }
+          }}
+        />
+      </div>
+      <div className=" w-24">
+        <PrimaryButton
+          label="Prev"
+          onClick={() => {
+            const currPageIndex = table.getState().pagination.pageIndex;
+            if (currPageIndex !== 0) {
+              table.setPageIndex(currPageIndex - 1);
+            }
+          }}
+        />
       </div>
     </div>
   );
 };
 
-function Filter({
-  column,
-  table,
-}: {
+const Filter: FC<{
   column: Column<any, any>;
   table: Table<any>;
-}) {
+}> = ({ column, table }) => {
   const firstValue = table
     .getPreFilteredRowModel()
     .flatRows[0]?.getValue(column.id);
 
-  if (!InvoiceStatusEnum.valueOf().hasOwnProperty(String(firstValue))) {
+  // console.log(column.getFilterValue(), typeof firstValue);
+
+  if (typeof firstValue === "number" || typeof firstValue === "object") {
     return <></>;
   }
 
+  if (InvoiceStatusEnum.valueOf().hasOwnProperty(String(firstValue))) {
+    return (
+      <select
+        className=" px-2 text-sm font-normal text-black"
+        onChange={(e) => {
+          column.setFilterValue(
+            e.target.value === "all" ? undefined : e.target.value
+          );
+        }}
+      >
+        <option value="all">All</option>
+        {InvoiceStatusArr.map((status) => (
+          <option key={status} value={status}>
+            {status}
+          </option>
+        ))}
+      </select>
+    );
+  }
+
   return (
-    <select
-      className=" px-2 text-sm font-normal text-black"
-      onChange={(e) => {
-        column.setFilterValue(
-          e.target.value === "all" ? undefined : e.target.value
-        );
-      }}
-    >
-      <option value="all">All</option>
-      {InvoiceStatusArr.map((status) => (
-        <option key={status} value={status}>
-          {status}
-        </option>
-      ))}
-    </select>
+    <div>
+      <input
+        value={column.getFilterValue() ? String(column.getFilterValue()) : ""}
+        onChange={(e) => {
+          column.setFilterValue(e.target.value);
+        }}
+      />
+    </div>
   );
-}
+};

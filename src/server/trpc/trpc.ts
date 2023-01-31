@@ -2,6 +2,7 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 
 import { type Context } from "./context";
+import { UserRole } from "@prisma/client";
 
 const t = initTRPC.context<Context>().create({
   transformer: superjson,
@@ -37,3 +38,25 @@ const isAuthed = t.middleware(({ ctx, next }) => {
  * Protected procedure
  **/
 export const protectedProcedure = t.procedure.use(isAuthed);
+
+const isAdmin = t.middleware(({ ctx, next }) => {
+  if (
+    !ctx.session ||
+    !ctx.session.user ||
+    ctx.session.user.role !== UserRole.Admin
+  ) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "you must be an Admin",
+    });
+  }
+
+  return next({
+    ctx: {
+      // infers the `session` as non-nullable
+      session: { ...ctx.session, user: ctx.session.user },
+    },
+  });
+});
+
+export const adminProcedure = t.procedure.use(isAdmin);

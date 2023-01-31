@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PrimaryButton, Input } from "../../components/utils";
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
@@ -6,10 +6,10 @@ import { CustomerTable } from "../../components/tables";
 import Container from "../../container/Container";
 
 const Search = () => {
+  const router = useRouter();
+
   const [name, setName] = useState<string>("");
   const [number, setNumber] = useState<string>("");
-
-  const router = useRouter();
 
   const search = trpc.customer.search.useMutation();
 
@@ -19,10 +19,23 @@ const Search = () => {
         number: BigInt(number) || undefined,
         name: name,
       });
+      router.push({
+        query: { number: number || undefined, name: name || undefined },
+      });
     } catch (e) {
       console.log(e);
     }
   };
+
+  useEffect(() => {
+    if (router.query.name) {
+      setName(String(router.query.name));
+    }
+
+    if (router.query.number) {
+      setNumber(String(router.query.number));
+    }
+  }, [router.query.name, router.query.number]);
 
   return (
     <div className="flex w-full flex-col items-center gap-6">
@@ -45,7 +58,13 @@ const Search = () => {
           }}
         />
         <div className=" w-full max-w-[100px] ">
-          <PrimaryButton type="button" label="Search" onClick={handleSearch} />
+          <PrimaryButton
+            type="button"
+            label="Search"
+            onClick={() => {
+              handleSearch();
+            }}
+          />
         </div>
       </Container>
       <div>
