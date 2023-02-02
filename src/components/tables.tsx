@@ -4,6 +4,7 @@ import {
   type InvoiceStatus,
   type User,
   InvoiceStatusEnum,
+  UserRole,
 } from "@prisma/client";
 import { useRouter } from "next/router";
 import {
@@ -25,7 +26,7 @@ import {
   type Column,
   type Table,
 } from "@tanstack/react-table";
-import { InvoiceStatusArr } from "../types/utils.types";
+import { InvoiceStatusArr, UserRoleArr } from "../types/utils.types";
 
 export const THead: FC<PropsWithChildren> = ({ children }) => {
   return (
@@ -46,9 +47,8 @@ export const TR: FC<{
 
   return (
     <tr
-      className={` ${
-        rowId ? "cursor-pointer" : ""
-      }  hover:bg-indigo-900 hover:text-white`}
+      className={` ${rowId ? "cursor-pointer" : ""
+        }  hover:bg-indigo-900 hover:text-white`}
       onClick={() => {
         if (rowId) {
           router.push(`/${route}/${rowId}`);
@@ -157,8 +157,8 @@ export const InvoicesTable: FC<{
             info.getValue() === InvoiceStatusEnum.Rejected
               ? "text-red-700"
               : info.getValue() === InvoiceStatusEnum.Accepted
-              ? "text-green-700"
-              : "text-blue-700"
+                ? "text-green-700"
+                : "text-blue-700"
           }
         >
           {info.renderValue()}
@@ -191,9 +191,9 @@ export const InvoicesTable: FC<{
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
                   {header.column.getCanFilter() ? (
                     <div>
                       <Filter column={header.column} table={table} />
@@ -269,9 +269,9 @@ export const UsersTable: FC<{ users: User[] }> = ({ users }) => {
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
                   {header.column.getCanFilter() ? (
                     <div>
                       <Filter column={header.column} table={table} />
@@ -381,9 +381,27 @@ const Filter: FC<{
     );
   }
 
+  if (UserRole.valueOf().hasOwnProperty(String(firstValue))) {
+    return (
+      <select
+        className="text-black font-normal"
+        onChange={(e) => {
+          column.setFilterValue(
+            e.target.value === "all" ? undefined : e.target.value
+          )
+        }}>
+        <option value="all">All</option>
+        {UserRoleArr.map((role) => (
+          <option value={role}>{role}</option>
+        ))}
+
+      </select>
+    )
+  }
   return (
     <div>
       <input
+        className="text-black p-1 font-normal"
         value={column.getFilterValue() ? String(column.getFilterValue()) : ""}
         onChange={(e) => {
           column.setFilterValue(e.target.value);
