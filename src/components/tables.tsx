@@ -13,8 +13,8 @@ import {
   type ReactNode,
   useState,
 } from "react";
-import { DateFormat } from "../utils/utils";
-import { Input, LoadingAnimation, PrimaryButton } from "./utils";
+import { DateFormat, randomTableData } from "../utils/utils";
+import { LoadingAnimation, PrimaryButton } from "./utils";
 import {
   createColumnHelper,
   flexRender,
@@ -28,9 +28,18 @@ import {
 } from "@tanstack/react-table";
 import { InvoiceStatusArr, UserRoleArr } from "../types/utils.types";
 
+const TableComponent: FC<PropsWithChildren & { moreClass?: string }> = ({
+  children,
+  moreClass,
+}) => {
+  return (
+    <table className={` w-full p-2 shadow-2xl ${moreClass} `}>{children}</table>
+  );
+};
+
 export const THead: FC<PropsWithChildren> = ({ children }) => {
   return (
-    <thead className="  bg-indigo-900 font-bold text-white">{children}</thead>
+    <thead className="  bg-gray-800 font-bold text-white">{children}</thead>
   );
 };
 
@@ -47,8 +56,9 @@ export const TR: FC<{
 
   return (
     <tr
-      className={` ${rowId ? "cursor-pointer" : ""
-        }  hover:bg-indigo-900 hover:text-white`}
+      className={` ${
+        rowId ? "cursor-pointer hover:bg-gray-600" : ""
+      }   hover:text-white`}
       onClick={() => {
         if (rowId) {
           router.push(`/${route}/${rowId}`);
@@ -64,10 +74,11 @@ export const TH: FC<PropsWithChildren & { size: number }> = ({
   children,
   size,
 }) => {
+  console.log(size);
   return (
     <th
-      className={` border border-black p-2 text-center `}
-      style={{ width: size + "px" }}
+      className={` border p-2 text-center shadow-sm `}
+      style={{ width: size }}
     >
       {children}
     </th>
@@ -75,17 +86,38 @@ export const TH: FC<PropsWithChildren & { size: number }> = ({
 };
 
 export const TD: FC<PropsWithChildren> = ({ children }) => {
-  return <td className=" border border-black p-2 text-center">{children}</td>;
+  return <td className=" border p-2 text-center shadow-sm ">{children}</td>;
+};
+
+export const LoadingTable: FC<{ type: "small" | "big" }> = ({ type }) => {
+  return (
+    <TableComponent moreClass="blur-sm">
+      <THead>
+        <TR route="none">
+          <TH size={200}>Name</TH>
+          <TH size={150}>Number</TH>
+          <TH size={150}>IDNumber</TH>
+        </TR>
+      </THead>
+      <TBody>
+        {randomTableData.slice(0, type === "big" ? 10 : 5).map((data) => (
+          <TR key={data.id} route="none">
+            <TD>{data.name}</TD>
+            <TD>{String(data.number)}</TD>
+            <TD>{String(data.idNumber)}</TD>
+          </TR>
+        ))}
+      </TBody>
+    </TableComponent>
+  );
 };
 
 export const CustomerTable: FC<{
   customers: Customer[] | undefined;
   isLoading: boolean;
 }> = ({ customers, isLoading }) => {
-  const router = useRouter();
-
   if (isLoading) {
-    return <LoadingAnimation />;
+    return <LoadingTable type="big" />;
   }
 
   if (!customers) {
@@ -93,7 +125,7 @@ export const CustomerTable: FC<{
   }
 
   return (
-    <table className=" w-full min-w-max  border-collapse border border-violet-900">
+    <TableComponent>
       <THead>
         <TR route="none">
           <TH size={200}>Name</TH>
@@ -104,20 +136,13 @@ export const CustomerTable: FC<{
       <TBody>
         {customers?.map((customer) => (
           <TR key={customer.id} route="customer" rowId={customer.id}>
-            <td
-              className="  min-w-[150px] max-w-[200px] cursor-pointer border border-black p-2 text-center"
-              onClick={() => {
-                router.push(`customer/${customer.id}`);
-              }}
-            >
-              {customer.name}
-            </td>
+            <TD>{customer.name}</TD>
             <TD>{String(customer.number)}</TD>
             <TD>{String(customer.idNumber)}</TD>
           </TR>
         ))}
       </TBody>
-    </table>
+    </TableComponent>
   );
 };
 
@@ -135,7 +160,7 @@ export const InvoicesTable: FC<{
 
   const columns = [
     columnHelper.accessor("cost", {
-      size: 200,
+      size: 100,
       cell: (info) => <span>{info.renderValue()}</span>,
       footer: (info) => info.column.id,
       header: () => "Cost",
@@ -157,8 +182,8 @@ export const InvoicesTable: FC<{
             info.getValue() === InvoiceStatusEnum.Rejected
               ? "text-red-700"
               : info.getValue() === InvoiceStatusEnum.Accepted
-                ? "text-green-700"
-                : "text-blue-700"
+              ? "text-green-700"
+              : "text-blue-700"
           }
         >
           {info.renderValue()}
@@ -182,7 +207,7 @@ export const InvoicesTable: FC<{
 
   return (
     <div className=" flex w-full flex-col gap-4">
-      <table className=" w-full min-w-max  border-collapse border border-violet-900">
+      <TableComponent>
         <THead>
           {table.getHeaderGroups().map((headerGroup) => (
             <TR key={headerGroup.id} route="none">
@@ -191,9 +216,9 @@ export const InvoicesTable: FC<{
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   {header.column.getCanFilter() ? (
                     <div>
                       <Filter column={header.column} table={table} />
@@ -215,7 +240,7 @@ export const InvoicesTable: FC<{
             </TR>
           ))}
         </TBody>
-      </table>
+      </TableComponent>
       <TablePag table={table} />
     </div>
   );
@@ -260,7 +285,7 @@ export const UsersTable: FC<{ users: User[] }> = ({ users }) => {
 
   return (
     <div className=" flex w-full flex-col gap-4">
-      <table className=" w-full min-w-max  border-collapse border border-violet-900">
+      <TableComponent>
         <THead>
           {table.getHeaderGroups().map((headerGroup) => (
             <TR key={headerGroup.id} route="none">
@@ -269,9 +294,9 @@ export const UsersTable: FC<{ users: User[] }> = ({ users }) => {
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   {header.column.getCanFilter() ? (
                     <div>
                       <Filter column={header.column} table={table} />
@@ -293,7 +318,7 @@ export const UsersTable: FC<{ users: User[] }> = ({ users }) => {
             </TR>
           ))}
         </TBody>
-      </table>
+      </TableComponent>
       <TablePag table={table} />
     </div>
   );
@@ -384,24 +409,26 @@ const Filter: FC<{
   if (UserRole.valueOf().hasOwnProperty(String(firstValue))) {
     return (
       <select
-        className="text-black font-normal"
+        className="font-normal text-black"
         onChange={(e) => {
           column.setFilterValue(
             e.target.value === "all" ? undefined : e.target.value
-          )
-        }}>
+          );
+        }}
+      >
         <option value="all">All</option>
         {UserRoleArr.map((role) => (
-          <option value={role}>{role}</option>
+          <option key={role} value={role}>
+            {role}
+          </option>
         ))}
-
       </select>
-    )
+    );
   }
   return (
     <div>
       <input
-        className="text-black p-1 font-normal"
+        className="p-1 font-normal text-black"
         value={column.getFilterValue() ? String(column.getFilterValue()) : ""}
         onChange={(e) => {
           column.setFilterValue(e.target.value);

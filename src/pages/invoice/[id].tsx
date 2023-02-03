@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
-import { SyncLoader } from "react-spinners";
 
 import InvoiceView from "../../components/InvoiceView";
+import { LoadingInvoice } from "../../components/utils";
 
 const InvoiceById = () => {
   const router = useRouter();
@@ -20,7 +20,7 @@ const InvoiceById = () => {
   );
 
   if (isFetching) {
-    return <SyncLoader color="#312e81" />;
+    return <LoadingInvoice />;
   }
 
   if (!invoiceData) {

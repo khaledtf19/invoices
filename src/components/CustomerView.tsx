@@ -203,7 +203,7 @@ const EditMode: FC<{
   );
 };
 
-const ViewCustomer: FC<{ customerData: Customer }> = ({ customerData }) => {
+export const ViewCustomer: FC<{ customerData: Customer }> = ({ customerData }) => {
   const { openModal, closeModal } = useModalState((state) => ({
     openModal: state.openModal,
     closeModal: state.closeModal,

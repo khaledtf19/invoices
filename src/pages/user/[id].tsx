@@ -1,5 +1,9 @@
+import { useRouter } from "next/router";
+
 const User = () => {
-  return <div>User2</div>;
+  const router = useRouter();
+  const id = String(router.query.id);
+  return <div>{id}</div>;
 };
 
 export default User;
