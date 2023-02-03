@@ -1,15 +1,14 @@
 import { type NextPage } from "next";
 
 import { trpc } from "../utils/trpc";
-import { InvoicesTable } from "../components/tables";
-import { LoadingAnimation } from "../components/utils";
+import { InvoicesTable, LoadingTable } from "../components/tables";
 
 const Home: NextPage = () => {
   const { data: invoicesData, isLoading } =
     trpc.invoice.getNewInvoices.useQuery();
 
   if (isLoading) {
-    return <LoadingAnimation />;
+    return <LoadingTable type="big" />;
   }
 
   if (!invoicesData) {

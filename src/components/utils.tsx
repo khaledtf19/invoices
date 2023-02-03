@@ -6,6 +6,9 @@ import type {
   UseFormRegisterReturn,
 } from "react-hook-form";
 import { SyncLoader } from "react-spinners";
+import { ViewCustomer } from "./CustomerView";
+import { LoadingTable } from "./tables";
+import Container from "../container/Container";
 
 export const Input: FC<{
   name?: string;
@@ -26,7 +29,7 @@ export const Input: FC<{
         value={state}
         onChange={onChange}
         placeholder={placeholder}
-        className="border border-indigo-900 p-1 outline-none "
+        className="border border-gray-900 p-1 outline-none "
       />
     </div>
   );
@@ -73,7 +76,7 @@ export const PrimaryButton: FC<{
         }
       }}
       type={type ? type : "button"}
-      className=" w-full rounded-lg bg-indigo-900 px-3 py-1 text-white hover:bg-indigo-800"
+      className=" w-full rounded-lg bg-gray-900 px-3 py-1 text-white hover:bg-gray-800"
     >
       {label}
     </button>
@@ -92,7 +95,7 @@ export const SecondaryButton: FC<{
         }
       }}
       type={type ? type : "button"}
-      className=" w-full rounded-lg bg-indigo-600 px-3 py-1 text-white hover:bg-indigo-500"
+      className=" w-full rounded-lg bg-gray-600 px-3 py-1 text-white hover:bg-gray-500"
     >
       {label}
     </button>
@@ -120,8 +123,8 @@ export const RedButton: FC<{
 };
 
 export const Toggle: FC<{
-  state: boolean;
-  onChange: ChangeEventHandler<HTMLInputElement>;
+  state?: boolean;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
 }> = ({ state, onChange }) => {
   return (
     <label className="relative inline-flex cursor-pointer items-center">
@@ -151,4 +154,41 @@ export const DataFields: FC<{
 
 export const LoadingAnimation = () => {
   return <SyncLoader color="#312e81" />;
+};
+
+export const LoadingCustomer = () => {
+  return (
+    <div className="flex w-full flex-col items-center justify-center gap-6 blur-sm">
+      <Container>
+        <Toggle />
+        <ViewCustomer
+          customerData={{
+            id: "1234567",
+            name: "Name Name Name",
+            number: BigInt(132424242),
+            idNumber: BigInt(132424242),
+            mobile: [BigInt(132424242)],
+          }}
+        />
+      </Container>
+
+      <LoadingTable type="small" />
+    </div>
+  );
+};
+
+export const LoadingInvoice = () => {
+  return (
+    <div className="flex w-full flex-col items-center justify-center  blur-sm">
+      <Container>
+        <DataFields label="Name" text={"Name Name Name"} />
+        <DataFields label="Number" text={"123456789"} />
+        <DataFields label="Cost" text={"200"} />
+        <DataFields label="Created At" text={"123456789"} />
+        <DataFields label="updated At" text={"123456789"} />
+        <DataFields label="Created By" text={"123456789"} />
+        <DataFields label="Status" text={"Waiting"} />
+      </Container>
+    </div>
+  );
 };

@@ -4,15 +4,15 @@ import Modal from "../components/Modal";
 
 const Layout: FC<PropsWithChildren> = ({ children }) => {
   return (
-    <>
+    <div className="flex w-full flex-row">
       <header>
         <Navbar />
       </header>
-      <main className=" flex min-h-screen flex-col items-center bg-white px-32 pt-16 text-black">
+      <main className="  flex min-h-screen w-full flex-col items-center bg-white py-16 pl-32 pr-12 text-black">
         {children}
       </main>
       <Modal />
-    </>
+    </div>
   );
 };
 

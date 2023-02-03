@@ -3,6 +3,7 @@ import { trpc } from "../../utils/trpc";
 import { SyncLoader } from "react-spinners";
 import CustomerView from "../../components/CustomerView";
 import { InvoicesTable } from "../../components/tables";
+import { LoadingCustomer } from "../../components/utils";
 
 const Customer = () => {
   const router = useRouter();
@@ -21,7 +22,7 @@ const Customer = () => {
   );
 
   if (isLoading || isRefetching) {
-    return <SyncLoader color="#312e81" />;
+    return <LoadingCustomer />;
   }
 
   if (!customerData) {
