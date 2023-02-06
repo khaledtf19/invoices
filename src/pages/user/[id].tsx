@@ -1,9 +1,13 @@
 import { useRouter } from "next/router";
+import { trpc } from "../../utils/trpc";
 
 const User = () => {
   const router = useRouter();
-  const id = String(router.query.id);
-  return <div>{id}</div>;
+  const userId = String(router.query.id);
+
+  const { data: UserData } = trpc.user.getUserById.useQuery({ id: userId });
+
+  return <div>{userId}</div>;
 };
 
 export default User;

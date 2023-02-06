@@ -14,6 +14,7 @@ import type {
   InvoiceNote,
   User,
   InvoiceStatusEnum,
+  Transaction,
 } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { DateFormat } from "../utils/utils";
@@ -26,6 +27,7 @@ const InvoiceView: FC<{
   invoiceData: Invoice & {
     invoiceStatus: InvoiceStatus | null;
     customer: Customer;
+    transaction: Transaction | null;
     invoiceNotes: InvoiceNote[];
     madeBy: User;
   };
@@ -76,6 +78,14 @@ const InvoiceView: FC<{
         text={DateFormat({ date: invoiceData.updatedAt })}
       />
       <DataFields label="Created By" text={invoiceData.madeBy.name} />
+      <DataFields
+        label="Viewed"
+        text={
+          invoiceData.transaction?.viewed
+            ? "Seen by an Admin"
+            : "Waiting an Admin"
+        }
+      />
       <div
         className={` w-full ${
           newStatus === InvoiceStatusArr[1]

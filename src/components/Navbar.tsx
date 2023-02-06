@@ -11,13 +11,13 @@ import {
   HiUsers,
   HiOutlineUsers,
 } from "react-icons/hi";
-import { RiSearchLine, RiSearchFill } from "react-icons/ri";
+import { RiSearchLine } from "react-icons/ri";
 
 const Navbar = () => {
   const { data: sessionData } = useSession();
 
   return (
-    <nav className=" fixed top-0 bottom-0 left-0 z-50 flex w-20 flex-col justify-between bg-gradient-to-b from-gray-800 to-gray-900  py-10  text-sm text-white">
+    <nav className=" fixed top-0 bottom-0 left-0 z-50 flex w-20 flex-col justify-between  rounded-r-lg bg-gradient-to-b from-gray-800  to-gray-900  py-10 text-sm text-white">
       <ul className="flex w-full flex-col gap-3">
         <li>
           <RouteLink
@@ -75,7 +75,6 @@ const RouteLink: FC<{
   iconActive: ReactNode;
 }> = ({ to, name, icon, iconActive }) => {
   const router = useRouter();
-  console.log(router.pathname);
 
   return (
     <Link

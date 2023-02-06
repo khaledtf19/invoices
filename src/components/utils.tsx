@@ -7,8 +7,8 @@ import type {
 } from "react-hook-form";
 import { SyncLoader } from "react-spinners";
 import { ViewCustomer } from "./CustomerView";
-import { LoadingTable } from "./tables";
 import Container from "../container/Container";
+import LoadingTable from "./tables/LoadingTable";
 
 export const Input: FC<{
   name?: string;
@@ -187,6 +187,7 @@ export const LoadingInvoice = () => {
         <DataFields label="Created At" text={"123456789"} />
         <DataFields label="updated At" text={"123456789"} />
         <DataFields label="Created By" text={"123456789"} />
+        <DataFields label="Viewed" text={"Seen by an Admin"} />
         <DataFields label="Status" text={"Waiting"} />
       </Container>
     </div>

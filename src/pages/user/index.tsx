@@ -1,4 +1,5 @@
-import { LoadingTable, UsersTable } from "../../components/tables";
+import LoadingTable from "../../components/tables/LoadingTable";
+import { UsersTable } from "../../components/tables/UsersTable";
 import { trpc } from "../../utils/trpc";
 
 const ViewUsers = () => {

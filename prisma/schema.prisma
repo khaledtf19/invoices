@@ -57,6 +57,7 @@ model Invoice {
   customer      Customer       @relation(fields: [customerId], references: [id])
   invoiceStatus InvoiceStatus?
   invoiceNotes  InvoiceNote[]
+  transaction   Transaction?
 }
 
 model CustomerNote {
@@ -79,6 +80,15 @@ model Customer {
 
   @@unique([number])
   @@index([number, name])
+}
+
+model Transaction {
+  id        String  @id @default(cuid())
+  userId    String
+  invoiceId String  @unique
+  viewed    Boolean @default(false)
+  user      User    @relation(fields: [userId], references: [id])
+  invoice   Invoice @relation(fields: [invoiceId], references: [id])
 }
 
 // Necessary for Next auth
@@ -114,13 +124,14 @@ model User {
   email         String?        @unique
   emailVerified DateTime?
   image         String?
+  userBalance   Float          @default(0)
   accounts      Account[]
   sessions      Session[]
   invoices      Invoice[]
   role          UserRole       @default(User)
   customerNotes CustomerNote[]
   invoiceNotes  InvoiceNote[]
-  userBalance    Float          @default(0)
+  transactions  Transaction[]
 }
 
 model VerificationToken {
