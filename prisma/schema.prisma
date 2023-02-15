@@ -91,6 +91,17 @@ model Transaction {
   invoice   Invoice @relation(fields: [invoiceId], references: [id])
 }
 
+model changeBalance {
+  id        String   @id @default(cuid())
+  adminId   String
+  userId    String
+  amount    Float
+  type      String
+  createdAt DateTime @default(now())
+  admin     User?    @relation("admin", fields: [adminId], references: [id])
+  user      User?    @relation("user", fields: [userId], references: [id])
+}
+
 // Necessary for Next auth
 model Account {
   id                String  @id @default(cuid())
@@ -119,19 +130,21 @@ model Session {
 }
 
 model User {
-  id            String         @id @default(cuid())
-  name          String?
-  email         String?        @unique
-  emailVerified DateTime?
-  image         String?
-  userBalance   Float          @default(0)
-  accounts      Account[]
-  sessions      Session[]
-  invoices      Invoice[]
-  role          UserRole       @default(User)
-  customerNotes CustomerNote[]
-  invoiceNotes  InvoiceNote[]
-  transactions  Transaction[]
+  id                     String          @id @default(cuid())
+  name                   String?
+  email                  String?         @unique
+  emailVerified          DateTime?
+  image                  String?
+  userBalance            Float           @default(0)
+  accounts               Account[]
+  sessions               Session[]
+  invoices               Invoice[]
+  role                   UserRole        @default(User)
+  customerNotes          CustomerNote[]
+  invoiceNotes           InvoiceNote[]
+  transactions           Transaction[]
+  changeBalanceFromAdmin changeBalance[] @relation("admin")
+  changeBalanceforUser   changeBalance[] @relation("user")
 }
 
 model VerificationToken {

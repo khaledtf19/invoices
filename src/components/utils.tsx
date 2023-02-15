@@ -19,7 +19,7 @@ export const Input: FC<{
   type?: HTMLInputTypeAttribute;
 }> = ({ name, label, state, onChange, placeholder, type }) => {
   return (
-    <div className="flex flex-col">
+    <div className="flex w-full flex-col items-start justify-start">
       <label className="text-gray-700" htmlFor={name}>
         {label}:
       </label>
@@ -29,7 +29,7 @@ export const Input: FC<{
         value={state}
         onChange={onChange}
         placeholder={placeholder}
-        className="border border-gray-900 p-1 outline-none "
+        className="w-full border border-gray-900 p-1 outline-none "
       />
     </div>
   );

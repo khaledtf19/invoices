@@ -1,3 +1,4 @@
+import { BalanceArr, ZBalance } from "../../../types/utils.types";
 import { router, adminProcedure } from "../trpc";
 import { z } from "zod";
 
@@ -23,13 +24,36 @@ export const userRouter = router({
       });
     }),
 
-  addUserBalance: adminProcedure
-    .input(z.object({ id: z.string().min(5), newBalance: z.number().min(5) }))
+  changeUserBalance: adminProcedure
+    .input(
+      z.object({
+        userId: z.string().min(5),
+        amount: z.number().min(5),
+        type: ZBalance,
+      })
+    )
     .mutation(async ({ input, ctx }) => {
-      await ctx.prisma.user.update({
-        where: { id: input.id },
-        data: { userBalance: { increment: input.newBalance } },
+      if (input.type === BalanceArr[0]) {
+        await ctx.prisma.user.update({
+          where: { id: input.userId },
+          data: { userBalance: { increment: input.amount } },
+        });
+      } else if (input.type === BalanceArr[1]) {
+        await ctx.prisma.user.update({
+          where: { id: input.userId },
+          data: { userBalance: { decrement: input.amount } },
+        });
+      }
+
+      await ctx.prisma.changeBalance.create({
+        data: {
+          adminId: ctx.session.user.id,
+          userId: input.userId,
+          type: input.type,
+          amount: input.amount,
+        },
       });
+
       return { message: "Done" };
     }),
 });
