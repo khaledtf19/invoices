@@ -55,7 +55,7 @@ const UserPage: FC<{
               ),
             },
             {
-              tabName: "User Transactions",
+              tabName: "User Balance",
               component: (
                 <ChangeBalanceTable
                   changeBalance={
