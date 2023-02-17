@@ -136,6 +136,7 @@ export const invoiceRouter = router({
       return await ctx.prisma.invoice.findMany({
         include: { invoiceStatus: true },
         orderBy: { createdAt: "desc" },
+        take: 50,
       });
     }
 
@@ -143,6 +144,7 @@ export const invoiceRouter = router({
       where: { userId: ctx.session.user.id },
       include: { invoiceStatus: true },
       orderBy: { createdAt: "desc" },
+      take: 50,
     });
   }),
 });

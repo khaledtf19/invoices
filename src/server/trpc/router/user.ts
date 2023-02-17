@@ -15,10 +15,27 @@ export const userRouter = router({
         include: {
           invoices: true,
           transactions: {
+            take: 50,
             include: {
-              invoice: { select: { cost: true, id: true, createdAt: true } },
+              invoice: {
+                select: { cost: true, id: true, createdAt: true },
+              },
               user: { select: { name: true, email: true } },
             },
+          },
+          changeBalanceforUser: {
+            include: {
+              admin: { select: { name: true, email: true } },
+              user: { select: { name: true, email: true } },
+            },
+            take: 20,
+          },
+          changeBalanceFromAdmin: {
+            include: {
+              admin: { select: { name: true, email: true } },
+              user: { select: { name: true, email: true } },
+            },
+            take: 20,
           },
         },
       });

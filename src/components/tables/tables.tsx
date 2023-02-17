@@ -10,7 +10,9 @@ export const TableComponent: FC<PropsWithChildren & { moreClass?: string }> = ({
   moreClass,
 }) => {
   return (
-    <table className={` w-full p-2 shadow-2xl ${moreClass} `}>{children}</table>
+    <table className={` w-full p-2 shadow-2xl ${moreClass} min-h-0 `}>
+      {children}
+    </table>
   );
 };
 
@@ -34,10 +36,10 @@ export const TR: FC<{
   return (
     <tr
       className={` ${
-        rowId ? "cursor-pointer hover:bg-gray-600" : ""
-      }   hover:text-white`}
+        rowId ? "cursor-pointer hover:bg-gray-600 hover:text-white" : ""
+      }   `}
       onClick={() => {
-        if (rowId) {
+        if (route !== "none") {
           router.push(`/${route}/${rowId}`);
         }
       }}
@@ -164,6 +166,11 @@ export const Filter: FC<{
       </select>
     );
   }
+
+  if (firstValue === "Add" || firstValue === "Take") {
+    return <></>;
+  }
+
   return (
     <div>
       <input

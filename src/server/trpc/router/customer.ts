@@ -9,7 +9,7 @@ const CustomerValidation = z.object({
   }),
   idNumber: z
     .bigint()
-    .refine((ph: bigint) => ph.toString().length > 8, {
+    .refine((idNum: bigint) => idNum.toString().length > 8, {
       message: "must be > 8",
     })
     .nullish(),
@@ -52,7 +52,7 @@ export const customerRouter = router({
       return await ctx.prisma.customer.findUnique({
         where: { id: input.customerId },
         include: {
-          invoices: { include: { invoiceStatus: true } },
+          invoices: { include: { invoiceStatus: true }, take: 10 },
           customerNotes: true,
         },
       });
@@ -82,7 +82,6 @@ export const customerRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      console.log(input);
       return await ctx.prisma.customer.update({
         where: { id: input.id },
         data: input,

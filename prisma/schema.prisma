@@ -88,7 +88,7 @@ model Transaction {
   invoiceId String  @unique
   viewed    Boolean @default(false)
   user      User    @relation(fields: [userId], references: [id])
-  invoice   Invoice @relation(fields: [invoiceId], references: [id])
+  invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
 }
 
 model changeBalance {
