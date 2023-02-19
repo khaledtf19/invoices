@@ -23,7 +23,7 @@ export const userRouter = router({
               user: { select: { name: true, email: true } },
             },
           },
-          changeBalanceforUser: {
+          changeBalanceForUser: {
             include: {
               admin: { select: { name: true, email: true } },
               user: { select: { name: true, email: true } },

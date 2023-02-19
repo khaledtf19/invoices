@@ -144,7 +144,7 @@ model User {
   invoiceNotes           InvoiceNote[]
   transactions           Transaction[]
   changeBalanceFromAdmin changeBalance[] @relation("admin")
-  changeBalanceforUser   changeBalance[] @relation("user")
+  changeBalanceForUser   changeBalance[] @relation("user")
 }
 
 model VerificationToken {

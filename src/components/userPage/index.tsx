@@ -34,7 +34,7 @@ const UserPage: FC<{
       admin: { name: string | null; email: string | null } | null;
       user: { name: string | null; email: string | null } | null;
     })[];
-    changeBalanceforUser: (changeBalance & {
+    changeBalanceForUser: (changeBalance & {
       admin: { name: string | null; email: string | null } | null;
       user: { name: string | null; email: string | null } | null;
     })[];
@@ -61,7 +61,7 @@ const UserPage: FC<{
                   changeBalance={
                     userData.role === UserRole.Admin
                       ? userData.changeBalanceFromAdmin
-                      : userData.changeBalanceforUser
+                      : userData.changeBalanceForUser
                   }
                 />
               ),
