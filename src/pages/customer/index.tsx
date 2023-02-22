@@ -20,6 +20,7 @@ const customerSchema = z.object({
   name: z.string().min(3),
   number: z.string().min(5),
   idNumber: z.string().nullish(),
+  birthday: z.string().min(3).optional(),
   mobile: z.string().nullish(),
 });
 
@@ -45,6 +46,7 @@ const MakeCustomer: NextPage = () => {
     console.log(data);
     const customerData = {
       name: data.name,
+      birthDay: data.birthday,
       mobile: [
         BigInt(data.number) ? BigInt(data.mobile ? data.mobile : 0) : null,
       ],
@@ -124,6 +126,14 @@ const MakeCustomer: NextPage = () => {
           placeholder="ID"
           register={register("idNumber")}
           error={errors.idNumber?.message}
+        />
+        <FormInput
+          name="birthday"
+          label="Birthday"
+          type="text"
+          placeholder="Birthday"
+          register={register("birthday")}
+          error={errors.birthday?.message}
         />
         <FormInput
           name="mobile"

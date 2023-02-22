@@ -72,6 +72,7 @@ model CustomerNote {
 model Customer {
   id            String         @id @default(cuid())
   name          String
+  birthDay      String?
   number        BigInt
   mobile        BigInt[]
   idNumber      BigInt?

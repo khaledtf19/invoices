@@ -147,7 +147,7 @@ export const DataFields: FC<{
   return (
     <div className=" flex w-full flex-col ">
       <label className=" text-gray-700">{label}:</label>
-      <p className=" bg-gray-200 p-1 ">{String(text)}</p>
+      <p className=" bg-gray-200 p-1 ">{text ? String(text) : "none"}</p>
     </div>
   );
 };
@@ -168,6 +168,7 @@ export const LoadingCustomer = () => {
             number: BigInt(132424242),
             idNumber: BigInt(132424242),
             mobile: [BigInt(132424242)],
+            birthDay: "1/1/1111",
           }}
         />
       </Container>

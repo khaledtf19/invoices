@@ -29,6 +29,7 @@ const CustomerForm = z.object({
       message: "must be > 8",
     })
     .nullable(),
+  birthday: z.string().optional(),
   mobile: z
     .object({
       value: z
@@ -123,6 +124,7 @@ const EditMode: FC<{
     if (updateCustomer.error) {
       openModal({ newText: updateCustomer.error.message });
     }
+    // console.log(errors.mobile?.[1]);
   }, [openModal, updateCustomer.error]);
 
   return (
@@ -159,6 +161,13 @@ const EditMode: FC<{
           },
         })}
       />
+      <FormInput
+        type="birthday"
+        label="Birthday"
+        name="birthday"
+        error={errors.birthday?.message}
+        register={register("birthday")}
+      />
 
       {fields.map((item, i) => (
         <div
@@ -169,10 +178,10 @@ const EditMode: FC<{
             type="number"
             label={`Mobile ${i + 1}`}
             name="idNumber"
-            error={errors.mobile?.message}
+            error={errors.mobile?.[i]?.value?.message}
             register={register(`mobile.${i}.value`, {
               setValueAs(value) {
-                return BigInt(value) ? BigInt(value) : null;
+                return value ? (BigInt(value) ? BigInt(value) : null) : "";
               },
             })}
           />
@@ -203,7 +212,9 @@ const EditMode: FC<{
   );
 };
 
-export const ViewCustomer: FC<{ customerData: Customer }> = ({ customerData }) => {
+export const ViewCustomer: FC<{ customerData: Customer }> = ({
+  customerData,
+}) => {
   const { openModal, closeModal } = useModalState((state) => ({
     openModal: state.openModal,
     closeModal: state.closeModal,
@@ -220,6 +231,7 @@ export const ViewCustomer: FC<{ customerData: Customer }> = ({ customerData }) =
       <DataFields label="Name" text={customerData.name} />
       <DataFields label="Number" text={customerData.number} />
       <DataFields label="ID" text={customerData.idNumber} />
+      <DataFields label="birthday" text={customerData.birthDay} />
 
       {customerData?.mobile.map((mNumber, i) => (
         <DataFields key={i} label={`Mobile ${i + 1}`} text={mNumber} />

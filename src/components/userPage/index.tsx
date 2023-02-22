@@ -112,7 +112,7 @@ const UserTabs: FC<{
               setSelectedTab(i);
             }}
           >
-            <h1 className=" rounded-md bg-gray-900 p-2 text-xl font-bold text-white">
+            <h1 className=" rounded-md bg-gray-900 p-2 text-xl font-bold text-white ">
               {tab.tabName}
             </h1>
             {selectedTab === i ? (

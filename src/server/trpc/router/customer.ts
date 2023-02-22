@@ -7,6 +7,7 @@ const CustomerValidation = z.object({
   number: z.bigint().refine((ph: bigint) => ph.toString().length > 8, {
     message: "must be > 8",
   }),
+  birthday: z.string().optional(),
   idNumber: z
     .bigint()
     .refine((idNum: bigint) => idNum.toString().length > 8, {
