@@ -113,7 +113,10 @@ const InvoiceView: FC<{
             </select>
           </>
         ) : (
-          <DataFields label="Status" text={invoiceData.invoiceStatus?.status} />
+          <DataFields
+            label="Status"
+            text={String(invoiceData.invoiceStatus?.status)}
+          />
         )}
       </div>
 
