@@ -1,4 +1,11 @@
-import type { ChangeEventHandler, FC, HTMLInputTypeAttribute } from "react";
+import {
+  type ChangeEventHandler,
+  type FC,
+  type HTMLInputTypeAttribute,
+  type ReactNode,
+  useState,
+  useEffect,
+} from "react";
 import type {
   FieldError,
   FieldErrorsImpl,
@@ -9,6 +16,9 @@ import { SyncLoader } from "react-spinners";
 import { ViewCustomer } from "./CustomerView";
 import Container from "../container/Container";
 import LoadingTable from "./tables/LoadingTable";
+import CopyToClipboard from "react-copy-to-clipboard";
+import { type IconType } from "react-icons";
+import { BsCreditCard2Front } from "react-icons/bs";
 
 export const Input: FC<{
   name?: string;
@@ -141,13 +151,60 @@ export const Toggle: FC<{
 };
 
 export const DataFields: FC<{
-  text?: string | number | bigint | null;
+  text: string | number | bigint | null;
   label: string;
-}> = ({ text, label }) => {
+  Icon?: IconType;
+}> = ({ text, label, Icon }) => {
   return (
     <div className=" flex w-full flex-col ">
-      <label className=" text-gray-700">{label}:</label>
+      <label className=" flex items-center gap-2 text-gray-700">
+        {Icon ? (
+          <IconToCopy name={label} Icon={Icon} text={String(text)} size={20} />
+        ) : null}
+        {label}:
+      </label>
       <p className=" bg-gray-200 p-1 ">{text ? String(text) : "none"}</p>
+    </div>
+  );
+};
+
+export const IconToCopy: FC<{
+  name: string;
+  text: string;
+  Icon: IconType;
+  size?: number;
+}> = ({ Icon, text, size, name }) => {
+  const [copied, setCopied] = useState(false);
+  const [hover, setHover] = useState(false);
+
+  useEffect(() => {
+    if (copied) {
+      setTimeout(() => {
+        setCopied(false);
+      }, 3000);
+    }
+  }, [copied]);
+
+  return (
+    <div
+      className={`${
+        copied ? " text-green-600" : ""
+      } relative flex items-center justify-center`}
+      onMouseOver={() => {
+        setHover(true);
+      }}
+      onMouseOut={() => {
+        setHover(false);
+      }}
+    >
+      {hover ? (
+        <p className=" absolute bottom-8 flex items-center justify-center rounded-md  bg-white py-1 px-3 text-gray-600 shadow-sm">
+          {name}
+        </p>
+      ) : null}
+      <CopyToClipboard text={text} onCopy={() => setCopied(true)}>
+        <Icon size={size ? size : 30} />
+      </CopyToClipboard>
     </div>
   );
 };
@@ -182,14 +239,38 @@ export const LoadingInvoice = () => {
   return (
     <div className="flex w-full flex-col items-center justify-center  blur-sm">
       <Container>
-        <DataFields label="Name" text={"Name Name Name"} />
-        <DataFields label="Number" text={"123456789"} />
-        <DataFields label="Cost" text={"200"} />
-        <DataFields label="Created At" text={"123456789"} />
-        <DataFields label="updated At" text={"123456789"} />
-        <DataFields label="Created By" text={"123456789"} />
-        <DataFields label="Viewed" text={"Seen by an Admin"} />
-        <DataFields label="Status" text={"Waiting"} />
+        <DataFields
+          label="Name"
+          text={"Name Name Name"}
+          Icon={BsCreditCard2Front}
+        />
+        <DataFields
+          label="Number"
+          text={"123456789"}
+          Icon={BsCreditCard2Front}
+        />
+        <DataFields label="Cost" text={"200"} Icon={BsCreditCard2Front} />
+        <DataFields
+          label="Created At"
+          text={"123456789"}
+          Icon={BsCreditCard2Front}
+        />
+        <DataFields
+          label="updated At"
+          text={"123456789"}
+          Icon={BsCreditCard2Front}
+        />
+        <DataFields
+          label="Created By"
+          text={"123456789"}
+          Icon={BsCreditCard2Front}
+        />
+        <DataFields
+          label="Viewed"
+          text={"Seen by an Admin"}
+          Icon={BsCreditCard2Front}
+        />
+        <DataFields label="Status" text={"Waiting"} Icon={BsCreditCard2Front} />
       </Container>
     </div>
   );

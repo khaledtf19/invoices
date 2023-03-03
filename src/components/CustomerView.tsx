@@ -4,12 +4,13 @@ import Container from "../container/Container";
 import {
   DataFields,
   FormInput,
+  IconToCopy,
   Input,
   PrimaryButton,
   SecondaryButton,
   Toggle,
 } from "./utils";
-import type { Customer } from "@prisma/client";
+import { type Customer, UserRole } from "@prisma/client";
 import { z } from "zod";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,6 +18,14 @@ import { trpc } from "../utils/trpc";
 import { useModalState } from "../hooks/modalState";
 import { useRouter } from "next/router";
 import { SyncLoader } from "react-spinners";
+import {
+  BsCreditCard2Front,
+  BsFillTelephoneFill,
+  BsFillPersonBadgeFill,
+  BsCalendarDate,
+} from "react-icons/bs";
+import { BiMobile } from "react-icons/bi";
+import { useSession } from "next-auth/react";
 
 const CustomerForm = z.object({
   name: z.string().min(3),
@@ -50,15 +59,21 @@ const CustomerView: FC<{
 }> = ({ customerData, refetch }) => {
   const [toggle, setToggle] = useState(false);
 
+  const { data: userData } = useSession();
+
   return (
     <Container>
-      <Toggle
-        state={toggle}
-        onChange={(e) => {
-          setToggle(e.target.checked);
-        }}
-      />
-      {toggle ? (
+      {userData?.user?.role === UserRole.Admin ? (
+        <Toggle
+          state={toggle}
+          onChange={(e) => {
+            setToggle(e.target.checked);
+          }}
+        />
+      ) : (
+        ""
+      )}
+      {toggle && userData?.user?.role === UserRole.Admin ? (
         <EditMode customerData={customerData} refetch={refetch} />
       ) : (
         <ViewCustomer customerData={customerData} />
@@ -203,7 +218,9 @@ const EditMode: FC<{
           label="Add Mobile"
           type="button"
           onClick={() => {
-            append(emptyField);
+            if (fields.length < 4) {
+              append(emptyField);
+            }
           }}
         />
       </div>
@@ -228,14 +245,37 @@ export const ViewCustomer: FC<{ customerData: Customer }> = ({
 
   return (
     <div className=" flex w-full flex-col gap-4 ">
-      <DataFields label="Name" text={customerData.name} />
-      <DataFields label="Number" text={customerData.number} />
-      <DataFields label="ID" text={customerData.idNumber} />
-      <DataFields label="birthday" text={customerData.birthDay} />
+      <DataFields
+        label="Name"
+        text={customerData.name}
+        Icon={BsFillPersonBadgeFill}
+      />
+      <DataFields
+        label="Number"
+        text={customerData.number}
+        Icon={BsFillTelephoneFill}
+      />
+      <DataFields
+        label="birthday"
+        text={customerData.birthDay}
+        Icon={BsCalendarDate}
+      />
 
-      {customerData?.mobile.map((mNumber, i) => (
-        <DataFields key={i} label={`Mobile ${i + 1}`} text={mNumber} />
-      ))}
+      <div className=" flex justify-between px-10">
+        <IconToCopy
+          name="ID"
+          text={String(customerData.idNumber)}
+          Icon={BsCreditCard2Front}
+        />
+        {customerData?.mobile.map((mNumber, i) => (
+          <IconToCopy
+            key={i}
+            name={`Mobile${i + 1}`}
+            text={String(mNumber)}
+            Icon={BiMobile}
+          />
+        ))}
+      </div>
 
       <PrimaryButton
         type="button"
