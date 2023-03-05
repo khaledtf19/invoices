@@ -39,34 +39,37 @@ const Search = () => {
 
   return (
     <div className="flex w-full flex-col items-center gap-6">
-      <Container>
-        <Input
-          name="name"
-          label="Name"
-          state={name}
-          onChange={(e) => {
-            setName(e.target.value);
-          }}
-        />
-        <Input
-          name="number"
-          label="Number"
-          state={number}
-          onChange={(e) => {
-            const result = e.target.value.replace(/\D/g, "");
-            setNumber(result);
-          }}
-        />
-        <div className=" w-full max-w-[100px] ">
-          <PrimaryButton
-            type="button"
-            label="Search"
-            onClick={() => {
-              handleSearch();
+      <div className=" w-full max-w-md">
+        <Container>
+          <Input
+            name="name"
+            label="Name"
+            state={name}
+            onChange={(e) => {
+              setName(e.target.value);
             }}
           />
-        </div>
-      </Container>
+          <Input
+            name="number"
+            label="Number"
+            state={number}
+            onChange={(e) => {
+              const result = e.target.value.replace(/\D/g, "");
+              setNumber(result);
+            }}
+          />
+          <div className=" w-full max-w-[100px] ">
+            <PrimaryButton
+              type="button"
+              label="Search"
+              onClick={() => {
+                handleSearch();
+              }}
+            />
+          </div>
+        </Container>
+      </div>
+
       <div>
         <PrimaryButton
           type="button"

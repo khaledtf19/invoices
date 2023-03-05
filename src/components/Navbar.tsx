@@ -1,5 +1,5 @@
 import { UserRole } from "@prisma/client";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { type ReactNode, type FC } from "react";
@@ -12,9 +12,10 @@ import {
   HiOutlineUsers,
 } from "react-icons/hi";
 import { RiSearchLine } from "react-icons/ri";
+import { useUserState } from "../hooks/userDataState";
 
 const Navbar = () => {
-  const { data: sessionData } = useSession();
+  const { userData } = useUserState()((state) => ({ userData: state.user }));
 
   return (
     <nav className=" fixed top-0 bottom-0 left-0 z-50 flex w-20 flex-col justify-between  rounded-r-lg bg-gradient-to-b from-gray-800  to-gray-900  py-10 text-sm text-white">
@@ -43,7 +44,7 @@ const Navbar = () => {
             iconActive={<IconContainer Icon={RiSearchLine} />}
           />
         </li>
-        {sessionData?.user?.role === UserRole.Admin ? (
+        {userData?.role === UserRole.Admin ? (
           <li>
             <RouteLink
               to={"/user"}
@@ -55,11 +56,20 @@ const Navbar = () => {
         ) : null}
       </ul>
       <ul className="flex w-full flex-col justify-end px-1 align-middle">
+        <li className=" rounded-md border border-gray-600 px-1 py-2  text-center ">
+          {userData?.role === UserRole.Admin ? (
+            <p className=" text-green-600">ADMIN</p>
+          ) : (
+            <p>{userData?.userBalance} /EGP</p>
+          )}
+        </li>
+      </ul>
+      <ul className="flex w-full flex-col justify-end px-1 align-middle">
         <li
           className=" rounded-md border border-white px-1 py-2  text-center hover:cursor-pointer hover:bg-gray-800"
-          onClick={sessionData?.user ? () => signOut() : () => signIn()}
+          onClick={userData ? () => signOut() : () => signIn()}
         >
-          <span>{sessionData?.user ? "Sign out" : "Sign in"}</span>
+          <span>{userData ? "Sign out" : "Sign in"}</span>
         </li>
       </ul>
     </nav>
@@ -86,7 +96,7 @@ const RouteLink: FC<{
               : ""
             : "bg-gray-900 underline"
           : ""
-      }  flex-col py-2 underline-offset-4 hover:bg-gray-900 hover:underline`}
+      }  duration-400 flex-col py-2 underline-offset-4 transition-colors hover:bg-gray-900 hover:underline`}
       href={to}
     >
       {router.pathname.includes(to)

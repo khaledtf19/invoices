@@ -10,7 +10,9 @@ export const TableComponent: FC<PropsWithChildren & { moreClass?: string }> = ({
   moreClass,
 }) => {
   return (
-    <table className={` w-full p-2 shadow-2xl ${moreClass} min-h-0 `}>
+    <table
+      className={` w-full p-2 shadow-2xl ${moreClass} min-h-0  animate-opacityAnimation`}
+    >
       {children}
     </table>
   );
@@ -36,7 +38,9 @@ export const TR: FC<{
   return (
     <tr
       className={` ${
-        rowId ? "cursor-pointer hover:bg-gray-600 hover:text-white" : ""
+        rowId
+          ? "duration-400 cursor-pointer transition-colors hover:bg-gray-600 hover:text-white"
+          : ""
       }   `}
       onClick={() => {
         if (route !== "none") {

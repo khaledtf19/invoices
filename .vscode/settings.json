@@ -1,1 +1,4 @@
-{}
+{
+  "cSpell.enableFiletypes": ["prisma"],
+  "cSpell.words": ["cuid", "datasource"]
+}

@@ -16,12 +16,12 @@ import type {
   InvoiceStatusEnum,
   Transaction,
 } from "@prisma/client";
-import { useSession } from "next-auth/react";
 import { DateFormat } from "../utils/utils";
 import { InvoiceStatusArr, UserRoleArr } from "../types/utils.types";
 import { trpc } from "../utils/trpc";
 import { useModalState } from "../hooks/modalState";
 import { useRouter } from "next/router";
+import { useUserState } from "../hooks/userDataState";
 
 const InvoiceView: FC<{
   invoiceData: Invoice & {
@@ -42,7 +42,7 @@ const InvoiceView: FC<{
     closeModal: state.closeModal,
   }));
 
-  const { data: userData } = useSession();
+  const { userData } = useUserState()((state) => ({ userData: state.user }));
 
   const editInvoice = trpc.invoice.updateInvoiceStatus.useMutation();
 
@@ -65,108 +65,109 @@ const InvoiceView: FC<{
   ]);
 
   return (
-    <Container>
-      <DataFields label="Name" text={invoiceData.customer.name} />
-      <DataFields label="Number" text={invoiceData.customer.number} />
-      <DataFields label="Cost" text={invoiceData.cost} />
-      <DataFields
-        label="Created At"
-        text={DateFormat({ date: invoiceData.createdAt })}
-      />
-      <DataFields
-        label="updated At"
-        text={DateFormat({ date: invoiceData.updatedAt })}
-      />
-      <DataFields label="Created By" text={invoiceData.madeBy.name} />
-      <DataFields
-        label="Viewed"
-        text={
-          invoiceData.transaction?.viewed
-            ? "Seen by an Admin"
-            : "Waiting an Admin"
-        }
-      />
-      <div
-        className={` w-full ${
-          newStatus === InvoiceStatusArr[1]
-            ? "text-red-700"
-            : newStatus === InvoiceStatusArr[2]
-            ? "text-green-700"
-            : "text-blue-700"
-        } `}
-      >
-        {userData?.user?.role === UserRoleArr[1] ? (
-          <>
-            <label className=" text-gray-700">Status:</label>
-            <select
-              className=" w-full bg-gray-200 p-1"
-              value={newStatus}
-              onChange={(e) => {
-                setNewStatus(e.target.value as InvoiceStatusEnum);
-              }}
-            >
-              {InvoiceStatusArr.map((status) => (
-                <option key={status} value={status}>
-                  {status}
-                </option>
-              ))}
-            </select>
-          </>
-        ) : (
-          <DataFields
-            label="Status"
-            text={String(invoiceData.invoiceStatus?.status)}
-          />
-        )}
-      </div>
+    <div className="w-full max-w-md">
+      <Container>
+        <DataFields label="Name" text={invoiceData.customer.name} />
+        <DataFields label="Number" text={invoiceData.customer.number} />
+        <DataFields label="Cost" text={invoiceData.cost} />
+        <DataFields
+          label="Created At"
+          text={DateFormat({ date: invoiceData.createdAt })}
+        />
+        <DataFields
+          label="updated At"
+          text={DateFormat({ date: invoiceData.updatedAt })}
+        />
+        <DataFields label="Created By" text={invoiceData.madeBy.name} />
+        <DataFields
+          label="Viewed"
+          text={
+            invoiceData.transaction?.viewed
+              ? "Seen by an Admin"
+              : "Waiting an Admin"
+          }
+        />
+        <div
+          className={` w-full ${
+            newStatus === InvoiceStatusArr[1]
+              ? "text-red-700"
+              : newStatus === InvoiceStatusArr[2]
+              ? "text-green-700"
+              : "text-blue-700"
+          } `}
+        >
+          {userData?.role === UserRoleArr[1] ? (
+            <>
+              <label className=" text-gray-700">Status:</label>
+              <select
+                className=" w-full bg-gray-200 p-1"
+                value={newStatus}
+                onChange={(e) => {
+                  setNewStatus(e.target.value as InvoiceStatusEnum);
+                }}
+              >
+                {InvoiceStatusArr.map((status) => (
+                  <option key={status} value={status}>
+                    {status}
+                  </option>
+                ))}
+              </select>
+            </>
+          ) : (
+            <DataFields
+              label="Status"
+              text={String(invoiceData.invoiceStatus?.status)}
+            />
+          )}
+        </div>
 
-      {userData?.user?.role === UserRoleArr[1] ? (
-        <div className=" w-full">
-          <Input
+        {userData?.role === UserRoleArr[1] ? (
+          <div className=" w-full">
+            <Input
+              label="Status Note"
+              state={newStatusNote ? newStatusNote : ""}
+              onChange={(e) => {
+                setNewStatusNote(e.target.value);
+              }}
+            />
+          </div>
+        ) : invoiceData.invoiceStatus?.note ? (
+          <DataFields
             label="Status Note"
-            state={newStatusNote ? newStatusNote : ""}
-            onChange={(e) => {
-              setNewStatusNote(e.target.value);
+            text={invoiceData.invoiceStatus?.note}
+          />
+        ) : null}
+
+        {userData?.role === UserRoleArr[1] ? (
+          <RedButton
+            label="Delete"
+            onClick={() => {
+              openModal({
+                newComponents: (
+                  <ModalDeleteComponent
+                    invoiceId={invoiceData.id}
+                    customerId={invoiceData.customerId}
+                  />
+                ),
+              });
             }}
           />
-        </div>
-      ) : invoiceData.invoiceStatus?.note ? (
-        <DataFields
-          label="Status Note"
-          text={invoiceData.invoiceStatus?.note}
-        />
-      ) : null}
+        ) : null}
 
-      {userData?.user?.role === UserRoleArr[1] ||
-      userData?.user?.id === invoiceData.madeBy.id ? (
-        <RedButton
-          label="Delete"
-          onClick={() => {
-            openModal({
-              newComponents: (
-                <ModalDeleteComponent
-                  invoiceId={invoiceData.id}
-                  customerId={invoiceData.customerId}
-                />
-              ),
-            });
-          }}
-        />
-      ) : null}
-
-      {userData?.user?.role === UserRoleArr[1] && (
-        <PrimaryButton
-          label="Edit"
-          onClick={async () => {
-            editInvoice.mutateAsync({
-              invoiceId: invoiceData.id,
-              invoiceStatus: newStatus,
-              invoiceStatusNote: newStatusNote,
-            });
-          }}
-        />
-      )}
-    </Container>
+        {userData?.role === UserRoleArr[1] && (
+          <PrimaryButton
+            label="Edit"
+            onClick={async () => {
+              editInvoice.mutateAsync({
+                invoiceId: invoiceData.id,
+                invoiceStatus: newStatus,
+                invoiceStatusNote: newStatusNote,
+              });
+            }}
+          />
+        )}
+      </Container>
+    </div>
   );
 };
 

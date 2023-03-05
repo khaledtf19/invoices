@@ -99,7 +99,7 @@ const MakeCustomer: NextPage = () => {
   return (
     <form
       onSubmit={handleSubmit(onsubmit)}
-      className="flex w-full flex-col items-center"
+      className="flex w-full max-w-md flex-col  items-center"
     >
       <Container>
         <h1 className="text-3xl">Create New Customer</h1>

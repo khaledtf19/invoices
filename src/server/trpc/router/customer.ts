@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { router, publicProcedure, protectedProcedure } from "../trpc";
+import { router, protectedProcedure, adminProcedure } from "../trpc";
 
 const CustomerValidation = z.object({
   name: z.string().max(225).min(3),
@@ -18,7 +18,7 @@ const CustomerValidation = z.object({
 });
 
 export const customerRouter = router({
-  search: publicProcedure
+  search: protectedProcedure
     .input(
       z.object({
         number: z.bigint().optional(),
@@ -59,7 +59,7 @@ export const customerRouter = router({
       });
     }),
 
-  updateCustomer: protectedProcedure
+  updateCustomer: adminProcedure
     .input(
       z.object({
         id: z.string(),

@@ -12,14 +12,14 @@ const Modal: FC = () => {
 
   return (
     <div
-      className="fixed top-0 left-0 bottom-0 flex h-full w-full  items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm  "
+      className="fixed top-0 left-0 bottom-0 flex h-full w-full animate-opacityAnimation items-center justify-center bg-black  bg-opacity-50 backdrop-blur-sm"
       onClick={closeModal}
     >
       <div
         onClick={(e) => {
           e.stopPropagation();
         }}
-        className="flex min-h-[200px] min-w-[400px] flex-col items-center justify-center rounded-lg bg-white p-4 shadow-2xl drop-shadow-xl"
+        className=" flex min-h-[200px] min-w-[400px] animate-startAnimation flex-col items-center justify-center rounded-lg bg-white p-4 shadow-2xl drop-shadow-xl"
       >
         <div className=" flex h-full w-full flex-1 flex-col items-center text-center drop-shadow-xl">
           {components ? (

@@ -24,6 +24,7 @@ export const serverSchema = z.object({
   ADMIN_PASSWORD: z.string().min(1),
   GOOGLE_APP_CRID: z.string().optional(),
   GOOGLE_SHEET_ID: z.string().optional(),
+  EMAILS: z.string(),
 });
 
 /**

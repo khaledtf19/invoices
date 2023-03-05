@@ -2,7 +2,6 @@ import {
   type ChangeEventHandler,
   type FC,
   type HTMLInputTypeAttribute,
-  type ReactNode,
   useState,
   useEffect,
 } from "react";
@@ -86,7 +85,7 @@ export const PrimaryButton: FC<{
         }
       }}
       type={type ? type : "button"}
-      className=" w-full rounded-lg bg-gray-900 px-3 py-1 text-white hover:bg-gray-800"
+      className=" w-full rounded-lg bg-gray-900 px-3 py-1 text-white transition-colors duration-300 hover:bg-gray-800"
     >
       {label}
     </button>
@@ -105,7 +104,7 @@ export const SecondaryButton: FC<{
         }
       }}
       type={type ? type : "button"}
-      className=" w-full rounded-lg bg-gray-600 px-3 py-1 text-white hover:bg-gray-500"
+      className=" w-full rounded-lg bg-gray-600 px-3 py-1 text-white transition-colors duration-300 hover:bg-gray-500"
     >
       {label}
     </button>
@@ -125,7 +124,7 @@ export const RedButton: FC<{
         }
       }}
       type={type ? type : "button"}
-      className=" w-full rounded-lg bg-red-800 px-3 py-1 text-white hover:bg-red-700"
+      className=" w-full rounded-lg bg-red-800 px-3 py-1 text-white transition-colors duration-300 hover:bg-red-700"
     >
       {label}
     </button>
@@ -163,7 +162,7 @@ export const DataFields: FC<{
         ) : null}
         {label}:
       </label>
-      <p className=" bg-gray-200 p-1 ">{text ? String(text) : "none"}</p>
+      <p className=" bg-gray-300 p-1 ">{text ? String(text) : "none"}</p>
     </div>
   );
 };
@@ -215,7 +214,7 @@ export const LoadingAnimation = () => {
 
 export const LoadingCustomer = () => {
   return (
-    <div className="flex w-full flex-col items-center justify-center gap-6 blur-sm">
+    <div className="flex w-full animate-pulse flex-col items-center justify-center gap-6  blur-sm">
       <Container>
         <Toggle />
         <ViewCustomer
@@ -237,7 +236,7 @@ export const LoadingCustomer = () => {
 
 export const LoadingInvoice = () => {
   return (
-    <div className="flex w-full flex-col items-center justify-center  blur-sm">
+    <div className="flex w-full max-w-md animate-pulse flex-col items-center justify-center blur-sm">
       <Container>
         <DataFields
           label="Name"

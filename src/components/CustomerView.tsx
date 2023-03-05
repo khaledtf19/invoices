@@ -1,4 +1,10 @@
 import { type FC, useState, useEffect } from "react";
+import { type Customer, UserRole } from "@prisma/client";
+import { useFieldArray, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/router";
+
+import { SyncLoader } from "react-spinners";
 
 import Container from "../container/Container";
 import {
@@ -10,14 +16,9 @@ import {
   SecondaryButton,
   Toggle,
 } from "./utils";
-import { type Customer, UserRole } from "@prisma/client";
 import { z } from "zod";
-import { useFieldArray, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { trpc } from "../utils/trpc";
 import { useModalState } from "../hooks/modalState";
-import { useRouter } from "next/router";
-import { SyncLoader } from "react-spinners";
 import {
   BsCreditCard2Front,
   BsFillTelephoneFill,
@@ -26,6 +27,7 @@ import {
 } from "react-icons/bs";
 import { BiMobile } from "react-icons/bi";
 import { useSession } from "next-auth/react";
+import { useUserState } from "../hooks/userDataState";
 
 const CustomerForm = z.object({
   name: z.string().min(3),
@@ -62,23 +64,25 @@ const CustomerView: FC<{
   const { data: userData } = useSession();
 
   return (
-    <Container>
-      {userData?.user?.role === UserRole.Admin ? (
-        <Toggle
-          state={toggle}
-          onChange={(e) => {
-            setToggle(e.target.checked);
-          }}
-        />
-      ) : (
-        ""
-      )}
-      {toggle && userData?.user?.role === UserRole.Admin ? (
-        <EditMode customerData={customerData} refetch={refetch} />
-      ) : (
-        <ViewCustomer customerData={customerData} />
-      )}
-    </Container>
+    <div className=" w-full max-w-md">
+      <Container>
+        {userData?.user?.role === UserRole.Admin ? (
+          <Toggle
+            state={toggle}
+            onChange={(e) => {
+              setToggle(e.target.checked);
+            }}
+          />
+        ) : (
+          ""
+        )}
+        {toggle && userData?.user?.role === UserRole.Admin ? (
+          <EditMode customerData={customerData} refetch={refetch} />
+        ) : (
+          <ViewCustomer customerData={customerData} />
+        )}
+      </Container>
+    </div>
   );
 };
 
@@ -236,6 +240,7 @@ export const ViewCustomer: FC<{ customerData: Customer }> = ({
     openModal: state.openModal,
     closeModal: state.closeModal,
   }));
+  const { user } = useUserState()((state) => state);
 
   useEffect(() => {
     return () => {
@@ -260,22 +265,25 @@ export const ViewCustomer: FC<{ customerData: Customer }> = ({
         text={customerData.birthDay}
         Icon={BsCalendarDate}
       />
-
-      <div className=" flex justify-between px-10">
-        <IconToCopy
-          name="ID"
-          text={String(customerData.idNumber)}
-          Icon={BsCreditCard2Front}
-        />
-        {customerData?.mobile.map((mNumber, i) => (
+      {user?.role === UserRole.Admin ? (
+        <div className=" flex justify-between px-10">
           <IconToCopy
-            key={i}
-            name={`Mobile${i + 1}`}
-            text={String(mNumber)}
-            Icon={BiMobile}
+            name="ID"
+            text={String(customerData.idNumber)}
+            Icon={BsCreditCard2Front}
           />
-        ))}
-      </div>
+          {customerData?.mobile.map((mNumber, i) => (
+            <IconToCopy
+              key={i}
+              name={`Mobile${i + 1}`}
+              text={String(mNumber)}
+              Icon={BiMobile}
+            />
+          ))}
+        </div>
+      ) : (
+        ""
+      )}
 
       <PrimaryButton
         type="button"
@@ -295,6 +303,10 @@ const ModalComponent: FC<{
 }> = ({ customerData }) => {
   const [cost, setCost] = useState("");
 
+  const { refetch } = useUserState()((state) => ({
+    refetch: state.refetchUserData,
+  }));
+
   const router = useRouter();
 
   const createInvoice = trpc.invoice.makeInvoice.useMutation();
@@ -302,6 +314,10 @@ const ModalComponent: FC<{
   if (createInvoice.data) {
     router.push(`/invoice/${createInvoice.data.id}`);
   }
+
+  useEffect(() => {
+    return refetch();
+  }, [refetch]);
 
   return (
     <div className=" flex flex-col items-center justify-center gap-5  py-5 px-20">

@@ -13,9 +13,17 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         session.user.id = user.id;
         session.user.role = user.role;
-        session.user.userBalance = user.userBalance
+        session.user.userBalance = user.userBalance;
       }
       return session;
+    },
+    async signIn({ account, profile }) {
+      if (account?.provider === "google" && profile?.email) {
+        if (env.EMAILS.split(", ").includes(profile.email)) {
+          return true;
+        }
+      }
+      return false; // Do different verification for other providers that don't have `email_verified`
     },
   },
   // Configure one or more authentication providers

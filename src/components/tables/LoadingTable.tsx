@@ -4,7 +4,7 @@ import { randomTableData } from "../../utils/utils";
 
 const LoadingTable: FC<{ type: "small" | "big" }> = ({ type }) => {
   return (
-    <TableComponent moreClass="blur-sm">
+    <TableComponent moreClass="blur-sm  animate-pulse">
       <THead>
         <TR route="none">
           <TH size={200}>Name</TH>
