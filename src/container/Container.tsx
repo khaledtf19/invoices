@@ -7,7 +7,7 @@ import {
 
 const Container: FC<
   PropsWithChildren & {
-    size: "max-w-sm" | "max-w-md" | "max-w-lg" | "max-w-xl";
+    size?: "max-w-sm" | "max-w-md" | "max-w-lg" | "max-w-xl";
     leftComponent?: ReactNode;
     rightComponent?: ReactNode;
   }
@@ -52,7 +52,9 @@ const Container: FC<
       )}
 
       <div
-        className={`flex w-full ${size}  z-10 flex-col items-center gap-3 self-center rounded-lg border border-gray-400 bg-white p-6 shadow-2xl drop-shadow-xl`}
+        className={`flex w-full ${
+          size ? size : "max-w-md"
+        }  z-10 flex-col items-center gap-3 self-center rounded-lg border border-gray-400 bg-white p-6 shadow-2xl drop-shadow-xl`}
       >
         {children}
       </div>
