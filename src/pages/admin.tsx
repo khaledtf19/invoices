@@ -21,7 +21,7 @@ const Admin = () => {
   }, [makeAdmin.error, openModal]);
 
   return (
-    <Container>
+    <Container size="max-w-md">
       <h1>ADMIN</h1>
       <p className=" text-lg text-green-600">
         {data?.user?.role === UserRoleArr[1]
