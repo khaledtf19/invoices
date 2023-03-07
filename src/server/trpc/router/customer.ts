@@ -7,7 +7,7 @@ const CustomerValidation = z.object({
   number: z.bigint().refine((ph: bigint) => ph.toString().length > 8, {
     message: "must be > 8",
   }),
-  birthday: z.string().optional(),
+  birthday: z.string().optional().nullable(),
   idNumber: z
     .bigint()
     .refine((idNum: bigint) => idNum.toString().length > 8, {
@@ -55,6 +55,7 @@ export const customerRouter = router({
         include: {
           invoices: { include: { invoiceStatus: true }, take: 10 },
           customerNotes: true,
+          customerDebt: true,
         },
       });
     }),
@@ -67,6 +68,7 @@ export const customerRouter = router({
         number: z.bigint().refine((ph: bigint) => ph.toString().length > 8, {
           message: "must be > 8",
         }),
+        birthday: z.string().optional().nullable(),
         idNumber: z
           .bigint()
           .refine((ph: bigint) => ph.toString().length > 8, {
@@ -87,5 +89,20 @@ export const customerRouter = router({
         where: { id: input.id },
         data: input,
       });
+    }),
+
+  createDebt: protectedProcedure
+    .input(z.object({ customerId: z.string().min(3), amount: z.number() }))
+    .mutation(async ({ input, ctx }) => {
+      await ctx.prisma.customerDebt.create({
+        data: { customerId: input.customerId, amount: input.amount },
+      });
+
+      return { message: "done" };
+    }),
+  deleteDebt: protectedProcedure
+    .input(z.object({ debtId: z.string().min(3) }))
+    .mutation(async () => {
+      return;
     }),
 });

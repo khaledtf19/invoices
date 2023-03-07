@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { trpc } from "../../utils/trpc";
-import CustomerView from "../../components/CustomerView";
-import { LoadingCustomer } from "../../components/utils";
+import CustomerView from "../../components/customer";
+import LoadingCustomer from "../../components/customer/LoadingCustomer";
 import InvoicesTable from "../../components/tables/InvoicesTable";
 
 const Customer = () => {

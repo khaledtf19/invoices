@@ -43,10 +43,9 @@ const MakeCustomer: NextPage = () => {
   }));
 
   const onsubmit = async (data: CustomerType) => {
-    console.log(data);
     const customerData = {
       name: data.name,
-      birthDay: data.birthday,
+      birthday: data.birthday,
       mobile: [
         BigInt(data.number) ? BigInt(data.mobile ? data.mobile : 0) : null,
       ],

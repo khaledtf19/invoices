@@ -18,7 +18,7 @@ const UserData: FC<{ userData: User; refetch: () => void }> = ({
     closeModal: state.closeModal,
   }));
   return (
-    <Container>
+    <Container size="max-w-xl">
       <div className="flex w-full flex-col ">
         <div className="flex w-full justify-between gap-10">
           <div className="flex flex-col items-center justify-center">

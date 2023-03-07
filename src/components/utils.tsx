@@ -12,9 +12,7 @@ import type {
   UseFormRegisterReturn,
 } from "react-hook-form";
 import { SyncLoader } from "react-spinners";
-import { ViewCustomer } from "./CustomerView";
 import Container from "../container/Container";
-import LoadingTable from "./tables/LoadingTable";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { type IconType } from "react-icons";
 import { BsCreditCard2Front } from "react-icons/bs";
@@ -150,7 +148,7 @@ export const Toggle: FC<{
 };
 
 export const DataFields: FC<{
-  text: string | number | bigint | null;
+  text: string | number | bigint | null | undefined;
   label: string;
   Icon?: IconType;
 }> = ({ text, label, Icon }) => {
@@ -212,32 +210,10 @@ export const LoadingAnimation = () => {
   return <SyncLoader color="#312e81" />;
 };
 
-export const LoadingCustomer = () => {
-  return (
-    <div className="flex w-full animate-pulse flex-col items-center justify-center gap-6  blur-sm">
-      <Container>
-        <Toggle />
-        <ViewCustomer
-          customerData={{
-            id: "1234567",
-            name: "Name Name Name",
-            number: BigInt(132424242),
-            idNumber: BigInt(132424242),
-            mobile: [BigInt(132424242)],
-            birthDay: "1/1/1111",
-          }}
-        />
-      </Container>
-
-      <LoadingTable type="small" />
-    </div>
-  );
-};
-
 export const LoadingInvoice = () => {
   return (
     <div className="flex w-full max-w-md animate-pulse flex-col items-center justify-center blur-sm">
-      <Container>
+      <Container size="max-w-md">
         <DataFields
           label="Name"
           text={"Name Name Name"}

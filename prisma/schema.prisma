@@ -80,13 +80,13 @@ model CustomerDebt {
 model Customer {
   id            String         @id @default(cuid())
   name          String
-  birthDay      String?
+  birthday      String?
   number        BigInt
   mobile        BigInt[]
   idNumber      BigInt?
   customerNotes CustomerNote[]
   invoices      Invoice[]
-  userDebt      CustomerDebt[]
+  customerDebt  CustomerDebt[]
 
   @@unique([number])
   @@index([number, name])

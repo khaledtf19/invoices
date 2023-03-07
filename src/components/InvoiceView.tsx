@@ -65,109 +65,107 @@ const InvoiceView: FC<{
   ]);
 
   return (
-    <div className="w-full max-w-md">
-      <Container>
-        <DataFields label="Name" text={invoiceData.customer.name} />
-        <DataFields label="Number" text={invoiceData.customer.number} />
-        <DataFields label="Cost" text={invoiceData.cost} />
-        <DataFields
-          label="Created At"
-          text={DateFormat({ date: invoiceData.createdAt })}
-        />
-        <DataFields
-          label="updated At"
-          text={DateFormat({ date: invoiceData.updatedAt })}
-        />
-        <DataFields label="Created By" text={invoiceData.madeBy.name} />
-        <DataFields
-          label="Viewed"
-          text={
-            invoiceData.transaction?.viewed
-              ? "Seen by an Admin"
-              : "Waiting an Admin"
-          }
-        />
-        <div
-          className={` w-full ${
-            newStatus === InvoiceStatusArr[1]
-              ? "text-red-700"
-              : newStatus === InvoiceStatusArr[2]
-              ? "text-green-700"
-              : "text-blue-700"
-          } `}
-        >
-          {userData?.role === UserRoleArr[1] ? (
-            <>
-              <label className=" text-gray-700">Status:</label>
-              <select
-                className=" w-full bg-gray-200 p-1"
-                value={newStatus}
-                onChange={(e) => {
-                  setNewStatus(e.target.value as InvoiceStatusEnum);
-                }}
-              >
-                {InvoiceStatusArr.map((status) => (
-                  <option key={status} value={status}>
-                    {status}
-                  </option>
-                ))}
-              </select>
-            </>
-          ) : (
-            <DataFields
-              label="Status"
-              text={String(invoiceData.invoiceStatus?.status)}
-            />
-          )}
-        </div>
-
+    <Container size="max-w-md">
+      <DataFields label="Name" text={invoiceData.customer.name} />
+      <DataFields label="Number" text={invoiceData.customer.number} />
+      <DataFields label="Cost" text={invoiceData.cost} />
+      <DataFields
+        label="Created At"
+        text={DateFormat({ date: invoiceData.createdAt })}
+      />
+      <DataFields
+        label="updated At"
+        text={DateFormat({ date: invoiceData.updatedAt })}
+      />
+      <DataFields label="Created By" text={invoiceData.madeBy.name} />
+      <DataFields
+        label="Viewed"
+        text={
+          invoiceData.transaction?.viewed
+            ? "Seen by an Admin"
+            : "Waiting an Admin"
+        }
+      />
+      <div
+        className={` w-full ${
+          newStatus === InvoiceStatusArr[1]
+            ? "text-red-700"
+            : newStatus === InvoiceStatusArr[2]
+            ? "text-green-700"
+            : "text-blue-700"
+        } `}
+      >
         {userData?.role === UserRoleArr[1] ? (
-          <div className=" w-full">
-            <Input
-              label="Status Note"
-              state={newStatusNote ? newStatusNote : ""}
+          <>
+            <label className=" text-gray-700">Status:</label>
+            <select
+              className=" w-full bg-gray-200 p-1"
+              value={newStatus}
               onChange={(e) => {
-                setNewStatusNote(e.target.value);
+                setNewStatus(e.target.value as InvoiceStatusEnum);
               }}
-            />
-          </div>
-        ) : invoiceData.invoiceStatus?.note ? (
+            >
+              {InvoiceStatusArr.map((status) => (
+                <option key={status} value={status}>
+                  {status}
+                </option>
+              ))}
+            </select>
+          </>
+        ) : (
           <DataFields
-            label="Status Note"
-            text={invoiceData.invoiceStatus?.note}
-          />
-        ) : null}
-
-        {userData?.role === UserRoleArr[1] ? (
-          <RedButton
-            label="Delete"
-            onClick={() => {
-              openModal({
-                newComponents: (
-                  <ModalDeleteComponent
-                    invoiceId={invoiceData.id}
-                    customerId={invoiceData.customerId}
-                  />
-                ),
-              });
-            }}
-          />
-        ) : null}
-
-        {userData?.role === UserRoleArr[1] && (
-          <PrimaryButton
-            label="Edit"
-            onClick={async () => {
-              editInvoice.mutateAsync({
-                invoiceId: invoiceData.id,
-                invoiceStatus: newStatus,
-                invoiceStatusNote: newStatusNote,
-              });
-            }}
+            label="Status"
+            text={String(invoiceData.invoiceStatus?.status)}
           />
         )}
-      </Container>
-    </div>
+      </div>
+
+      {userData?.role === UserRoleArr[1] ? (
+        <div className=" w-full">
+          <Input
+            label="Status Note"
+            state={newStatusNote ? newStatusNote : ""}
+            onChange={(e) => {
+              setNewStatusNote(e.target.value);
+            }}
+          />
+        </div>
+      ) : invoiceData.invoiceStatus?.note ? (
+        <DataFields
+          label="Status Note"
+          text={invoiceData.invoiceStatus?.note}
+        />
+      ) : null}
+
+      {userData?.role === UserRoleArr[1] ? (
+        <RedButton
+          label="Delete"
+          onClick={() => {
+            openModal({
+              newComponents: (
+                <ModalDeleteComponent
+                  invoiceId={invoiceData.id}
+                  customerId={invoiceData.customerId}
+                />
+              ),
+            });
+          }}
+        />
+      ) : null}
+
+      {userData?.role === UserRoleArr[1] && (
+        <PrimaryButton
+          label="Edit"
+          onClick={async () => {
+            editInvoice.mutateAsync({
+              invoiceId: invoiceData.id,
+              invoiceStatus: newStatus,
+              invoiceStatusNote: newStatusNote,
+            });
+          }}
+        />
+      )}
+    </Container>
   );
 };
 
