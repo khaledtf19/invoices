@@ -134,7 +134,7 @@ export const invoiceRouter = router({
   getNewInvoices: protectedProcedure.query(async ({ ctx }) => {
     if (ctx.session.user.role === UserRole.Admin) {
       return await ctx.prisma.invoice.findMany({
-        include: { invoiceStatus: true },
+        include: { invoiceStatus: true, customer: { select: { name: true } } },
         orderBy: { createdAt: "desc" },
         take: 50,
       });
@@ -142,7 +142,7 @@ export const invoiceRouter = router({
 
     return ctx.prisma.invoice.findMany({
       where: { userId: ctx.session.user.id },
-      include: { invoiceStatus: true },
+      include: { invoiceStatus: true, customer: { select: { name: true } } },
       orderBy: { createdAt: "desc" },
       take: 50,
     });

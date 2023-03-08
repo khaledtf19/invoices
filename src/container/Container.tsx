@@ -10,10 +10,19 @@ const Container: FC<
     size?: "max-w-sm" | "max-w-md" | "max-w-lg" | "max-w-xl";
     leftComponent?: ReactNode;
     rightComponent?: ReactNode;
+    openLeft?: boolean;
+    openRight?: boolean;
   }
-> = ({ children, size, leftComponent, rightComponent }) => {
-  const [leftOpen, setLeftOpen] = useState(false);
-  const [rightOpen, setRightOpen] = useState(false);
+> = ({
+  children,
+  size,
+  leftComponent,
+  rightComponent,
+  openLeft,
+  openRight,
+}) => {
+  const [leftOpen, setLeftOpen] = useState(openLeft ? openLeft : false);
+  const [rightOpen, setRightOpen] = useState(openRight ? openRight : false);
 
   return (
     <div className="relative flex w-full items-center justify-center ">

@@ -38,6 +38,7 @@ export const customerRouter = router({
             },
           ],
         },
+        select: { name: true, number: true, id: true },
       });
     }),
 
@@ -53,7 +54,13 @@ export const customerRouter = router({
       return await ctx.prisma.customer.findUnique({
         where: { id: input.customerId },
         include: {
-          invoices: { include: { invoiceStatus: true }, take: 10 },
+          invoices: {
+            include: {
+              invoiceStatus: true,
+              customer: { select: { name: true } },
+            },
+            take: 10,
+          },
           customerNotes: true,
           customerDebt: true,
         },
@@ -100,9 +107,11 @@ export const customerRouter = router({
 
       return { message: "done" };
     }),
+
   deleteDebt: protectedProcedure
     .input(z.object({ debtId: z.string().min(3) }))
-    .mutation(async () => {
-      return;
+    .mutation(async ({ input, ctx }) => {
+      await ctx.prisma.customerDebt.delete({ where: { id: input.debtId } });
+      return { message: "done" };
     }),
 });

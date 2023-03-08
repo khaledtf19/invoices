@@ -27,8 +27,10 @@ const CustomerView: FC<{
         <CustomerDebt
           debtData={customerData.customerDebt}
           customerId={customerData.id}
+          refetch={refetch}
         />
       }
+      openRight={customerData.customerDebt.length ? true : false}
     >
       {userData?.role === UserRole.Admin ? (
         <Toggle

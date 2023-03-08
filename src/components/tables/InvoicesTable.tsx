@@ -28,11 +28,17 @@ import {
 const InvoicesTable: FC<{
   invoices: (Invoice & {
     invoiceStatus: InvoiceStatus | null;
+    customer: {
+      name: string;
+    };
   })[];
 }> = ({ invoices }) => {
   const columnHelper = createColumnHelper<
     Invoice & {
       invoiceStatus: InvoiceStatus | null;
+      customer: {
+        name: string;
+      };
     }
   >();
   const [filter, setFilter] = useState<ColumnFiltersState>([]);
@@ -43,6 +49,12 @@ const InvoicesTable: FC<{
       cell: (info) => <span>{info.renderValue()}</span>,
       footer: (info) => info.column.id,
       header: () => "Cost",
+    }),
+    columnHelper.accessor("customer.name", {
+      size: 200,
+      cell: (info) => <span>{info.renderValue()}</span>,
+      footer: (info) => info.column.id,
+      header: () => "Name",
     }),
     columnHelper.accessor("createdAt", {
       cell: (info) => DateFormat({ date: info.getValue() }),
