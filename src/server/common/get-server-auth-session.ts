@@ -11,15 +11,5 @@ export const getServerAuthSession = async (ctx: {
   req: GetServerSidePropsContext["req"];
   res: GetServerSidePropsContext["res"];
 }) => {
-  const session = await getServerSession(ctx.req, ctx.res, authOptions);
-  if (!session) {
-    return {
-      redirect: {
-        destination: "/api/auth/signin",
-        permanent: false,
-      },
-    };
-  }
-
-  return session;
+  return await getServerSession(ctx.req, ctx.res, authOptions);
 };

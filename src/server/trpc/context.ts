@@ -6,7 +6,7 @@ import { getServerAuthSession } from "../common/get-server-auth-session";
 import { prisma } from "../db/client";
 
 type CreateContextOptions = {
-  session: Session | { redirect: { destination: string; permanent: boolean } };
+  session: Session | null;
 };
 
 /** Use this helper for:

@@ -6,7 +6,7 @@ import { UserRoleArr } from "../../../types/utils.types";
 
 export const authRouter = router({
   getSession: publicProcedure.query(({ ctx }) => {
-    return ctx.session?.user;
+    return ctx.session;
   }),
 
   makeAdmin: protectedProcedure
