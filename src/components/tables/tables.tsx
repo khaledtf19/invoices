@@ -20,7 +20,7 @@ export const TableComponent: FC<PropsWithChildren & { moreClass?: string }> = ({
 
 export const THead: FC<PropsWithChildren> = ({ children }) => {
   return (
-    <thead className="  bg-gray-800 font-bold text-white">{children}</thead>
+    <thead className="  bg-blue-800 font-bold text-white">{children}</thead>
   );
 };
 
@@ -39,7 +39,7 @@ export const TR: FC<{
     <tr
       className={` ${
         rowId
-          ? "duration-400 cursor-pointer transition-colors hover:bg-gray-600 hover:text-white"
+          ? "duration-400 cursor-pointer transition-colors hover:bg-blue-600 hover:text-white"
           : ""
       }   `}
       onClick={() => {

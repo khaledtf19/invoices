@@ -83,7 +83,7 @@ export const PrimaryButton: FC<{
         }
       }}
       type={type ? type : "button"}
-      className=" w-full rounded-lg bg-gray-900 px-3 py-1 text-white transition-colors duration-300 hover:bg-gray-800"
+      className=" w-full rounded-lg bg-blue-900 px-3 py-1 text-white transition-colors duration-500 hover:bg-blue-800"
     >
       {label}
     </button>
@@ -102,7 +102,7 @@ export const SecondaryButton: FC<{
         }
       }}
       type={type ? type : "button"}
-      className=" w-full rounded-lg bg-gray-600 px-3 py-1 text-white transition-colors duration-300 hover:bg-gray-500"
+      className=" w-full rounded-lg bg-blue-600 px-3 py-1 text-white transition-colors duration-300 hover:bg-blue-500"
     >
       {label}
     </button>
