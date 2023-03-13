@@ -12,7 +12,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
   pageProps: { session, ...pageProps },
 }) => {
   return (
-    <SessionProvider session={session} refetchOnWindowFocus={true}>
+    <SessionProvider session={session} refetchOnWindowFocus={false}>
       <Layout>
         <Component {...pageProps} />
       </Layout>

@@ -39,7 +39,7 @@ export const TR: FC<{
     <tr
       className={` ${
         rowId
-          ? "duration-400 cursor-pointer transition-colors hover:bg-blue-600 hover:text-white"
+          ? "cursor-pointer transition-colors duration-500 hover:bg-blue-600 hover:text-white"
           : ""
       }   `}
       onClick={() => {

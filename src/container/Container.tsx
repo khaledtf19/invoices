@@ -4,6 +4,8 @@ import {
   type ReactNode,
   useState,
 } from "react";
+import { useUserState } from "../hooks/userDataState";
+import { UserRole } from "@prisma/client";
 
 const Container: FC<
   PropsWithChildren & {
@@ -24,6 +26,8 @@ const Container: FC<
   const [leftOpen, setLeftOpen] = useState(openLeft ? openLeft : false);
   const [rightOpen, setRightOpen] = useState(openRight ? openRight : false);
 
+  const { userData } = useUserState()((state) => ({ userData: state.user }));
+
   return (
     <div className="relative flex w-full items-center justify-center ">
       {leftComponent ? (
@@ -32,7 +36,11 @@ const Container: FC<
           className="relative flex h-5/6 items-center justify-items-center"
         >
           {leftOpen ? (
-            <div className="absolute right-0 flex h-80 w-96 max-w-lg animate-enterFromRight items-center justify-items-center rounded-l-lg border-y border-gray-400 bg-white ">
+            <div
+              className={`absolute flex ${
+                userData?.role === UserRole.Admin ? "h-64" : "h-52"
+              } w-96 max-w-lg animate-enterFromLeft items-center justify-items-center rounded-r-lg border-y border-gray-400 bg-white  `}
+            >
               <div
                 onClick={() => {
                   setLeftOpen(!leftOpen);
@@ -47,7 +55,9 @@ const Container: FC<
             </div>
           ) : (
             <div
-              className="absolute right-0 flex h-80 items-center justify-items-center rounded-l-lg bg-blue-900 p-1 text-white "
+              className={`absolute flex ${
+                userData?.role === UserRole.Admin ? " h-64" : " h-52"
+              } items-center justify-items-center rounded-r-lg  bg-blue-700 p-1 text-white `}
               onClick={() => {
                 setLeftOpen(!leftOpen);
               }}
@@ -74,7 +84,11 @@ const Container: FC<
           className=" relative flex h-5/6 items-center justify-items-center "
         >
           {rightOpen ? (
-            <div className="absolute flex h-80 w-96 max-w-lg animate-enterFromLeft items-center justify-items-center rounded-r-lg border-y border-gray-400 bg-white  ">
+            <div
+              className={`absolute flex ${
+                userData?.role === UserRole.Admin ? " h-64" : " h-52"
+              } w-96 max-w-lg animate-enterFromLeft items-center justify-items-center rounded-r-lg border-y border-gray-400 bg-white  `}
+            >
               <div className="h-full w-full overflow-y-scroll">
                 {rightComponent}
               </div>
@@ -89,7 +103,9 @@ const Container: FC<
             </div>
           ) : (
             <div
-              className="absolute flex h-80 items-center justify-items-center rounded-r-lg  bg-red-700 p-1 text-white "
+              className={`absolute flex ${
+                userData?.role === UserRole.Admin ? " h-64" : " h-52"
+              } items-center justify-items-center rounded-r-lg  bg-red-700 p-1 text-white `}
               onClick={() => {
                 setRightOpen(!rightOpen);
               }}

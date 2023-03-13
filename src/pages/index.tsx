@@ -16,7 +16,12 @@ const Home: NextPage = () => {
     return <h1>Can not show that</h1>;
   }
 
-  return <InvoicesTable invoices={invoicesData} />;
+  return (
+    <div className=" flex w-full flex-col items-center gap-5">
+      <h1 className=" text-4xl font-bold">Invoices</h1>
+      <InvoicesTable invoices={invoicesData} />
+    </div>
+  );
 };
 
 export default Home;

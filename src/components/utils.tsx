@@ -195,7 +195,7 @@ export const IconToCopy: FC<{
       }}
     >
       {hover ? (
-        <p className=" absolute bottom-8 flex items-center justify-center rounded-md  bg-white py-1 px-3 text-gray-600 shadow-sm">
+        <p className=" absolute bottom-8 flex animate-opacityAnimation items-center justify-center  rounded-md bg-white py-1 px-3 text-gray-600 shadow-lg">
           {name}
         </p>
       ) : null}

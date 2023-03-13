@@ -41,17 +41,18 @@ const CustomerData: FC<{ customerData: Customer }> = ({ customerData }) => {
         text={customerData.number}
         Icon={BsFillTelephoneFill}
       />
-      <DataFields
-        label="birthday"
-        text={customerData.birthday}
-        Icon={BsCalendarDate}
-      />
+
       {user?.role === UserRole.Admin ? (
         <div className=" flex justify-between px-10">
           <IconToCopy
             name="ID"
             text={String(customerData.idNumber)}
             Icon={BsCreditCard2Front}
+          />
+          <IconToCopy
+            name="birthday"
+            text={String(customerData.birthday)}
+            Icon={BsCalendarDate}
           />
           {customerData?.mobile.map((mNumber, i) => (
             <IconToCopy
