@@ -11,24 +11,12 @@ import { trpc } from "../../utils/trpc";
 
 const CustomerForm = z.object({
   name: z.string().min(3),
-  number: z.bigint().refine((ph: bigint) => ph.toString().length > 8, {
-    message: "must be > 8",
-  }),
-  idNumber: z
-    .bigint()
-    .refine((ph: bigint) => ph.toString().length > 8, {
-      message: "must be > 8",
-    })
-    .nullable(),
+  number: z.string().min(8),
+  idNumber: z.string().min(8).nullable().nullable(),
   birthday: z.string().optional().nullable(),
   mobile: z
     .object({
-      value: z
-        .bigint()
-        .refine((ph: bigint) => ph.toString().length > 8, {
-          message: "must be > 8",
-        })
-        .nullable(),
+      value: z.string().min(8).nullable(),
     })
     .array()
     .max(4),
@@ -67,7 +55,7 @@ const CustomerUpdateForm: FC<{
   const { fields, append, remove } = useFieldArray({ control, name: "mobile" });
 
   const onSub = async (data: CustomerFormType) => {
-    const arr = data.mobile.reduce((arr: bigint[], obj) => {
+    const arr = data.mobile.reduce((arr: string[], obj) => {
       if (obj.value) {
         arr.push(obj.value);
       }
@@ -114,7 +102,7 @@ const CustomerUpdateForm: FC<{
         error={errors.number?.message}
         register={register("number", {
           setValueAs(value) {
-            return value ? BigInt(value) : null;
+            return value.replace(/\D/g, "");
           },
         })}
       />
@@ -125,7 +113,7 @@ const CustomerUpdateForm: FC<{
         error={errors.idNumber?.message}
         register={register("idNumber", {
           setValueAs(value) {
-            return value ? BigInt(value) : null;
+            return value.replace(/\D/g, "");
           },
         })}
       />
@@ -149,7 +137,7 @@ const CustomerUpdateForm: FC<{
             error={errors.mobile?.[i]?.value?.message}
             register={register(`mobile.${i}.value`, {
               setValueAs(value) {
-                return value ? (BigInt(value) ? BigInt(value) : null) : "";
+                return value.replace(/\D/g, "");
               },
             })}
           />

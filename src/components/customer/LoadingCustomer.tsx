@@ -12,9 +12,9 @@ const LoadingCustomer = () => {
           customerData={{
             id: "1234567",
             name: "Name Name Name",
-            number: BigInt(132424242),
-            idNumber: BigInt(132424242),
-            mobile: [BigInt(132424242)],
+            number: String(132424242),
+            idNumber: String(132424242),
+            mobile: [String(132424242)],
             birthday: "1/1/1111",
           }}
         />

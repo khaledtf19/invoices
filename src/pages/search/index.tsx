@@ -16,7 +16,7 @@ const Search = () => {
   const handleSearch = async () => {
     try {
       await search.mutateAsync({
-        number: BigInt(number) || undefined,
+        number: number,
         name: name,
       });
       router.push({

@@ -148,7 +148,7 @@ export const Toggle: FC<{
 };
 
 export const DataFields: FC<{
-  text: string | number | bigint | null | undefined;
+  text: string | number | null | undefined;
   label: string;
   Icon?: IconType;
 }> = ({ text, label, Icon }) => {

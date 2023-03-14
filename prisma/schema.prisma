@@ -81,9 +81,9 @@ model Customer {
   id            String         @id @default(cuid())
   name          String
   birthday      String?
-  number        BigInt
-  mobile        BigInt[]
-  idNumber      BigInt?
+  number        String
+  mobile        String[]
+  idNumber      String?
   customerNotes CustomerNote[]
   invoices      Invoice[]
   customerDebt  CustomerDebt[]

@@ -4,24 +4,17 @@ import { router, protectedProcedure, adminProcedure } from "../trpc";
 
 const CustomerValidation = z.object({
   name: z.string().max(225).min(3),
-  number: z.bigint().refine((ph: bigint) => ph.toString().length > 8, {
-    message: "must be > 8",
-  }),
+  number: z.string().min(8).max(20),
   birthday: z.string().optional().nullable(),
-  idNumber: z
-    .bigint()
-    .refine((idNum: bigint) => idNum.toString().length > 8, {
-      message: "must be > 8",
-    })
-    .nullish(),
-  mobile: z.bigint().array().max(5),
+  idNumber: z.string().max(30).nullish(),
+  mobile: z.string().array().max(5),
 });
 
 export const customerRouter = router({
   search: protectedProcedure
     .input(
       z.object({
-        number: z.bigint().optional(),
+        number: z.string().optional(),
         name: z.string().optional(),
       })
     )
@@ -29,10 +22,15 @@ export const customerRouter = router({
       return await ctx.prisma.customer.findMany({
         where: {
           OR: [
-            { number: Number(input.number) || undefined },
+            {
+              number: {
+                contains: input.number || undefined,
+                mode: "insensitive",
+              },
+            },
             {
               name: {
-                contains: input.name ? input.name : undefined,
+                contains: input.name || undefined,
                 mode: "insensitive",
               },
             },
@@ -72,23 +70,10 @@ export const customerRouter = router({
       z.object({
         id: z.string(),
         name: z.string().max(225).min(3),
-        number: z.bigint().refine((ph: bigint) => ph.toString().length > 8, {
-          message: "must be > 8",
-        }),
+        number: z.string().min(8),
         birthday: z.string().optional().nullable(),
-        idNumber: z
-          .bigint()
-          .refine((ph: bigint) => ph.toString().length > 8, {
-            message: "must be > 8",
-          })
-          .nullish(),
-        mobile: z
-          .bigint()
-          .refine((ph: bigint) => ph.toString().length > 8, {
-            message: "must be > 8",
-          })
-          .array()
-          .max(5),
+        idNumber: z.string().min(8).nullish(),
+        mobile: z.string().min(8).array().max(5),
       })
     )
     .mutation(async ({ input, ctx }) => {

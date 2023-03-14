@@ -18,10 +18,10 @@ import type { Customer } from "@prisma/client";
 
 const customerSchema = z.object({
   name: z.string().min(3),
-  number: z.string().min(5),
-  idNumber: z.string().nullish(),
-  birthday: z.string().min(3).optional(),
-  mobile: z.string().nullish(),
+  number: z.string().min(8).max(20),
+  idNumber: z.string().optional().nullable(),
+  birthday: z.string().optional().nullable(),
+  mobile: z.string().optional().nullable(),
 });
 
 type CustomerType = z.infer<typeof customerSchema>;
@@ -46,13 +46,9 @@ const MakeCustomer: NextPage = () => {
     const customerData = {
       name: data.name,
       birthday: data.birthday,
-      mobile: [
-        BigInt(data.number) ? BigInt(data.mobile ? data.mobile : 0) : null,
-      ],
-      number: BigInt(data.number) ? BigInt(data.number) : null,
-      idNumber: BigInt(data.idNumber ? data.idNumber : 0)
-        ? BigInt(data.idNumber ? data.idNumber : 0)
-        : null,
+      mobile: [data.mobile],
+      number: data.number,
+      idNumber: data.idNumber,
     } as Customer;
     try {
       await mutateCustomer.mutateAsync(customerData);

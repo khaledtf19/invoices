@@ -4,6 +4,7 @@ import { env } from "../../env/server.mjs";
 
 import { prisma } from "../../server/db/client.js";
 import { type Customer } from "@prisma/client";
+import { string } from "zod";
 
 const googleSheet = async (req: NextApiRequest, res: NextApiResponse) => {
   // const auth = await google.auth.getClient({
@@ -26,17 +27,10 @@ const googleSheet = async (req: NextApiRequest, res: NextApiResponse) => {
   // const newCustomers = resp.data.values.map((arr) => {
   //   const customer = {
   //     name: String(arr[1]),
-  //     number: arr[6] ? BigInt(arr[6].slice(1, arr[4].length)) : "",
-  //     birthDay: String(arr[2]) || null,
-  //     idNumber: BigInt(arr[3]) ? BigInt(arr[3]) : null,
-  //     mobile: [
-  //       BigInt(arr[4] ? arr[4].slice(1, arr[4].length) : false)
-  //         ? BigInt(arr[4].slice(1, arr[4].length))
-  //         : BigInt(1),
-  //       BigInt(arr[5] ? arr[5].slice(1, arr[4].length) : false)
-  //         ? BigInt(arr[5].slice(1, arr[4].length))
-  //         : BigInt(2),
-  //     ],
+  //     number: String(arr[6]),
+  //     birthDay: String(arr[2]),
+  //     idNumber: String(arr[3]),
+  //     mobile: [String(arr[4]), String(arr[5])],
   //   } as Customer;
 
   //   return customer;

@@ -5,7 +5,7 @@ import LoadingTable from "./LoadingTable";
 const CustomerTable: FC<{
   customers:
     | {
-        number: bigint;
+        number: string;
         id: string;
         name: string;
       }[]
