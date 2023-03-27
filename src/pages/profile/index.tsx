@@ -1,10 +1,13 @@
 import { useSession } from "next-auth/react";
 import React from "react";
+import { useUserState } from "../../hooks/userDataState";
 
 const Profile = () => {
-  const { data: userData } = useSession();
+  const { userData } = useUserState()((state) => ({
+    userData: state.user,
+  }));
 
-  return <div>{userData?.user?.userBalance}</div>;
+  return <div>{userData?.userBalance}</div>;
 };
 
 export default Profile;

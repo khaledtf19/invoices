@@ -19,6 +19,10 @@ export const customerRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
+      if (input.number?.at(0) === "0") {
+        input.number === input.number.slice(1, input.number.length);
+      }
+
       return await ctx.prisma.customer.findMany({
         where: {
           OR: [
@@ -43,6 +47,9 @@ export const customerRouter = router({
   createCustomer: protectedProcedure
     .input(CustomerValidation)
     .mutation(async ({ input, ctx }) => {
+      if (input.number?.at(0) === "0") {
+        input.number === input.number.slice(1, input.number.length);
+      }
       return await ctx.prisma.customer.create({ data: input });
     }),
 
@@ -58,6 +65,7 @@ export const customerRouter = router({
               customer: { select: { name: true } },
             },
             take: 10,
+            orderBy: { createdAt: "desc" },
           },
           customerNotes: true,
           customerDebt: true,
@@ -99,4 +107,11 @@ export const customerRouter = router({
       await ctx.prisma.customerDebt.delete({ where: { id: input.debtId } });
       return { message: "done" };
     }),
+
+  getAllDebt: adminProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.customerDebt.findMany({
+      orderBy: { createdAt: "desc" },
+      include: { Customer: { select: { name: true, number: true } } },
+    });
+  }),
 });

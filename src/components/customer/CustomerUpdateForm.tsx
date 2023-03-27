@@ -12,11 +12,11 @@ import { trpc } from "../../utils/trpc";
 const CustomerForm = z.object({
   name: z.string().min(3),
   number: z.string().min(8),
-  idNumber: z.string().min(8).nullable().nullable(),
+  idNumber: z.string().nullable().nullable(),
   birthday: z.string().optional().nullable(),
   mobile: z
     .object({
-      value: z.string().min(8).nullable(),
+      value: z.string().nullable(),
     })
     .array()
     .max(4),

@@ -30,7 +30,7 @@ export const TBody: FC<PropsWithChildren> = ({ children }) => {
 
 export const TR: FC<{
   children: ReactNode;
-  rowId?: string;
+  rowId?: string | null;
   route: "none" | "customer" | "invoice" | "user";
 }> = ({ children, rowId, route }) => {
   const router = useRouter();

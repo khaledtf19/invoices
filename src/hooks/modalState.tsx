@@ -7,6 +7,7 @@ interface ModalStateType {
   components?: ReactNode;
   onClick?: () => void;
   onClickName?: string;
+  width?: "big" | "normal";
   changeIsOpen: () => void;
   changeText: (newText: string) => void;
   changeOnClick: (newOnclick: () => void) => void;
@@ -14,6 +15,7 @@ interface ModalStateType {
     newOnclick?: () => void;
     newText?: string;
     newComponents?: ReactNode;
+    newWidth?: "big" | "normal";
   }) => void;
   closeModal: () => void;
 }
@@ -24,15 +26,17 @@ export const useModalState = create<ModalStateType>((set) => ({
   components: undefined,
   onClick: undefined,
   onClickName: "",
+  width: undefined,
   changeIsOpen: () => set((state) => ({ isOpen: !state.isOpen })),
   changeText: (newText) => set(() => ({ text: newText })),
   changeOnClick: (newOnclick) => set(() => ({ onClick: newOnclick })),
-  openModal: ({ newOnclick, newText, newComponents }) =>
+  openModal: ({ newOnclick, newText, newComponents, newWidth }) =>
     set(() => ({
       text: newText,
       onClick: newOnclick,
       isOpen: true,
       components: newComponents,
+      width: newWidth,
     })),
   closeModal: () =>
     set(() => ({
@@ -40,5 +44,6 @@ export const useModalState = create<ModalStateType>((set) => ({
       onClick: undefined,
       components: undefined,
       isOpen: false,
+      width: undefined,
     })),
 }));

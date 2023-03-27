@@ -1,9 +1,5 @@
 import { type FC, useState } from "react";
-import {
-  InvoiceStatusEnum,
-  type Invoice,
-  type InvoiceStatus,
-} from "@prisma/client";
+import { type CustomerDebt } from "@prisma/client";
 import {
   createColumnHelper,
   flexRender,
@@ -25,68 +21,52 @@ import {
   TablePag,
 } from "./tables";
 
-const InvoicesTable: FC<{
-  invoices: (Invoice & {
-    invoiceStatus: InvoiceStatus | null;
-    customer: {
+const DebtTable: FC<{
+  data: (CustomerDebt & {
+    Customer: {
+      number: string;
       name: string;
-    };
+    } | null;
   })[];
-}> = ({ invoices }) => {
+}> = ({ data }) => {
   const columnHelper = createColumnHelper<
-    Invoice & {
-      invoiceStatus: InvoiceStatus | null;
-      customer: {
+    CustomerDebt & {
+      Customer: {
+        number: string;
         name: string;
-      };
+      } | null;
     }
   >();
   const [filter, setFilter] = useState<ColumnFiltersState>([]);
 
   const columns = [
-    columnHelper.accessor("cost", {
-      size: 100,
-      cell: (info) => <span>{info.renderValue()}</span>,
-      footer: (info) => info.column.id,
-      header: () => "Cost",
-    }),
-    columnHelper.accessor("customer.name", {
+    columnHelper.accessor("Customer.name", {
       size: 200,
       cell: (info) => <span>{info.renderValue()}</span>,
       footer: (info) => info.column.id,
       header: () => "Name",
+    }),
+    columnHelper.accessor("Customer.number", {
+      size: 100,
+      cell: (info) => <span>{info.renderValue()}</span>,
+      footer: (info) => info.column.id,
+      header: () => "Number",
     }),
     columnHelper.accessor("createdAt", {
       cell: (info) => DateFormat({ date: info.getValue() }),
       footer: (info) => info.column.id,
       header: () => "Created At",
     }),
-    columnHelper.accessor("updatedAt", {
-      cell: (info) => DateFormat({ date: info.getValue() }),
+    columnHelper.accessor("amount", {
+      size: 50,
+      cell: (info) => <span>{info.renderValue()}</span>,
       footer: (info) => info.column.id,
-      header: () => "Updated At",
-    }),
-    columnHelper.accessor("invoiceStatus.status", {
-      cell: (info) => (
-        <span
-          className={
-            info.getValue() === InvoiceStatusEnum.Rejected
-              ? "text-red-700"
-              : info.getValue() === InvoiceStatusEnum.Accepted
-              ? "text-green-700"
-              : " text-blue-900 "
-          }
-        >
-          {info.renderValue()}
-        </span>
-      ),
-      footer: (info) => info.column.id,
-      header: () => "Status",
+      header: () => "Amount",
     }),
   ];
 
   const table = useReactTable({
-    data: invoices,
+    data: data,
     columns,
     state: { columnFilters: filter },
     getCoreRowModel: getCoreRowModel(),
@@ -122,7 +102,11 @@ const InvoicesTable: FC<{
         </THead>
         <TBody>
           {table.getRowModel().rows.map((row) => (
-            <TR key={row.id} rowId={invoices[row.index]?.id} route="invoice">
+            <TR
+              key={row.id}
+              rowId={data[row.index]?.customerId}
+              route="customer"
+            >
               {row.getVisibleCells().map((cell) => (
                 <TD key={cell.id}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -136,4 +120,4 @@ const InvoicesTable: FC<{
     </div>
   );
 };
-export default InvoicesTable;
+export default DebtTable;

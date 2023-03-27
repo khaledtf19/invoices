@@ -3,7 +3,7 @@ import { useModalState } from "../hooks/modalState";
 import { PrimaryButton } from "./utils";
 
 const Modal: FC = () => {
-  const { isOpen, closeModal, text, components, onClickName, onClick } =
+  const { isOpen, closeModal, text, components, onClickName, onClick, width } =
     useModalState((state) => state);
 
   if (!isOpen) {
@@ -19,7 +19,9 @@ const Modal: FC = () => {
         onClick={(e) => {
           e.stopPropagation();
         }}
-        className=" flex min-h-[200px] min-w-[400px] animate-startAnimation flex-col items-center justify-center rounded-lg bg-white p-4 shadow-2xl drop-shadow-xl"
+        className={`ml-20 flex max-h-[650px] min-h-[200px] min-w-[400px] max-w-[1300px] animate-startAnimation flex-col items-center justify-center rounded-lg bg-white p-4 shadow-2xl drop-shadow-xl ${
+          width ? "h-full w-full overflow-y-scroll" : ""
+        }`}
       >
         <div className=" flex h-full w-full flex-1 flex-col items-center text-center drop-shadow-xl">
           {components ? (
