@@ -14,6 +14,6 @@ export const InvoiceStatusArr = ["Waiting", "Rejected", "Accepted"] as const;
 export type UserRoleType = (typeof UserRoleArr)[number];
 export type InvoiceStatusType = (typeof InvoiceStatusArr)[number];
 
-export const BalanceArr = ["Add", "Take"] as const;
-export type ChangeBalanceType = (typeof BalanceArr)[number];
-export const ZBalance = z.enum(BalanceArr);
+export const TransactionsArr = ["Add", "Take"] as const;
+export type TransactionsType = (typeof TransactionsArr)[number];
+export const Ztransactions = z.enum(TransactionsArr);

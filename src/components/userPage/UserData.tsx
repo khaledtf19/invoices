@@ -6,7 +6,7 @@ import { trpc } from "../../utils/trpc";
 import Container from "../../container/Container";
 import { Input, PrimaryButton } from "../../components/utils";
 import { useModalState } from "../../hooks/modalState";
-import { BalanceArr, type ChangeBalanceType } from "../../types/utils.types";
+import { TransactionsArr, type TransactionsType } from "../../types/utils.types";
 
 const UserData: FC<{ userData: User; refetch: () => void }> = ({
   userData,
@@ -68,7 +68,7 @@ const ModalComponent: FC<{
   refetch: () => void;
 }> = ({ userId, currentBalance, refetch }) => {
   const [amount, setAmount] = useState("");
-  const [type, setType] = useState<ChangeBalanceType>("Add");
+  const [type, setType] = useState<TransactionsType>("Add");
 
   const changeBalance = trpc.user.changeUserBalance.useMutation();
 
@@ -101,13 +101,13 @@ const ModalComponent: FC<{
         </div>
         <select
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-            const value = e.target.value as ChangeBalanceType;
+            const value = e.target.value as TransactionsType;
             setType(value);
           }}
           value={type}
           className=" mt-6 h-8 bg-gray-900 px-1 text-center text-white "
         >
-          {BalanceArr.map((value) => (
+          {TransactionsArr.map((value) => (
             <option key={value} value={value}>
               {value}
             </option>

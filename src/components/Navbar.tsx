@@ -14,7 +14,7 @@ import {
 import { RiSearchLine } from "react-icons/ri";
 import { useUserState } from "../hooks/userDataState";
 import { useModalState } from "../hooks/modalState";
-import CustomerDebtModal from "./CustomerDebtModal";
+import CustomerDebtModal from "./customer/CustomerDebtModal";
 
 const Navbar = () => {
   const { userData } = useUserState()((state) => ({ userData: state.user }));

@@ -1,3 +1,4 @@
+import { TransactionTypes } from "@prisma/client";
 import { z } from "zod";
 
 import { router, protectedProcedure, adminProcedure } from "../trpc";
@@ -68,7 +69,7 @@ export const customerRouter = router({
             orderBy: { createdAt: "desc" },
           },
           customerNotes: true,
-          customerDebt: true,
+          customerDebt: { where: { deleted: false } },
         },
       });
     }),
@@ -92,10 +93,10 @@ export const customerRouter = router({
     }),
 
   createDebt: protectedProcedure
-    .input(z.object({ customerId: z.string().min(3), amount: z.number() }))
+    .input(z.object({ customerId: z.string().min(3), amount: z.number(), type: z.enum(["Add", "Take"]) }))
     .mutation(async ({ input, ctx }) => {
       await ctx.prisma.customerDebt.create({
-        data: { customerId: input.customerId, amount: input.amount },
+        data: { customerId: input.customerId, amount: input.amount, type: input.type },
       });
 
       return { message: "done" };
@@ -104,11 +105,21 @@ export const customerRouter = router({
   deleteDebt: protectedProcedure
     .input(z.object({ debtId: z.string().min(3) }))
     .mutation(async ({ input, ctx }) => {
-      await ctx.prisma.customerDebt.delete({ where: { id: input.debtId } });
+      await ctx.prisma.customerDebt.update({ where: { id: input.debtId }, data: { deleted: true, userId: ctx.session.user.id } })
+
       return { message: "done" };
     }),
 
-  getAllDebt: adminProcedure.query(async ({ ctx }) => {
+  getAllDebt: adminProcedure.input(z.object({ customerId: z.string().optional() })).query(async ({ ctx, input }) => {
+    if (input.customerId) {
+      return await ctx.prisma.customerDebt.findMany({
+        where: { customerId: input.customerId },
+        orderBy: { createdAt: "desc" },
+        include: { Customer: { select: { name: true, number: true } } },
+
+      })
+    }
+
     return await ctx.prisma.customerDebt.findMany({
       orderBy: { createdAt: "desc" },
       include: { Customer: { select: { name: true, number: true } } },

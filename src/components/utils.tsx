@@ -47,10 +47,10 @@ export const FormInput: FC<{
   label: string;
   register: UseFormRegisterReturn<string>;
   error?:
-    | string
-    | FieldError
-    | Merge<FieldError, FieldErrorsImpl<any>>
-    | undefined;
+  | string
+  | FieldError
+  | Merge<FieldError, FieldErrorsImpl<any>>
+  | undefined;
   placeholder?: string;
   type: HTMLInputTypeAttribute;
 }> = ({ name, label, register, error, type, placeholder }) => {
@@ -72,9 +72,10 @@ export const FormInput: FC<{
 
 export const PrimaryButton: FC<{
   label: string;
+  className?: string;
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
-}> = ({ type, label, onClick }) => {
+}> = ({ className, type, label, onClick }) => {
   return (
     <button
       onClick={() => {
@@ -83,7 +84,7 @@ export const PrimaryButton: FC<{
         }
       }}
       type={type ? type : "button"}
-      className=" w-full rounded-lg bg-blue-900 px-3 py-1 text-white transition-colors duration-500 hover:bg-blue-800"
+      className={`w-full rounded-lg bg-blue-900 px-3 py-1 text-white transition-colors duration-500 hover:bg-blue-800 ${className}`}
     >
       {label}
     </button>
@@ -184,9 +185,8 @@ export const IconToCopy: FC<{
 
   return (
     <div
-      className={`${
-        copied ? " text-green-600" : ""
-      } relative flex items-center justify-center`}
+      className={`${copied ? " text-green-600" : ""
+        } relative flex items-center justify-center`}
       onMouseOver={() => {
         setHover(true);
       }}

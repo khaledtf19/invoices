@@ -1,4 +1,4 @@
-import { BalanceArr, ZBalance } from "../../../types/utils.types";
+import { TransactionsArr, Ztransactions } from "../../../types/utils.types";
 import { router, adminProcedure } from "../trpc";
 import { z } from "zod";
 
@@ -46,16 +46,16 @@ export const userRouter = router({
       z.object({
         userId: z.string().min(5),
         amount: z.number().min(5),
-        type: ZBalance,
+        type: Ztransactions,
       })
     )
     .mutation(async ({ input, ctx }) => {
-      if (input.type === BalanceArr[0]) {
+      if (input.type === TransactionsArr[0]) {
         await ctx.prisma.user.update({
           where: { id: input.userId },
           data: { userBalance: { increment: input.amount } },
         });
-      } else if (input.type === BalanceArr[1]) {
+      } else if (input.type === TransactionsArr[1]) {
         await ctx.prisma.user.update({
           where: { id: input.userId },
           data: { userBalance: { decrement: input.amount } },

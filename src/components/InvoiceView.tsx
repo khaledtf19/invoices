@@ -15,6 +15,8 @@ import type {
   User,
   InvoiceStatusEnum,
   Transaction,
+  CustomerDebt,
+
 } from "@prisma/client";
 import { DateFormat } from "../utils/utils";
 import { InvoiceStatusArr, UserRoleArr } from "../types/utils.types";
@@ -22,16 +24,19 @@ import { trpc } from "../utils/trpc";
 import { useModalState } from "../hooks/modalState";
 import { useRouter } from "next/router";
 import { useUserState } from "../hooks/userDataState";
+import CustomerDebtComponent from "./customer/CustomerDebt";
+
 
 const InvoiceView: FC<{
-  invoiceData: Invoice & {
+  invoiceData: (Invoice & {
     invoiceStatus: InvoiceStatus | null;
-    customer: Customer;
+    customer: Customer & {
+      customerDebt: CustomerDebt[];
+    };
     transaction: Transaction | null;
     invoiceNotes: InvoiceNote[];
     madeBy: User;
-  };
-  refetch: () => void;
+  }); refetch: () => void;
 }> = ({ invoiceData, refetch }) => {
   const [newStatus, setNewStatus] = useState(invoiceData.invoiceStatus?.status);
   const [newStatusNote, setNewStatusNote] = useState(
@@ -65,7 +70,7 @@ const InvoiceView: FC<{
   ]);
 
   return (
-    <Container size="max-w-md">
+    <Container size="max-w-md" rightComponent={<CustomerDebtComponent customerId={invoiceData.customerId} debtData={invoiceData.customer.customerDebt} refetch={() => { refetch() }} />} openRight={invoiceData.customer.customerDebt.length > 0 ? true : false}>
       <DataFields label="Name" text={invoiceData.customer.name} />
       <DataFields label="Number" text={invoiceData.customer.number} />
       <DataFields label="Cost" text={invoiceData.cost} />
@@ -87,13 +92,12 @@ const InvoiceView: FC<{
         }
       />
       <div
-        className={` w-full ${
-          newStatus === InvoiceStatusArr[1]
-            ? "text-red-700"
-            : newStatus === InvoiceStatusArr[2]
+        className={` w-full ${newStatus === InvoiceStatusArr[1]
+          ? "text-red-700"
+          : newStatus === InvoiceStatusArr[2]
             ? "text-green-700"
             : "text-blue-700"
-        } `}
+          } `}
       >
         {userData?.role === UserRoleArr[1] ? (
           <>
@@ -220,3 +224,4 @@ const ModalDeleteComponent: FC<{ invoiceId: string; customerId: string }> = ({
     </div>
   );
 };
+

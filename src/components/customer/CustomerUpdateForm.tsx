@@ -46,7 +46,7 @@ const CustomerUpdateForm: FC<{
     defaultValues: {
       name: customerData.name,
       number: customerData.number,
-      idNumber: customerData?.idNumber,
+      idNumber: customerData?.idNumber ? customerData?.idNumber : "",
       birthday: customerData.birthday,
       mobile: mobileArr,
     },

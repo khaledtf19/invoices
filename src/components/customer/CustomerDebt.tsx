@@ -1,9 +1,11 @@
 import { CustomerDebt } from "@prisma/client";
 import { DateFormat } from "../../utils/utils";
-import { Input, LoadingAnimation, PrimaryButton, RedButton } from "../utils";
+import { Input, LoadingAnimation, PrimaryButton, RedButton, SecondaryButton } from "../utils";
 import { useModalState } from "../../hooks/modalState";
 import { useEffect, useState } from "react";
 import { trpc } from "../../utils/trpc";
+import { TransactionsArr, TransactionsType } from "../../types/utils.types";
+import CustomerDebtModal from "./CustomerDebtModal";
 
 const CustomerDebt: React.FC<{
   debtData: CustomerDebt[];
@@ -35,7 +37,7 @@ const CustomerDebt: React.FC<{
             {debtData.map((debt) => (
               <th
                 key={debt.id}
-                className="  flex w-full items-center justify-evenly gap-1 text-center text-red-600 "
+                className={` flex w-full items-center justify-evenly gap-1 text-center ${debt.type === TransactionsArr[0] ? "text-red-600" : "text-green-500"} `}
               >
                 <td className=" w-full border-r border-red-600 ">
                   {debt.amount}
@@ -60,7 +62,7 @@ const CustomerDebt: React.FC<{
           </tbody>
         </table>
       </div>
-      <div className=" w-2/4">
+      <div className="flex gap-3 w-2/4">
         <PrimaryButton
           label="ADD"
           onClick={() => {
@@ -71,6 +73,11 @@ const CustomerDebt: React.FC<{
             });
           }}
         />
+        <SecondaryButton label="Show All" onClick={
+          () => {
+            openModal({ newWidth: "big", newComponents: (<CustomerDebtModal cusomerId={customerId} />) })
+          }
+        } />
       </div>
     </div>
   );
@@ -83,6 +90,7 @@ const CreateDebtModal: React.FC<{
   refetch: () => void;
 }> = ({ customerId, refetch }) => {
   const [amount, setAmount] = useState("");
+  const [tType, setTtype] = useState<TransactionsType>("Add");
   const addDebt = trpc.customer.createDebt.useMutation();
 
   useEffect(() => {
@@ -99,9 +107,9 @@ const CreateDebtModal: React.FC<{
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center gap-8">
-          <div>
+          <div className="flex flex-col gap-3">
             <Input
-              label="name"
+              label="Amount"
               state={amount}
               onChange={(e) => {
                 const result = e.target.value.replace(/\D/g, "");
@@ -109,6 +117,12 @@ const CreateDebtModal: React.FC<{
               }}
               type="number"
             />
+            <select className={` text-center font-bold shadow-lg bg-blue-900 text-xl  ${tType === TransactionsArr[0] ? "text-red-600" : "text-green-600"}`} onChange={(e) => { setTtype(e.currentTarget.value as TransactionsType) }}>
+              {TransactionsArr.map((transaction) => (
+                <option value={transaction} >{transaction}</option>
+              ))}
+            </select>
+
             <p className=" text-red-600">
               {Number(amount) ? "" : "Must Be A Number"}
             </p>
@@ -121,6 +135,7 @@ const CreateDebtModal: React.FC<{
                   addDebt.mutateAsync({
                     amount: Number(amount),
                     customerId: customerId,
+                    type: tType
                   });
                 }
               }}

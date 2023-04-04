@@ -1,5 +1,4 @@
 import { type FC, useState } from "react";
-import { type CustomerDebt } from "@prisma/client";
 import {
   createColumnHelper,
   flexRender,
@@ -20,25 +19,13 @@ import {
   Filter,
   TablePag,
 } from "./tables";
+import { RouterOutputs } from "../../utils/trpc";
+import { TransactionsArr } from "../../types/utils.types";
 
-const DebtTable: FC<{
-  data: (CustomerDebt & {
-    Customer: {
-      number: string;
-      name: string;
-    } | null;
-  })[];
-}> = ({ data }) => {
-  const columnHelper = createColumnHelper<
-    CustomerDebt & {
-      Customer: {
-        number: string;
-        name: string;
-      } | null;
-    }
-  >();
+const DebtTable: FC<{ data: RouterOutputs["customer"]["getAllDebt"] }> = ({ data }) => {
+  const columnHelper = createColumnHelper<RouterOutputs["customer"]["getAllDebt"][number]>();
+
   const [filter, setFilter] = useState<ColumnFiltersState>([]);
-
   const columns = [
     columnHelper.accessor("Customer.name", {
       size: 200,
@@ -63,6 +50,18 @@ const DebtTable: FC<{
       footer: (info) => info.column.id,
       header: () => "Amount",
     }),
+    columnHelper.accessor("type", {
+      size: 50,
+      cell: (info) => <span className={`${info.getValue() === TransactionsArr[0] ? "text-red-600" : "text-green-500"} `}>{info.renderValue()}</span>,
+      footer: (info) => info.column.id,
+      header: () => "Type",
+    }),
+    columnHelper.accessor("deleted", {
+      enableColumnFilter: false,
+      size: 50,
+      cell: (info) => <span className={`${info.getValue() ? "text-green-600" : "text-red-600"}`}>{info.getValue() === true ? "Deleted" : "Waiting"} </span>,
+      header: () => "Status"
+    })
   ];
 
   const table = useReactTable({
@@ -87,9 +86,9 @@ const DebtTable: FC<{
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
                   {header.column.getCanFilter() ? (
                     <div>
                       <Filter column={header.column} table={table} />

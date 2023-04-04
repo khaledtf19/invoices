@@ -12,13 +12,13 @@ module.exports = {
       keyframes: {
         startKey: {
           "0%": {
-            transform: "translateY(-30%)",
+            transform: "scale(20%)",
           },
           "80%": {
-            transform: "translateY(3%)",
+            transform: "scale(105%)",
           },
           "100%": {
-            transform: "translateY(0)",
+            transform: "scale(100%)",
           },
         },
 
