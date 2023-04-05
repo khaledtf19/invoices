@@ -119,7 +119,7 @@ const CreateDebtModal: React.FC<{
             />
             <select className={` text-center font-bold shadow-lg bg-blue-900 text-xl  ${tType === TransactionsArr[0] ? "text-red-600" : "text-green-600"}`} onChange={(e) => { setTtype(e.currentTarget.value as TransactionsType) }}>
               {TransactionsArr.map((transaction) => (
-                <option value={transaction} >{transaction}</option>
+                <option key={transaction} value={transaction} >{transaction}</option>
               ))}
             </select>
 
