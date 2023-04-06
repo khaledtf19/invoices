@@ -7,16 +7,16 @@ interface userStateType {
   refetchUserData: () => void;
   updateUser: () => void;
   user:
-    | ({
-        id: string;
-        role: UserRole;
-        userBalance: number;
-      } & {
-        name?: string | null | undefined;
-        email?: string | null | undefined;
-        image?: string | null | undefined;
-      })
-    | undefined;
+  | ({
+    id: string;
+    role: UserRole;
+    userBalance: number;
+  } & {
+    name?: string | null | undefined;
+    email?: string | null | undefined;
+    image?: string | null | undefined;
+  })
+  | undefined;
 }
 
 export const useUserState = () => {
@@ -32,7 +32,6 @@ export const useUserState = () => {
   }));
 
   useEffect(() => {
-    console.log(userData);
   }, [userData]);
 
   return state;

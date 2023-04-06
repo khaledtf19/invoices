@@ -35,7 +35,7 @@ const CustomerDebt: React.FC<{
           </thead>
           <tbody className="flex flex-col gap-2">
             {debtData.map((debt) => (
-              <th
+              <tr
                 key={debt.id}
                 className={` flex w-full items-center justify-evenly gap-1 text-center ${debt.type === TransactionsArr[0] ? "text-red-600" : "text-green-500"} `}
               >
@@ -57,7 +57,7 @@ const CustomerDebt: React.FC<{
                 <td className=" w-full border-l border-red-600">
                   {DateFormat({ date: debt.createdAt })}
                 </td>
-              </th>
+              </tr>
             ))}
           </tbody>
         </table>

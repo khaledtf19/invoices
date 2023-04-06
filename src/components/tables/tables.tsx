@@ -171,6 +171,12 @@ export const Filter: FC<{
     );
   }
 
+  useEffect(() => {
+    if (firstValue === true || firstValue === false) {
+      column.setFilterValue(false)
+    }
+  }, [])
+
   if (firstValue === "Add" || firstValue === "Take") {
     return <select
       className="font-normal text-black text-center"
@@ -184,14 +190,12 @@ export const Filter: FC<{
     </select>;
   }
 
+
   if (firstValue === true || firstValue === false) {
-    // column.setFilterValue(false)
-    useEffect(() => {
-      column.setFilterValue(false)
-    }, [])
     return <select
       defaultValue={"false"}
       className="font-normal text-black text-center px-1"
+
       onChange={(e) => {
         column.setFilterValue(e.target.value === "all" ? undefined : e.target.value === "true" ? true : false)
       }}>
