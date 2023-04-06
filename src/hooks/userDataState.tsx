@@ -1,7 +1,6 @@
 import { type UserRole } from "@prisma/client";
 import { create } from "zustand";
 import { trpc } from "../utils/trpc";
-import { useEffect } from "react";
 
 interface userStateType {
   refetchUserData: () => void;
@@ -30,9 +29,6 @@ export const useUserState = () => {
       set({ user: userData });
     },
   }));
-
-  useEffect(() => {
-  }, [userData]);
 
   return state;
 };
