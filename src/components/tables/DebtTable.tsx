@@ -57,7 +57,7 @@ const DebtTable: FC<{ data: RouterOutputs["customer"]["getAllDebt"] }> = ({ data
       header: () => "Type",
     }),
     columnHelper.accessor("deleted", {
-      enableColumnFilter: false,
+
       size: 50,
       cell: (info) => <span className={`${info.getValue() ? "text-green-600" : "text-red-600"}`}>{info.getValue() === true ? "Deleted" : "Waiting"} </span>,
       header: () => "Status"

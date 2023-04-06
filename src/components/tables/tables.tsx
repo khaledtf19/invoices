@@ -1,9 +1,9 @@
 import { InvoiceStatusEnum, UserRole } from "@prisma/client";
 import { useRouter } from "next/router";
-import { type PropsWithChildren, type FC, type ReactNode } from "react";
+import { type PropsWithChildren, type FC, type ReactNode, useEffect } from "react";
 import { PrimaryButton } from "../utils";
 import { type Column, type Table } from "@tanstack/react-table";
-import { InvoiceStatusArr, UserRoleArr } from "../../types/utils.types";
+import { InvoiceStatusArr, TransactionsArr, UserRoleArr } from "../../types/utils.types";
 
 export const TableComponent: FC<PropsWithChildren & { moreClass?: string }> = ({
   children,
@@ -37,11 +37,10 @@ export const TR: FC<{
 
   return (
     <tr
-      className={` ${
-        rowId
-          ? "cursor-pointer transition-colors duration-500 hover:bg-blue-600 hover:text-white"
-          : ""
-      }   `}
+      className={` ${rowId
+        ? "cursor-pointer transition-colors duration-500 hover:bg-blue-600 hover:text-white"
+        : ""
+        }   `}
       onClick={() => {
         if (route !== "none") {
           router.push(`/${route}/${rowId}`);
@@ -127,6 +126,7 @@ export const Filter: FC<{
     .getPreFilteredRowModel()
     .flatRows[0]?.getValue(column.id);
 
+
   if (typeof firstValue === "number" || typeof firstValue === "object") {
     return <></>;
   }
@@ -154,7 +154,7 @@ export const Filter: FC<{
   if (UserRole.valueOf().hasOwnProperty(String(firstValue))) {
     return (
       <select
-        className="font-normal text-black"
+        className="font-normal text-black text-center"
         onChange={(e) => {
           column.setFilterValue(
             e.target.value === "all" ? undefined : e.target.value
@@ -172,7 +172,34 @@ export const Filter: FC<{
   }
 
   if (firstValue === "Add" || firstValue === "Take") {
-    return <></>;
+    return <select
+      className="font-normal text-black text-center"
+      onChange={(e) => {
+        column.setFilterValue(e.target.value === "all" ? undefined : e.target.value)
+      }}>
+      <option value={"all"}>All</option>
+      {TransactionsArr.map((transaction) => (
+        <option key={transaction} value={transaction}>{transaction}</option>
+      ))}
+    </select>;
+  }
+
+  if (firstValue === true || firstValue === false) {
+    // column.setFilterValue(false)
+    useEffect(() => {
+      column.setFilterValue(false)
+    }, [])
+    return <select
+      defaultValue={"false"}
+      className="font-normal text-black text-center px-1"
+      onChange={(e) => {
+        column.setFilterValue(e.target.value === "all" ? undefined : e.target.value === "true" ? true : false)
+      }}>
+      <option value={"false"} >Waiting</option>
+      <option value={"true"}>Deleted</option>
+      <option value={"all"}>All</option>
+    </select>
+
   }
 
   return (

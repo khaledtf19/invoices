@@ -1,8 +1,6 @@
 import { type FC, useState } from "react";
 import {
   InvoiceStatusEnum,
-  type Invoice,
-  type InvoiceStatus,
 } from "@prisma/client";
 import {
   createColumnHelper,
@@ -24,23 +22,12 @@ import {
   Filter,
   TablePag,
 } from "./tables";
+import { RouterOutputs } from "../../utils/trpc";
 
 const InvoicesTable: FC<{
-  invoices: (Invoice & {
-    invoiceStatus: InvoiceStatus | null;
-    customer: {
-      name: string;
-    };
-  })[];
+  invoices: RouterOutputs["invoice"]["getNewInvoices"]
 }> = ({ invoices }) => {
-  const columnHelper = createColumnHelper<
-    Invoice & {
-      invoiceStatus: InvoiceStatus | null;
-      customer: {
-        name: string;
-      };
-    }
-  >();
+  const columnHelper = createColumnHelper<RouterOutputs["invoice"]["getNewInvoices"][number]>();
   const [filter, setFilter] = useState<ColumnFiltersState>([]);
 
   const columns = [
@@ -73,8 +60,8 @@ const InvoicesTable: FC<{
             info.getValue() === InvoiceStatusEnum.Rejected
               ? "text-red-700"
               : info.getValue() === InvoiceStatusEnum.Accepted
-              ? "text-green-700"
-              : " text-blue-900 "
+                ? "text-green-700"
+                : " text-blue-900 "
           }
         >
           {info.renderValue()}
@@ -107,9 +94,9 @@ const InvoicesTable: FC<{
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
                   {header.column.getCanFilter() ? (
                     <div>
                       <Filter column={header.column} table={table} />
