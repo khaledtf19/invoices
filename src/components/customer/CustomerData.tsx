@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 
 import { SyncLoader } from "react-spinners";
 
-import { DataFields, IconToCopy, Input, PrimaryButton } from "../utils";
+import { DataFields, IconToCopy, Input, PrimaryButton, SecondaryButton } from "../utils";
 import { trpc } from "../../utils/trpc";
 import { useModalState } from "../../hooks/modalState";
 import {
@@ -13,6 +13,7 @@ import {
   BsFillPersonBadgeFill,
   BsCalendarDate,
 } from "react-icons/bs";
+import { MdOutlineAlternateEmail } from 'react-icons/md'
 import { BiMobile } from "react-icons/bi";
 import { useUserState } from "../../hooks/userDataState";
 
@@ -23,6 +24,7 @@ const CustomerData: FC<{ customerData: Customer }> = ({ customerData }) => {
   }));
   const { user } = useUserState()((state) => state);
 
+  const router = useRouter()
   useEffect(() => {
     return () => {
       closeModal();
@@ -42,11 +44,10 @@ const CustomerData: FC<{ customerData: Customer }> = ({ customerData }) => {
         Icon={BsFillTelephoneFill}
       />
       <DataFields
-        label="address"
+        label="Address"
         text={customerData.address}
-        Icon={BsFillTelephoneFill}
+        Icon={MdOutlineAlternateEmail}
       />
-
 
       {user?.role === UserRole.Admin ? (
         <div className=" flex justify-between px-10">
@@ -80,6 +81,14 @@ const CustomerData: FC<{ customerData: Customer }> = ({ customerData }) => {
           openModal({
             newComponents: <ModalComponent customerData={customerData} />,
           });
+        }}
+      />
+
+      <SecondaryButton
+        type="button"
+        label="Cards"
+        onClick={() => {
+          router.replace(`${customerData.id}/cards`)
         }}
       />
     </div>
