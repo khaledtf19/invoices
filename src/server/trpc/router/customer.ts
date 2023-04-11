@@ -79,6 +79,7 @@ export const customerRouter = router({
         id: z.string(),
         name: z.string().max(225).min(3),
         number: z.string().min(8),
+        address: z.string().min(2).optional().nullable(),
         birthday: z.string().optional().nullable(),
         idNumber: z.string().min(8).nullish(),
         mobile: z.string().min(8).array().max(5),

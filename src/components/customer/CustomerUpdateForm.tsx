@@ -14,6 +14,7 @@ const CustomerForm = z.object({
   number: z.string().min(8),
   idNumber: z.string().nullable().nullable(),
   birthday: z.string().optional().nullable(),
+  addess: z.string().optional().nullish(),
   mobile: z
     .object({
       value: z.string().nullable(),
@@ -47,6 +48,7 @@ const CustomerUpdateForm: FC<{
       name: customerData.name,
       number: customerData.number,
       idNumber: customerData?.idNumber ? customerData?.idNumber : "",
+      addess: customerData.address,
       birthday: customerData.birthday,
       mobile: mobileArr,
     },
@@ -66,6 +68,7 @@ const CustomerUpdateForm: FC<{
         id: customerData.id,
         name: data.name,
         number: data.number,
+        address: data.addess,
         idNumber: data.idNumber,
         birthday: data.birthday,
         mobile: arr,
@@ -105,6 +108,13 @@ const CustomerUpdateForm: FC<{
             return value.replace(/\D/g, "");
           },
         })}
+      />
+      <FormInput
+        type="addess"
+        label="Address"
+        name="address"
+        error={errors.number?.message}
+        register={register("addess")}
       />
       <FormInput
         type="number"

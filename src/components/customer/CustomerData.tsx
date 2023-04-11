@@ -41,6 +41,12 @@ const CustomerData: FC<{ customerData: Customer }> = ({ customerData }) => {
         text={customerData.number}
         Icon={BsFillTelephoneFill}
       />
+      <DataFields
+        label="address"
+        text={customerData.address}
+        Icon={BsFillTelephoneFill}
+      />
+
 
       {user?.role === UserRole.Admin ? (
         <div className=" flex justify-between px-10">
