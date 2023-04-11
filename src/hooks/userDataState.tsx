@@ -17,7 +17,6 @@ interface userStateType {
   })
   | undefined;
 }
-
 export const useUserState = () => {
   const { data: userData, refetch } = trpc.auth.getSession.useQuery();
   const state = create<userStateType>((set) => ({

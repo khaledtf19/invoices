@@ -45,11 +45,12 @@ model Bank {
 }
 
 model InvoiceStatus {
-  id        String            @id @default(cuid())
-  invoiceId String
-  note      String?
-  status    InvoiceStatusEnum @default(Waiting)
-  invoice   Invoice           @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  id             String            @id @default(cuid())
+  invoiceId      String
+  note           String?
+  acceptedAmount Int?              @default(0)
+  status         InvoiceStatusEnum @default(Waiting)
+  invoice        Invoice           @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
 
   @@unique([invoiceId])
 }
@@ -109,6 +110,7 @@ model Customer {
   number        String
   mobile        String[]
   idNumber      String?
+  address       String?
   customerNotes CustomerNote[]
   invoices      Invoice[]
   customerDebt  CustomerDebt[]

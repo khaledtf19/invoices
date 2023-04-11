@@ -1,4 +1,3 @@
-import { TransactionTypes } from "@prisma/client";
 import { z } from "zod";
 
 import { router, protectedProcedure, adminProcedure } from "../trpc";
