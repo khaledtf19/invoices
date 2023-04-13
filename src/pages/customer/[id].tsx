@@ -3,6 +3,8 @@ import { trpc } from "../../utils/trpc";
 import CustomerView from "../../components/customer";
 import LoadingCustomer from "../../components/customer/LoadingCustomer";
 import InvoicesTable from "../../components/tables/InvoicesTable";
+import { PageTabs } from "../../components/utils";
+import CardsTab from "../../components/customer/CardsTab";
 
 const Customer = () => {
   const router = useRouter();
@@ -37,11 +39,9 @@ const Customer = () => {
         }}
       />
 
-      {customerData.invoices.length === 0 ? (
-        <h1>No Invoices</h1>
-      ) : (
-        <InvoicesTable invoices={customerData.invoices} />
-      )}
+      <PageTabs tabs={[{
+        tabName: "Invoices", component: customerData.invoices.length === 0 ? <h1>No Invoices</h1> : <InvoicesTable invoices={customerData.invoices} />
+      }, { tabName: "Cards", component: <CardsTab customerData={customerData} /> }]} />
     </div>
   );
 };

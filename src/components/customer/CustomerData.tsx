@@ -84,13 +84,6 @@ const CustomerData: FC<{ customerData: Customer }> = ({ customerData }) => {
         }}
       />
 
-      <SecondaryButton
-        type="button"
-        label="Cards"
-        onClick={() => {
-          router.replace(`${customerData.id}/cards`)
-        }}
-      />
     </div>
   );
 };

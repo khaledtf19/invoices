@@ -5,48 +5,29 @@ import {
   useState,
 } from "react";
 import {
-  type Invoice,
-  type User,
-  type Transaction,
-  type changeBalance,
   UserRole,
 } from "@prisma/client";
 import UserData from "./UserData";
 import TransactionsTable from "../tables/TransactionsTable";
 import ChangeBalanceTable from "../tables/ChangeBalanceTable";
+import { RouterOutputs } from "../../utils/trpc";
+import { PageTabs } from "../utils";
 
 const UserPage: FC<{
   refetch: () => void;
-  userData: User & {
-    invoices: Invoice[];
-    transactions: (Transaction & {
-      invoice: {
-        id: string;
-        createdAt: Date;
-        cost: number;
-      };
-      user: {
-        name: string | null;
-        email: string | null;
-      };
-    })[];
-    changeBalanceFromAdmin: (changeBalance & {
-      admin: { name: string | null; email: string | null } | null;
-      user: { name: string | null; email: string | null } | null;
-    })[];
-    changeBalanceForUser: (changeBalance & {
-      admin: { name: string | null; email: string | null } | null;
-      user: { name: string | null; email: string | null } | null;
-    })[];
-  };
+  userData: RouterOutputs["user"]["getUserById"]
 }> = ({ userData, refetch }) => {
+  if (!userData) {
+    return <></>
+  }
+
   return (
     <div className="flex w-full flex-col  justify-center gap-5">
       <UserPageSection name="User info" show={true}>
         <UserData userData={userData} refetch={refetch} />
       </UserPageSection>
       <div className="flex w-full">
-        <UserTabs
+        <PageTabs
           tabs={[
             {
               tabName: "User Transactions",
@@ -93,37 +74,3 @@ const UserPageSection: FC<
   );
 };
 
-const UserTabs: FC<{
-  tabs: {
-    tabName: string;
-    component: ReactNode;
-  }[];
-}> = ({ tabs }) => {
-  const [selectedTab, setSelectedTab] = useState(0);
-
-  return (
-    <div className=" flex w-full flex-col items-center justify-center ">
-      <div className=" flex w-full items-start justify-center gap-2">
-        {tabs.map((tab, i) => (
-          <div
-            key={i}
-            className=" flex flex-col items-center"
-            onClick={() => {
-              setSelectedTab(i);
-            }}
-          >
-            <h1 className=" rounded-md bg-gray-900 p-2 text-xl font-bold text-white ">
-              {tab.tabName}
-            </h1>
-            {selectedTab === i ? (
-              <span className=" h-3 w-3 bg-gray-900 p-1" />
-            ) : null}
-          </div>
-        ))}
-      </div>
-      <div className="flex w-full items-start justify-center rounded-md border border-gray-900 p-5">
-        {tabs[selectedTab]?.component}
-      </div>
-    </div>
-  );
-};

@@ -103,7 +103,7 @@ export const SecondaryButton: FC<{
         }
       }}
       type={type ? type : "button"}
-      className=" w-full rounded-lg bg-blue-600 px-3 py-1 text-white transition-colors duration-300 hover:bg-blue-500"
+      className=" w-full rounded-lg bg-green-600 px-3 py-1 text-white transition-colors duration-300 hover:bg-green-500"
     >
       {label}
     </button>
@@ -247,6 +247,43 @@ export const LoadingInvoice = () => {
         />
         <DataFields label="Status" text={"Waiting"} Icon={BsCreditCard2Front} />
       </Container>
+    </div>
+  );
+};
+
+
+export const PageTabs: FC<{
+  tabs: {
+    tabName: string;
+    component: React.ReactNode;
+
+  }[];
+}> = ({ tabs }) => {
+  const [selectedTab, setSelectedTab] = useState(0);
+
+  return (
+    <div className=" flex w-full flex-col items-center justify-center ">
+      <div className=" flex w-full items-start justify-center gap-2">
+        {tabs.map((tab, i) => (
+          <div
+            key={i}
+            className=" flex flex-col items-center"
+            onClick={() => {
+              setSelectedTab(i);
+            }}
+          >
+            <h1 className=" rounded-md bg-gray-900 p-2 text-xl font-bold text-white ">
+              {tab.tabName}
+            </h1>
+            {selectedTab === i ? (
+              <span className=" h-3 w-3 bg-gray-900 p-1" />
+            ) : null}
+          </div>
+        ))}
+      </div>
+      <div className="flex w-full items-start justify-center rounded-md border border-gray-900 p-5">
+        {tabs[selectedTab]?.component}
+      </div>
     </div>
   );
 };
