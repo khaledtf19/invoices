@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { router, protectedProcedure, adminProcedure } from "../trpc";
@@ -73,6 +74,12 @@ export const customerRouter = router({
       });
     }),
 
+  getCustomersNotes: protectedProcedure.input(z.object({
+    customerId: z.string().min(5)
+  })).query(async ({ input, ctx }) => {
+    return await ctx.prisma.customerNote.findMany({ where: { customerId: input.customerId } })
+  }),
+
   updateCustomer: adminProcedure
     .input(
       z.object({
@@ -81,7 +88,7 @@ export const customerRouter = router({
         number: z.string().min(8),
         address: z.string().min(2).optional().nullable(),
         birthday: z.string().optional().nullable(),
-        idNumber: z.string().min(8).nullish(),
+        idNumber: z.string().optional().nullish(),
         mobile: z.string().min(8).array().max(5),
       })
     )
@@ -92,6 +99,27 @@ export const customerRouter = router({
       });
     }),
 
+  createCustomerNote: protectedProcedure.input(z.object({ text: z.string().min(3), customerId: z.string().min(5) })).mutation(
+    async ({ input, ctx }) => {
+      const count = await ctx.prisma.customerNote.count({ where: { customerId: input.customerId } })
+
+      if (count >= 5) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Customer have max Note",
+        });
+      }
+
+      await ctx.prisma.customerNote.create({ data: { noteContent: input.text, customerId: input.customerId, userId: ctx.session.user.id } })
+
+      return { message: "done" }
+    }
+  )
+  ,
+  updateCusomerNote: protectedProcedure.input(z.object({ newText: z.string().min(3), noteId: z.string().min(5) })).mutation(async ({ input, ctx }) => {
+    const note = await ctx.prisma.customerNote.update({ where: { id: input.noteId }, data: { noteContent: input.newText } })
+    return note
+  }),
   createDebt: protectedProcedure
     .input(z.object({ customerId: z.string().min(3), amount: z.number(), type: z.enum(["Add", "Take"]) }))
     .mutation(async ({ input, ctx }) => {
@@ -125,4 +153,5 @@ export const customerRouter = router({
       include: { Customer: { select: { name: true, number: true } } },
     });
   }),
+
 });
