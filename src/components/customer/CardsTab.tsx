@@ -21,7 +21,9 @@ const CardsTab: React.FC<{ customerData: RouterOutputs["customer"]["getCustomerB
 
   return (
     <div className="grid grid-cols-4 grid-flow-row gap-3 content-center items-center h-full  w-full">
-      <TextToCopy text={`${date.getHours() >= 12 ? "مساؤ" : "صباحؤ"} هنا \n ممكن شحن كروت\n ${customerData.number}`} />
+      <TextToCopy text={`${date.getHours() >= 12 ? "مساؤ" : "صباحؤ"} هنا \n ممكن شحن كروت\n ${customerData.number} \n ${customerData.name}`} />
+      <TextToCopy text={`${date.getHours() >= 12 ? "مساؤ" : "صباحؤ"} هنا \n برجاء تفعيل \n ${customerData.number}`} />
+      <TextToCopy text={`تمام شكرا لك سيدى الفاضل \n كل سنة وسيادتكم والاسرة الكريمه بكامل الصحه والعافيه\n تسلم  يا باشا\n لا مانع من فقد الفترة المتبقيه `} />
       {customerNotes?.map((note) => (
         <TextToCopy text={note.noteContent} noteId={note.id} />
       ))}
@@ -65,7 +67,7 @@ const TextToCopy: React.FC<{ text: string, noteId?: string }> = ({ text, noteId 
       <label>
         <IconToCopy name="Text" text={textS} Icon={BsFillChatSquareTextFill} size={20} />
       </label>
-      <textarea className="bg-black  p-2 text-right  text-white w-full resize-y  min-h-[100px]" onChange={(e) => { setTextS(e.target.value) }} value={textS} />
+      <textarea className="bg-black  p-2 text-right text-sm text-white w-full resize-y  min-h-[100px]" onChange={(e) => { setTextS(e.target.value) }} value={textS} />
 
       {noteId ? <div className=" flex items-center justify-center gap-3">{updateNote.isLoading || deleteNote.isLoading
         ? <LoadingAnimation /> : <> <PrimaryButton label="Update" onClick={async () => {
@@ -79,7 +81,6 @@ const TextToCopy: React.FC<{ text: string, noteId?: string }> = ({ text, noteId 
             try {
               await deleteNote.mutateAsync({ noteId: noteId })
             } catch {
-
             }
           }} />
 
