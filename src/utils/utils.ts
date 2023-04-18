@@ -8,6 +8,10 @@ export const DateFormat: (data: { date: Date }) => string = ({ date }) => {
   });
 };
 
+export const TrpcErrorMessage = (data: string) => {
+  return JSON.parse(data)[0]["message"] as string
+}
+
 export const randomTableData = [
   {
     id: "0",

@@ -130,6 +130,11 @@ export const customerRouter = router({
       return { message: "done" };
     }),
 
+  deleteNote: protectedProcedure.input(z.object({ noteId: z.string().min(5) })).mutation(async ({ input, ctx }) => {
+    await ctx.prisma.customerNote.delete({ where: { id: input.noteId } })
+    return { message: "done" }
+  }),
+
   deleteDebt: protectedProcedure
     .input(z.object({ debtId: z.string().min(3) }))
     .mutation(async ({ input, ctx }) => {
