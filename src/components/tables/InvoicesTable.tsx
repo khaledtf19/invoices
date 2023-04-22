@@ -22,7 +22,7 @@ import {
   Filter,
   TablePag,
 } from "./tables";
-import { RouterOutputs } from "../../utils/trpc";
+import type { RouterOutputs } from "../../utils/trpc";
 
 const InvoicesTable: FC<{
   invoices: RouterOutputs["invoice"]["getNewInvoices"]

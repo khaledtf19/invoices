@@ -148,14 +148,14 @@ export const customerRouter = router({
       return await ctx.prisma.customerDebt.findMany({
         where: { customerId: input.customerId },
         orderBy: { createdAt: "desc" },
-        include: { Customer: { select: { name: true, number: true } } },
+        include: { customer: { select: { name: true, number: true } } },
 
       })
     }
 
     return await ctx.prisma.customerDebt.findMany({
       orderBy: { createdAt: "desc" },
-      include: { Customer: { select: { name: true, number: true } } },
+      include: { customer: { select: { name: true, number: true } } },
     });
   }),
 

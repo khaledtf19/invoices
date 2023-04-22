@@ -4,7 +4,7 @@ import { Input, LoadingAnimation, PrimaryButton, RedButton, SecondaryButton } fr
 import { useModalState } from "../../hooks/modalState";
 import { useEffect, useState } from "react";
 import { trpc } from "../../utils/trpc";
-import { TransactionsArr, TransactionsType } from "../../types/utils.types";
+import { TransactionsArr, type TransactionsType } from "../../types/utils.types";
 import CustomerDebtModal from "./CustomerDebtModal";
 
 const CustomerDebt: React.FC<{

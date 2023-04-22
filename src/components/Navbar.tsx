@@ -73,21 +73,23 @@ const Navbar = () => {
       </ul>
       <ul className="flex w-full flex-col justify-end gap-2 px-1 align-middle">
         {userData?.role === UserRole.Admin ? (
-          <li
-            className=" rounded-md border border-white bg-red-600 px-1 py-2  text-center transition-colors duration-500 hover:cursor-pointer hover:bg-red-700"
-            onClick={() => {
-              if (isModalOpen) {
-                closeModal();
-              } else {
-                openModal({
-                  newComponents: <CustomerDebtModal />,
-                  newWidth: "big",
-                });
-              }
-            }}
-          >
-            <span>Dept</span>
-          </li>
+          <>
+            <li
+              className=" rounded-md border border-white bg-red-600 px-1 py-2  text-center transition-colors duration-500 hover:cursor-pointer hover:bg-red-700"
+              onClick={() => {
+                if (isModalOpen) {
+                  closeModal();
+                } else {
+                  openModal({
+                    newComponents: <CustomerDebtModal />,
+                    newWidth: "big",
+                  });
+                }
+              }}
+            >
+              <span>Dept</span>
+            </li>
+          </>
         ) : (
           ""
         )}
@@ -115,15 +117,14 @@ const RouteLink: FC<{
 
   return (
     <Link
-      className={`flex  w-full items-center justify-center ${
-        router.pathname.includes(to)
-          ? to === "/"
-            ? router.pathname === "/"
-              ? "bg-blue-900 underline"
-              : ""
-            : "bg-blue-900 underline"
-          : ""
-      }  duration-400 flex-col py-2 underline-offset-4 transition-colors hover:bg-blue-900 hover:underline`}
+      className={`flex  w-full items-center justify-center ${router.pathname.includes(to)
+        ? to === "/"
+          ? router.pathname === "/"
+            ? "bg-blue-900 underline"
+            : ""
+          : "bg-blue-900 underline"
+        : ""
+        }  duration-400 flex-col py-2 underline-offset-4 transition-colors hover:bg-blue-900 hover:underline`}
       href={to}
     >
       {router.pathname.includes(to)

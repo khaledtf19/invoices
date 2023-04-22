@@ -17,7 +17,7 @@ const CustomerForm = z.object({
   addess: z.string().optional().nullish(),
   mobile: z
     .object({
-      value: z.string().nullable(),
+      value: z.string().min(8).optional().nullable(),
     })
     .array()
     .max(4),
@@ -28,7 +28,7 @@ const CustomerUpdateForm: FC<{
   customerData: Customer;
   refetch: () => void;
 }> = ({ customerData, refetch }) => {
-  const emptyField = { value: null };
+  const emptyField = { value: "0" };
 
   const mobileArr = customerData?.mobile.map((number) => ({ value: number }));
   const updateCustomer = trpc.customer.updateCustomer.useMutation();

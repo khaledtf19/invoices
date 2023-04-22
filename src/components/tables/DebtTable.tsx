@@ -19,21 +19,24 @@ import {
   Filter,
   TablePag,
 } from "./tables";
-import { RouterOutputs } from "../../utils/trpc";
+import type { RouterOutputs } from "../../utils/trpc";
 import { TransactionsArr } from "../../types/utils.types";
 
-const DebtTable: FC<{ data: RouterOutputs["customer"]["getAllDebt"] }> = ({ data }) => {
-  const columnHelper = createColumnHelper<RouterOutputs["customer"]["getAllDebt"][number]>();
+const DebtTable: FC<{ data: RouterOutputs["customer"]["getAllDebt"] }> = ({
+  data,
+}) => {
+  const columnHelper =
+    createColumnHelper<RouterOutputs["customer"]["getAllDebt"][number]>();
 
   const [filter, setFilter] = useState<ColumnFiltersState>([]);
   const columns = [
-    columnHelper.accessor("Customer.name", {
+    columnHelper.accessor("customer.name", {
       size: 200,
       cell: (info) => <span>{info.renderValue()}</span>,
       footer: (info) => info.column.id,
       header: () => "Name",
     }),
-    columnHelper.accessor("Customer.number", {
+    columnHelper.accessor("customer.number", {
       size: 100,
       cell: (info) => <span>{info.renderValue()}</span>,
       footer: (info) => info.column.id,
@@ -52,16 +55,31 @@ const DebtTable: FC<{ data: RouterOutputs["customer"]["getAllDebt"] }> = ({ data
     }),
     columnHelper.accessor("type", {
       size: 50,
-      cell: (info) => <span className={`${info.getValue() === TransactionsArr[0] ? "text-red-600" : "text-green-500"} `}>{info.renderValue()}</span>,
+      cell: (info) => (
+        <span
+          className={`${
+            info.getValue() === TransactionsArr[0]
+              ? "text-red-600"
+              : "text-green-500"
+          } `}
+        >
+          {info.renderValue()}
+        </span>
+      ),
       footer: (info) => info.column.id,
       header: () => "Type",
     }),
     columnHelper.accessor("deleted", {
-
       size: 50,
-      cell: (info) => <span className={`${info.getValue() ? "text-green-600" : "text-red-600"}`}>{info.getValue() === true ? "Deleted" : "Waiting"} </span>,
-      header: () => "Status"
-    })
+      cell: (info) => (
+        <span
+          className={`${info.getValue() ? "text-green-600" : "text-red-600"}`}
+        >
+          {info.getValue() === true ? "Deleted" : "Waiting"}{" "}
+        </span>
+      ),
+      header: () => "Status",
+    }),
   ];
 
   const table = useReactTable({
@@ -86,9 +104,9 @@ const DebtTable: FC<{ data: RouterOutputs["customer"]["getAllDebt"] }> = ({ data
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   {header.column.getCanFilter() ? (
                     <div>
                       <Filter column={header.column} table={table} />

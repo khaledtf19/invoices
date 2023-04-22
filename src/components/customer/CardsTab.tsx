@@ -25,7 +25,7 @@ const CardsTab: React.FC<{ customerData: RouterOutputs["customer"]["getCustomerB
       <TextToCopy text={`${date.getHours() >= 12 ? "مساؤ" : "صباحؤ"} هنا \n برجاء تفعيل \n ${customerData.number}`} />
       <TextToCopy text={`تمام شكرا لك سيدى الفاضل \n كل سنة وسيادتكم والاسرة الكريمه بكامل الصحه والعافيه\n تسلم  يا باشا\n لا مانع من فقد الفترة المتبقيه `} />
       {customerNotes?.map((note) => (
-        <TextToCopy text={note.noteContent} noteId={note.id} />
+        <TextToCopy key={note.id} text={note.noteContent} noteId={note.id} />
       ))}
       {
         customerNotes && customerNotes?.length < 5 ? <div className="w-fit bg-green-600 py-1 px-3 h-fit rounded-full cursor-pointer hover:bg-blue-600" onClick={async () => {

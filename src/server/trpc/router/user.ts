@@ -73,4 +73,14 @@ export const userRouter = router({
 
       return { message: "Done" };
     }),
+
+  createNewBank: adminProcedure.mutation(async ({ ctx }) => {
+    await ctx.prisma.bank.create({ data: { bss: 0, khadmaty: 0 } })
+    return { message: "done" }
+  }),
+
+  chaneBank: adminProcedure.input(z.object({ bankName: z.enum(["Bss", "Khadmaty"]) })).mutation(async () => {
+    return { message: "done!" }
+  })
 });
+

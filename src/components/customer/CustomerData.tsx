@@ -24,7 +24,6 @@ const CustomerData: FC<{ customerData: Customer }> = ({ customerData }) => {
   }));
   const { user } = useUserState()((state) => state);
 
-  const router = useRouter()
   useEffect(() => {
     return () => {
       closeModal();
