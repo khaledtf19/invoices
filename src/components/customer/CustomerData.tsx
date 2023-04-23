@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 
 import { SyncLoader } from "react-spinners";
 
-import { DataFields, IconToCopy, Input, PrimaryButton, SecondaryButton } from "../utils";
+import { DataFields, IconToCopy, Input, PrimaryButton } from "../utils";
 import { trpc } from "../../utils/trpc";
 import { useModalState } from "../../hooks/modalState";
 import {
@@ -13,7 +13,7 @@ import {
   BsFillPersonBadgeFill,
   BsCalendarDate,
 } from "react-icons/bs";
-import { MdOutlineAlternateEmail } from 'react-icons/md'
+import { MdOutlineAlternateEmail } from "react-icons/md";
 import { BiMobile } from "react-icons/bi";
 import { useUserState } from "../../hooks/userDataState";
 
@@ -82,7 +82,6 @@ const CustomerData: FC<{ customerData: Customer }> = ({ customerData }) => {
           });
         }}
       />
-
     </div>
   );
 };
@@ -111,9 +110,9 @@ const ModalComponent: FC<{
   }, [refetch]);
 
   return (
-    <div className=" flex flex-col items-center justify-center gap-5  py-5 px-20">
+    <div className=" flex flex-col items-center justify-center gap-5  px-20 py-5">
       {createInvoice.isLoading ? (
-        <div className="py-10 px-16">
+        <div className="px-16 py-10">
           <SyncLoader color="#312e81" />
         </div>
       ) : (

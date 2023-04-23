@@ -7,18 +7,17 @@ import {
   PrimaryButton,
   RedButton,
 } from "./utils";
-import type { InvoiceStatusEnum, } from "@prisma/client";
+import type { InvoiceStatusEnum } from "@prisma/client";
 import { DateFormat } from "../utils/utils";
 import { InvoiceStatusArr, UserRoleArr } from "../types/utils.types";
-import { RouterOutputs, trpc } from "../utils/trpc";
+import { type RouterOutputs, trpc } from "../utils/trpc";
 import { useModalState } from "../hooks/modalState";
 import { useRouter } from "next/router";
 import { useUserState } from "../hooks/userDataState";
 import CustomerDebtComponent from "./customer/CustomerDebt";
 
-
 const InvoiceView: FC<{
-  invoiceData: RouterOutputs["invoice"]["getInvoiceById"]
+  invoiceData: RouterOutputs["invoice"]["getInvoiceById"];
   refetch: () => void;
 }> = ({ invoiceData, refetch }) => {
   const [newStatus, setNewStatus] = useState(invoiceData.invoiceStatus?.status);
@@ -30,7 +29,7 @@ const InvoiceView: FC<{
     closeModal: state.closeModal,
   }));
 
-  const ctx = trpc.useContext()
+  const ctx = trpc.useContext();
 
   const { userData } = useUserState()((state) => ({ userData: state.user }));
 
@@ -38,7 +37,7 @@ const InvoiceView: FC<{
 
   useEffect(() => {
     if (editInvoice.isSuccess) {
-      ctx.invoice.getInvoiceById.invalidate()
+      ctx.invoice.getInvoiceById.invalidate();
     }
     if (editInvoice.error) {
       openModal({ newText: editInvoice.error.message });
@@ -48,14 +47,26 @@ const InvoiceView: FC<{
     };
   }, [
     closeModal,
+    ctx.invoice.getInvoiceById,
     editInvoice.error,
     editInvoice.isSuccess,
     openModal,
-
   ]);
 
   return (
-    <Container size="max-w-md" rightComponent={<CustomerDebtComponent customerId={invoiceData.customerId} debtData={invoiceData.customer.customerDebt} refetch={() => { refetch() }} />} openRight={invoiceData.customer.customerDebt.length > 0 ? true : false}>
+    <Container
+      size="max-w-md"
+      rightComponent={
+        <CustomerDebtComponent
+          customerId={invoiceData.customerId}
+          debtData={invoiceData.customer.customerDebt}
+          refetch={() => {
+            refetch();
+          }}
+        />
+      }
+      openRight={invoiceData.customer.customerDebt.length > 0 ? true : false}
+    >
       <DataFields label="Name" text={invoiceData.customer.name} />
       <DataFields label="Number" text={invoiceData.customer.number} />
       <DataFields label="Cost" text={invoiceData.cost} />
@@ -77,12 +88,13 @@ const InvoiceView: FC<{
         }
       />
       <div
-        className={` w-full ${newStatus === InvoiceStatusArr[1]
-          ? "text-red-700"
-          : newStatus === InvoiceStatusArr[2]
+        className={` w-full ${
+          newStatus === InvoiceStatusArr[1]
+            ? "text-red-700"
+            : newStatus === InvoiceStatusArr[2]
             ? "text-green-700"
             : "text-blue-700"
-          } `}
+        } `}
       >
         {userData?.role === UserRoleArr[1] ? (
           <>
@@ -209,4 +221,3 @@ const ModalDeleteComponent: FC<{ invoiceId: string; customerId: string }> = ({
     </div>
   );
 };
-

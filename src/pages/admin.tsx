@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Container from "../container/Container";
-import { Input, PrimaryButton } from "../components/utils";
+import { Input, PrimaryButton, SecondaryButton } from "../components/utils";
 import { useSession } from "next-auth/react";
 import { UserRoleArr } from "../types/utils.types";
 import { trpc } from "../utils/trpc";
@@ -12,6 +12,9 @@ const Admin = () => {
   const { data } = useSession();
 
   const makeAdmin = trpc.auth.makeAdmin.useMutation();
+  const makeBank = trpc.user.createNewBank.useMutation();
+
+  const ctx = trpc.useContext();
 
   useEffect(() => {
     console.log("error", makeAdmin.error?.message);
@@ -47,6 +50,17 @@ const Admin = () => {
           onClick={async () => {
             try {
               await makeAdmin.mutateAsync({ adminPassword: password });
+            } catch (e) {
+              console.log(e);
+            }
+          }}
+        />
+        <SecondaryButton
+          label="Create Bank"
+          onClick={async () => {
+            try {
+              await makeBank.mutateAsync();
+              ctx.user.getBank.invalidate();
             } catch (e) {
               console.log(e);
             }

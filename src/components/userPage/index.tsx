@@ -1,24 +1,17 @@
-import {
-  type PropsWithChildren,
-  type FC,
-  type ReactNode,
-  useState,
-} from "react";
-import {
-  UserRole,
-} from "@prisma/client";
+import { type PropsWithChildren, type FC } from "react";
+import { UserRole } from "@prisma/client";
 import UserData from "./UserData";
 import TransactionsTable from "../tables/TransactionsTable";
 import ChangeBalanceTable from "../tables/ChangeBalanceTable";
-import { RouterOutputs } from "../../utils/trpc";
+import { type RouterOutputs } from "../../utils/trpc";
 import { PageTabs } from "../utils";
 
 const UserPage: FC<{
   refetch: () => void;
-  userData: RouterOutputs["user"]["getUserById"]
+  userData: RouterOutputs["user"]["getUserById"];
 }> = ({ userData, refetch }) => {
   if (!userData) {
-    return <></>
+    return <></>;
   }
 
   return (
@@ -66,11 +59,10 @@ const UserPageSection: FC<
           {name}
         </h1>
         <span className=" h-3 w-3 bg-gray-900 p-1" />
-        <div className="flex w-full flex-col items-center justify-center gap-1 rounded-md border border-gray-900  py-10 px-3">
+        <div className="flex w-full flex-col items-center justify-center gap-1 rounded-md border border-gray-900  px-3 py-10">
           {children}
         </div>
       </section>
     </div>
   );
 };
-

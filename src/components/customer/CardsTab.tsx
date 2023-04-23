@@ -1,6 +1,6 @@
 import Container from "../../container/Container";
 import { BsFillChatSquareTextFill } from 'react-icons/bs'
-import { RouterOutputs, trpc } from "../../utils/trpc";
+import {type  RouterOutputs, trpc } from "../../utils/trpc";
 import { useState } from "react";
 import { IconToCopy, LoadingAnimation, PrimaryButton, RedButton } from "../utils";
 import { toast } from "react-hot-toast";

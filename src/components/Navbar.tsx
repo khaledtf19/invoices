@@ -15,6 +15,7 @@ import { RiSearchLine } from "react-icons/ri";
 import { useUserState } from "../hooks/userDataState";
 import { useModalState } from "../hooks/modalState";
 import CustomerDebtModal from "./customer/CustomerDebtModal";
+import { trpc } from "../utils/trpc";
 
 const Navbar = () => {
   const { userData } = useUserState()((state) => ({ userData: state.user }));
@@ -24,8 +25,10 @@ const Navbar = () => {
     closeModal: state.closeModal,
   }));
 
+  const { data: bankData } = trpc.user.getBank.useQuery();
+
   return (
-    <nav className=" fixed top-0 bottom-0 left-0 z-50 flex w-20 flex-col justify-between  rounded-r-lg bg-gradient-to-b from-blue-800  to-blue-900  py-10 text-sm text-white">
+    <nav className=" fixed bottom-0 left-0 top-0 z-50 flex w-20 flex-col justify-between  rounded-r-lg bg-gradient-to-b from-blue-800  to-blue-900  py-10 text-sm text-white">
       <ul className="flex w-full flex-col gap-3">
         <li>
           <RouteLink
@@ -65,7 +68,17 @@ const Navbar = () => {
       <ul className="flex w-full flex-col justify-end px-1 align-middle">
         <li className=" rounded-md border border-blue-600 px-1 py-2  text-center ">
           {userData?.role === UserRole.Admin ? (
-            <p className=" text-green-600">ADMIN</p>
+            <Link href={`/bank`}>
+              <p className=" text-green-600">ADMIN</p>
+              {bankData ? (
+                <>
+                  <p>B: {bankData?.bss}</p>
+                  <p>K: {bankData?.khadmaty}</p>
+                </>
+              ) : (
+                ""
+              )}
+            </Link>
           ) : (
             <p>{userData?.userBalance} /EGP</p>
           )}
@@ -117,14 +130,15 @@ const RouteLink: FC<{
 
   return (
     <Link
-      className={`flex  w-full items-center justify-center ${router.pathname.includes(to)
-        ? to === "/"
-          ? router.pathname === "/"
-            ? "bg-blue-900 underline"
-            : ""
-          : "bg-blue-900 underline"
-        : ""
-        }  duration-400 flex-col py-2 underline-offset-4 transition-colors hover:bg-blue-900 hover:underline`}
+      className={`flex  w-full items-center justify-center ${
+        router.pathname.includes(to)
+          ? to === "/"
+            ? router.pathname === "/"
+              ? "bg-blue-900 underline"
+              : ""
+            : "bg-blue-900 underline"
+          : ""
+      }  duration-400 flex-col py-2 underline-offset-4 transition-colors hover:bg-blue-900 hover:underline`}
       href={to}
     >
       {router.pathname.includes(to)
