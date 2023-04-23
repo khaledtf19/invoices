@@ -40,15 +40,15 @@ model BankChange {
   id       String           @id @default(cuid())
   type     TransactionTypes
   bankName BankName
-  amount   Int
+  amount   Float
   userId   String
   user     User?            @relation(fields: [userId], references: [id])
 }
 
 model Bank {
   id       String @id @default(cuid())
-  khadmaty Int    @default(0)
-  bss      Int    @default(0)
+  khadmaty Float  @default(0)
+  bss      Float  @default(0)
 }
 
 model InvoiceStatus {

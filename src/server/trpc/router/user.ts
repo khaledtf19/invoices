@@ -1,4 +1,8 @@
-import { TransactionsArr, Ztransactions } from "../../../types/utils.types";
+import {
+  TransactionsArr,
+  ZBankType,
+  ZTransactions,
+} from "../../../types/utils.types";
 import { router, adminProcedure } from "../trpc";
 import { z } from "zod";
 
@@ -46,7 +50,7 @@ export const userRouter = router({
       z.object({
         userId: z.string().min(5),
         amount: z.number().min(5),
-        type: Ztransactions,
+        type: ZTransactions,
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -75,12 +79,48 @@ export const userRouter = router({
     }),
 
   createNewBank: adminProcedure.mutation(async ({ ctx }) => {
-    await ctx.prisma.bank.create({ data: { bss: 0, khadmaty: 0 } })
-    return { message: "done" }
+    const count = await ctx.prisma.bank.count();
+    if (count > 0) return { message: "bank already exists" };
+    await ctx.prisma.bank.create({ data: { bss: 0, khadmaty: 0 } });
+    return { message: "done" };
   }),
 
-  chaneBank: adminProcedure.input(z.object({ bankName: z.enum(["Bss", "Khadmaty"]) })).mutation(async () => {
-    return { message: "done!" }
-  })
-});
+  getBank: adminProcedure.query(async ({ ctx }) => {
+    const bank = await ctx.prisma.bank.findFirst();
+    return bank;
+  }),
 
+  getBankChange: adminProcedure.query(async ({ ctx }) => {
+    const bankChanges = await ctx.prisma.bankChange.findMany();
+    return bankChanges;
+  }),
+
+  changeBank: adminProcedure
+    .input(
+      z.object({
+        bankName: ZBankType,
+        amount: z.number(),
+        transactionType: ZTransactions,
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      if (input.transactionType === TransactionsArr[0]) {
+        await ctx.prisma.bank.updateMany({
+          data: { [input.bankName]: { increment: input.amount } },
+        });
+      } else if (input.transactionType === TransactionsArr[1]) {
+        await ctx.prisma.bank.updateMany({
+          data: { [input.bankName]: { decrement: input.amount } },
+        });
+      }
+      await ctx.prisma.bankChange.create({
+        data: {
+          type: input.transactionType,
+          amount: input.amount,
+          bankName: input.bankName,
+          userId: ctx.session.user.id,
+        },
+      });
+      return { message: "done" };
+    }),
+});

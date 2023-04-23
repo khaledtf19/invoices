@@ -28,7 +28,7 @@ const CustomerUpdateForm: FC<{
   customerData: Customer;
   refetch: () => void;
 }> = ({ customerData, refetch }) => {
-  const emptyField = { value: "0" };
+  const emptyField = { value: "" };
 
   const mobileArr = customerData?.mobile.map((number) => ({ value: number }));
   const updateCustomer = trpc.customer.updateCustomer.useMutation();
