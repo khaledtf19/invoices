@@ -18,6 +18,6 @@ export const TransactionsArr = ["Add", "Take"] as const;
 export type TransactionsType = (typeof TransactionsArr)[number];
 export const ZTransactions = z.enum(TransactionsArr);
 
-export const BankTypeArr = ["Bss", "Khadmaty"] as const;
-export type BankType = (typeof BankTypeArr)[number];
-export const ZBankType = z.enum(BankTypeArr);
+export const BankNameArr = ["Bss", "Khadmaty"] as const;
+export type BankType = (typeof BankNameArr)[number];
+export const ZBankType = z.enum(BankNameArr);
