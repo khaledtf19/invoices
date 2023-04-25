@@ -76,7 +76,8 @@ export default Bank;
 export const BankModal: React.FC<{
   bankNameType?: BankName;
   transactionType?: TransactionTypes;
-}> = ({ bankNameType, transactionType }) => {
+  invoiceId?: string;
+}> = ({ bankNameType, transactionType, invoiceId }) => {
   const [amount, setAmount] = useState(0);
   const [bankName, setBankName] = useState(bankNameType || BankNameArr[0]);
   const [transaction, setTransaction] = useState(transactionType || "Add");
@@ -140,11 +141,15 @@ export const BankModal: React.FC<{
       </div>
 
       {!Number(amount) ? (
-        <p className="text-red-500">Must be a Number</p>
+        <p className="text-xl text-red-500">Must be a Number</p>
       ) : (
-        <p>
-          {transaction} {amount} {transaction === "Add" ? "to" : "from"}{" "}
-          {bankName}
+        <p
+          className={`text-xl ${
+            transaction === "Add" ? "text-green-600" : "text-red-600"
+          }`}
+        >
+          {transaction === "Add" ? "+" : "-"} {amount}{" "}
+          {transaction === "Add" ? "to" : "from"} {bankName}
         </p>
       )}
       <button
@@ -159,6 +164,7 @@ export const BankModal: React.FC<{
               transactionType: transaction,
               amount,
               bankName,
+              invoiceId,
             });
           }
         }}

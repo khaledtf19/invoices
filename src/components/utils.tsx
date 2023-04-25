@@ -152,7 +152,8 @@ export const DataFields: FC<{
   text: string | number | null | undefined;
   label: string;
   Icon?: IconType;
-}> = ({ text, label, Icon }) => {
+  className?: string;
+}> = ({ text, label, Icon, className }) => {
   return (
     <div className=" flex w-full flex-col ">
       <label className=" flex items-center gap-2 text-gray-700">
@@ -161,7 +162,9 @@ export const DataFields: FC<{
         ) : null}
         {label}:
       </label>
-      <p className=" bg-gray-300 p-1 ">{text ? String(text) : "none"}</p>
+      <p className={` bg-gray-300 p-1 ${className}`}>
+        {text ? String(text) : "none"}
+      </p>
     </div>
   );
 };

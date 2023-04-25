@@ -6,6 +6,7 @@ import {
   LoadingAnimation,
   PrimaryButton,
   RedButton,
+  SecondaryButton,
 } from "./utils";
 import type { InvoiceStatusEnum } from "@prisma/client";
 import { DateFormat } from "../utils/utils";
@@ -15,6 +16,7 @@ import { useModalState } from "../hooks/modalState";
 import { useRouter } from "next/router";
 import { useUserState } from "../hooks/userDataState";
 import CustomerDebtComponent from "./customer/CustomerDebt";
+import { BankModal } from "../pages/bank";
 
 const InvoiceView: FC<{
   invoiceData: RouterOutputs["invoice"]["getInvoiceById"];
@@ -33,13 +35,11 @@ const InvoiceView: FC<{
 
   const { userData } = useUserState()((state) => ({ userData: state.user }));
 
-  const editInvoice = trpc.invoice.updateInvoiceStatus.useMutation();
-
-  useEffect(() => {
-    if (editInvoice.isSuccess) {
+  const editInvoice = trpc.invoice.updateInvoiceStatus.useMutation({
+    onSuccess: () => {
       ctx.invoice.getInvoiceById.invalidate();
-    }
-  }, [ctx.invoice.getInvoiceById, editInvoice.isSuccess]);
+    },
+  });
 
   useEffect(() => {
     if (editInvoice.error) {
@@ -87,6 +87,14 @@ const InvoiceView: FC<{
             : "Waiting an Admin"
         }
       />
+      {invoiceData.bankChange.map((bankChange) => (
+        <DataFields
+          key={bankChange.id}
+          label={`${bankChange.bankName} cost`}
+          text={"- " + bankChange.amount}
+          className=" text-red-700"
+        />
+      ))}
       <div
         className={` w-full ${
           newStatus === InvoiceStatusArr[1]
@@ -138,33 +146,45 @@ const InvoiceView: FC<{
         />
       ) : null}
 
-      {userData?.role === UserRoleArr[1] ? (
-        <RedButton
-          label="Delete"
-          onClick={() => {
-            openModal({
-              newComponents: (
-                <ModalDeleteComponent
-                  invoiceId={invoiceData.id}
-                  customerId={invoiceData.customerId}
-                />
-              ),
-            });
-          }}
-        />
-      ) : null}
-
       {userData?.role === UserRoleArr[1] && (
-        <PrimaryButton
-          label="Edit"
-          onClick={async () => {
-            editInvoice.mutateAsync({
-              invoiceId: invoiceData.id,
-              invoiceStatus: newStatus,
-              invoiceStatusNote: newStatusNote,
-            });
-          }}
-        />
+        <>
+          <RedButton
+            label="Delete"
+            onClick={() => {
+              openModal({
+                newComponents: (
+                  <ModalDeleteComponent
+                    invoiceId={invoiceData.id}
+                    customerId={invoiceData.customerId}
+                  />
+                ),
+              });
+            }}
+          />
+          <PrimaryButton
+            label="Edit"
+            onClick={async () => {
+              editInvoice.mutateAsync({
+                invoiceId: invoiceData.id,
+                invoiceStatus: newStatus,
+                invoiceStatusNote: newStatusNote,
+              });
+            }}
+          />
+          <SecondaryButton
+            label="Add to Bank"
+            onClick={() => {
+              openModal({
+                newComponents: (
+                  <BankModal
+                    transactionType="Take"
+                    invoiceId={invoiceData.id}
+                  />
+                ),
+              });
+            }}
+          />
+        </>
       )}
     </Container>
   );

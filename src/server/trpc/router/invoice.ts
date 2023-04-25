@@ -52,9 +52,12 @@ export const invoiceRouter = router({
         include: {
           invoiceNotes: true,
           invoiceStatus: true,
-          customer: { include: { customerDebt: { where: { deleted: false } } } },
+          customer: {
+            include: { customerDebt: { where: { deleted: false } } },
+          },
           madeBy: true,
           transaction: true,
+          bankChange: true,
         },
       });
       if (!invoice) {
