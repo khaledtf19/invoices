@@ -20,7 +20,7 @@ export const TableComponent: FC<PropsWithChildren & { moreClass?: string }> = ({
 }) => {
   return (
     <table
-      className={` w-full p-2 shadow-2xl ${moreClass} min-h-0  animate-opacityAnimation`}
+      className={` w-full p-2 shadow-2xl ${moreClass} min-h-0 animate-opacityAnimation text-sm`}
     >
       {children}
     </table>
@@ -142,7 +142,7 @@ export const Filter: FC<{
     }
   }, []);
 
-  if (typeof firstValue === "number" ) {
+  if (typeof firstValue === "number") {
     return <></>;
   }
 

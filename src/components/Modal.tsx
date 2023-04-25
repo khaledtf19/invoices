@@ -12,14 +12,14 @@ const Modal: FC = () => {
 
   return (
     <div
-      className="fixed top-0 left-0 bottom-0 z-40 flex h-full w-full animate-opacityAnimation items-center justify-center bg-black  bg-opacity-50 backdrop-blur-sm"
+      className="fixed bottom-0 left-0 top-0 z-40 flex h-full w-full animate-opacityAnimation items-center justify-center bg-black  bg-opacity-50 backdrop-blur-sm"
       onClick={closeModal}
     >
       <div
         onClick={(e) => {
           e.stopPropagation();
         }}
-        className={`ml-20 flex max-h-[650px] min-h-[200px] min-w-[400px] max-w-[1300px] animate-startAnimation flex-col items-center justify-center rounded-lg bg-white p-4 shadow-2xl drop-shadow-xl ${
+        className={`ml-20 flex max-h-[650px] min-h-[200px] min-w-[400px] max-w-[1200px] animate-startAnimation flex-col items-center justify-center rounded-lg bg-white p-4 shadow-2xl drop-shadow-xl ${
           width ? "h-full w-full overflow-y-scroll" : ""
         }`}
       >

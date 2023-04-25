@@ -39,19 +39,19 @@ const InvoiceView: FC<{
     if (editInvoice.isSuccess) {
       ctx.invoice.getInvoiceById.invalidate();
     }
+  }, [ctx.invoice.getInvoiceById, editInvoice.isSuccess]);
+
+  useEffect(() => {
     if (editInvoice.error) {
       openModal({ newText: editInvoice.error.message });
     }
+  }, [editInvoice.error, openModal]);
+
+  useEffect(() => {
     return () => {
       closeModal();
     };
-  }, [
-    closeModal,
-    ctx.invoice.getInvoiceById,
-    editInvoice.error,
-    editInvoice.isSuccess,
-    openModal,
-  ]);
+  }, [closeModal]);
 
   return (
     <Container
