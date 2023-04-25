@@ -91,7 +91,12 @@ export const userRouter = router({
   }),
 
   getBankChange: adminProcedure.query(async ({ ctx }) => {
-    const bankChanges = await ctx.prisma.bankChange.findMany();
+    const bankChanges = await ctx.prisma.bankChange.findMany({
+      include: {
+        user: true,
+        invoice: { select: { customer: { select: { name: true } }, id: true } },
+      },
+    });
     return bankChanges;
   }),
 
@@ -101,16 +106,21 @@ export const userRouter = router({
         bankName: ZBankType,
         amount: z.number(),
         transactionType: ZTransactions,
+        invoiceId: z.string().optional(),
       })
     )
     .mutation(async ({ input, ctx }) => {
       if (input.transactionType === TransactionsArr[0]) {
         await ctx.prisma.bank.updateMany({
-          data: { [input.bankName]: { increment: input.amount } },
+          data: {
+            [input.bankName.toLocaleLowerCase()]: { increment: input.amount },
+          },
         });
       } else if (input.transactionType === TransactionsArr[1]) {
         await ctx.prisma.bank.updateMany({
-          data: { [input.bankName]: { decrement: input.amount } },
+          data: {
+            [input.bankName.toLocaleLowerCase()]: { decrement: input.amount },
+          },
         });
       }
       await ctx.prisma.bankChange.create({
@@ -119,6 +129,7 @@ export const userRouter = router({
           amount: input.amount,
           bankName: input.bankName,
           userId: ctx.session.user.id,
+          invoiceId: input.invoiceId,
         },
       });
       return { message: "done" };

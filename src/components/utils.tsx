@@ -47,10 +47,10 @@ export const FormInput: FC<{
   label: string;
   register: UseFormRegisterReturn<string>;
   error?:
-  | string
-  | FieldError
-  | Merge<FieldError, FieldErrorsImpl<any>>
-  | undefined;
+    | string
+    | FieldError
+    | Merge<FieldError, FieldErrorsImpl<any>>
+    | undefined;
   placeholder?: string;
   type: HTMLInputTypeAttribute;
 }> = ({ name, label, register, error, type, placeholder }) => {
@@ -143,7 +143,7 @@ export const Toggle: FC<{
         className="peer sr-only"
         onChange={onChange}
       />
-      <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-indigo-800 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800"></div>
+      <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-indigo-800 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800"></div>
     </label>
   );
 };
@@ -185,8 +185,9 @@ export const IconToCopy: FC<{
 
   return (
     <div
-      className={`${copied ? " text-green-600" : ""
-        } relative flex items-center justify-center`}
+      className={`${
+        copied ? " text-green-600" : ""
+      } relative flex items-center justify-center`}
       onMouseOver={() => {
         setHover(true);
       }}
@@ -195,7 +196,7 @@ export const IconToCopy: FC<{
       }}
     >
       {hover ? (
-        <p className=" absolute bottom-8 flex animate-opacityAnimation items-center justify-center  rounded-md bg-white py-1 px-3 text-gray-600 shadow-lg">
+        <p className=" absolute bottom-8 flex animate-opacityAnimation items-center justify-center  rounded-md bg-white px-3 py-1 text-gray-600 shadow-lg">
           {name}
         </p>
       ) : null}
@@ -206,8 +207,8 @@ export const IconToCopy: FC<{
   );
 };
 
-export const LoadingAnimation = () => {
-  return <SyncLoader color="#312e81" />;
+export const LoadingAnimation = (props: { color?: string }) => {
+  return <SyncLoader color={props.color ? props.color : "#312e81"} />;
 };
 
 export const LoadingInvoice = () => {
@@ -251,12 +252,10 @@ export const LoadingInvoice = () => {
   );
 };
 
-
 export const PageTabs: FC<{
   tabs: {
     tabName: string;
     component: React.ReactNode;
-
   }[];
 }> = ({ tabs }) => {
   const [selectedTab, setSelectedTab] = useState(0);

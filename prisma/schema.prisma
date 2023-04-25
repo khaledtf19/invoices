@@ -37,12 +37,15 @@ enum InvoiceStatusEnum {
 }
 
 model BankChange {
-  id       String           @id @default(cuid())
-  type     TransactionTypes
-  bankName BankName
-  amount   Float
-  userId   String
-  user     User?            @relation(fields: [userId], references: [id])
+  id        String           @id @default(cuid())
+  type      TransactionTypes
+  bankName  BankName
+  amount    Float
+  userId    String
+  createdAt DateTime         @default(now())
+  user      User?            @relation(fields: [userId], references: [id])
+  invoice   Invoice?         @relation(fields: [invoiceId], references: [id])
+  invoiceId String?
 }
 
 model Bank {
@@ -85,6 +88,7 @@ model Invoice {
   invoiceStatus InvoiceStatus?
   invoiceNotes  InvoiceNote[]
   transaction   Transaction?
+  bankChange    BankChange[]
 }
 
 model CustomerNote {

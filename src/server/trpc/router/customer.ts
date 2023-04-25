@@ -74,11 +74,17 @@ export const customerRouter = router({
       });
     }),
 
-  getCustomersNotes: protectedProcedure.input(z.object({
-    customerId: z.string().min(5)
-  })).query(async ({ input, ctx }) => {
-    return await ctx.prisma.customerNote.findMany({ where: { customerId: input.customerId } })
-  }),
+  getCustomersNotes: protectedProcedure
+    .input(
+      z.object({
+        customerId: z.string().min(5),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      return await ctx.prisma.customerNote.findMany({
+        where: { customerId: input.customerId },
+      });
+    }),
 
   updateCustomer: adminProcedure
     .input(
@@ -99,9 +105,12 @@ export const customerRouter = router({
       });
     }),
 
-  createCustomerNote: protectedProcedure.input(z.object({ text: z.string().min(3), customerId: z.string().min(5) })).mutation(
-    async ({ input, ctx }) => {
-      const count = await ctx.prisma.customerNote.count({ where: { customerId: input.customerId } })
+  createCustomerNote: protectedProcedure
+    .input(z.object({ text: z.string().min(3), customerId: z.string().min(5) }))
+    .mutation(async ({ input, ctx }) => {
+      const count = await ctx.prisma.customerNote.count({
+        where: { customerId: input.customerId },
+      });
 
       if (count >= 5) {
         throw new TRPCError({
@@ -110,53 +119,81 @@ export const customerRouter = router({
         });
       }
 
-      await ctx.prisma.customerNote.create({ data: { noteContent: input.text, customerId: input.customerId, userId: ctx.session.user.id } })
+      await ctx.prisma.customerNote.create({
+        data: {
+          noteContent: input.text,
+          customerId: input.customerId,
+          userId: ctx.session.user.id,
+        },
+      });
 
-      return { message: "done" }
-    }
-  )
-  ,
-  updateCusomerNote: protectedProcedure.input(z.object({ newText: z.string().min(3), noteId: z.string().min(5) })).mutation(async ({ input, ctx }) => {
-    const note = await ctx.prisma.customerNote.update({ where: { id: input.noteId }, data: { noteContent: input.newText } })
-    return note
-  }),
+      return { message: "done" };
+    }),
+  updateCusomerNote: protectedProcedure
+    .input(z.object({ newText: z.string().min(3), noteId: z.string().min(5) }))
+    .mutation(async ({ input, ctx }) => {
+      const note = await ctx.prisma.customerNote.update({
+        where: { id: input.noteId },
+        data: { noteContent: input.newText },
+      });
+      return note;
+    }),
   createDebt: protectedProcedure
-    .input(z.object({ customerId: z.string().min(3), amount: z.number(), type: z.enum(["Add", "Take"]) }))
+    .input(
+      z.object({
+        customerId: z.string().min(3),
+        amount: z.number(),
+        type: z.enum(["Add", "Take"]),
+      })
+    )
     .mutation(async ({ input, ctx }) => {
       await ctx.prisma.customerDebt.create({
-        data: { customerId: input.customerId, amount: input.amount, type: input.type },
+        data: {
+          customerId: input.customerId,
+          amount: input.amount,
+          type: input.type,
+        },
       });
 
       return { message: "done" };
     }),
 
-  deleteNote: protectedProcedure.input(z.object({ noteId: z.string().min(5) })).mutation(async ({ input, ctx }) => {
-    await ctx.prisma.customerNote.delete({ where: { id: input.noteId } })
-    return { message: "done" }
-  }),
+  deleteNote: protectedProcedure
+    .input(z.object({ noteId: z.string().min(5) }))
+    .mutation(async ({ input, ctx }) => {
+      await ctx.prisma.customerNote.delete({ where: { id: input.noteId } });
+      return { message: "done" };
+    }),
 
   deleteDebt: protectedProcedure
     .input(z.object({ debtId: z.string().min(3) }))
     .mutation(async ({ input, ctx }) => {
-      await ctx.prisma.customerDebt.update({ where: { id: input.debtId }, data: { deleted: true, userId: ctx.session.user.id } })
+      await ctx.prisma.customerDebt.update({
+        where: { id: input.debtId },
+        data: { deleted: true, userId: ctx.session.user.id },
+      });
 
       return { message: "done" };
     }),
 
-  getAllDebt: adminProcedure.input(z.object({ customerId: z.string().optional() })).query(async ({ ctx, input }) => {
-    if (input.customerId) {
+  getAllDebt: adminProcedure
+    .input(z.object({ customerId: z.string().optional() }))
+    .query(async ({ ctx, input }) => {
+      if (input.customerId) {
+        return await ctx.prisma.customerDebt.findMany({
+          where: { customerId: input.customerId },
+          orderBy: { createdAt: "desc" },
+          include: {
+            customer: { select: { name: true, number: true, address: true } },
+          },
+        });
+      }
+
       return await ctx.prisma.customerDebt.findMany({
-        where: { customerId: input.customerId },
         orderBy: { createdAt: "desc" },
-        include: { customer: { select: { name: true, number: true } } },
-
-      })
-    }
-
-    return await ctx.prisma.customerDebt.findMany({
-      orderBy: { createdAt: "desc" },
-      include: { customer: { select: { name: true, number: true } } },
-    });
-  }),
-
+        include: {
+          customer: { select: { name: true, number: true, address: true } },
+        },
+      });
+    }),
 });

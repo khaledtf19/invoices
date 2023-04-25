@@ -1,7 +1,5 @@
 import { type FC, useState } from "react";
-import {
-  InvoiceStatusEnum,
-} from "@prisma/client";
+import { InvoiceStatusEnum } from "@prisma/client";
 import {
   createColumnHelper,
   flexRender,
@@ -25,9 +23,10 @@ import {
 import type { RouterOutputs } from "../../utils/trpc";
 
 const InvoicesTable: FC<{
-  invoices: RouterOutputs["invoice"]["getNewInvoices"]
+  invoices: RouterOutputs["invoice"]["getNewInvoices"];
 }> = ({ invoices }) => {
-  const columnHelper = createColumnHelper<RouterOutputs["invoice"]["getNewInvoices"][number]>();
+  const columnHelper =
+    createColumnHelper<RouterOutputs["invoice"]["getNewInvoices"][number]>();
   const [filter, setFilter] = useState<ColumnFiltersState>([]);
 
   const columns = [
@@ -47,11 +46,13 @@ const InvoicesTable: FC<{
       cell: (info) => DateFormat({ date: info.getValue() }),
       footer: (info) => info.column.id,
       header: () => "Created At",
+      enableColumnFilter: false,
     }),
     columnHelper.accessor("updatedAt", {
       cell: (info) => DateFormat({ date: info.getValue() }),
       footer: (info) => info.column.id,
       header: () => "Updated At",
+      enableColumnFilter: false,
     }),
     columnHelper.accessor("invoiceStatus.status", {
       cell: (info) => (
@@ -60,8 +61,8 @@ const InvoicesTable: FC<{
             info.getValue() === InvoiceStatusEnum.Rejected
               ? "text-red-700"
               : info.getValue() === InvoiceStatusEnum.Accepted
-                ? "text-green-700"
-                : " text-blue-900 "
+              ? "text-green-700"
+              : " text-blue-900 "
           }
         >
           {info.renderValue()}
@@ -94,9 +95,9 @@ const InvoicesTable: FC<{
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   {header.column.getCanFilter() ? (
                     <div>
                       <Filter column={header.column} table={table} />

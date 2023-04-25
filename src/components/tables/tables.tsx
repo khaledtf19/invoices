@@ -142,7 +142,7 @@ export const Filter: FC<{
     }
   }, []);
 
-  if (typeof firstValue === "number" || typeof firstValue === "object") {
+  if (typeof firstValue === "number" ) {
     return <></>;
   }
 

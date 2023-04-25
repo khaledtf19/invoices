@@ -1,68 +1,102 @@
 import Image from "next/image";
-import { type BankName } from "@prisma/client";
+import { type TransactionTypes, type BankName } from "@prisma/client";
 import Container from "../container/Container";
 import { useModalState } from "../hooks/modalState";
 import { trpc } from "../utils/trpc";
-import { useState } from "react";
-import { BankNameArr } from "../types/utils.types";
+import { useEffect, useState } from "react";
+import { BankNameArr, TransactionsArr } from "../types/utils.types";
+import { LoadingAnimation } from "../components/utils";
 
 const Bank = () => {
   const { data: bankData } = trpc.user.getBank.useQuery();
   const { data: bankChangeData } = trpc.user.getBankChange.useQuery();
-  const { openModal } = useModalState((state) => ({
+  const { openModal, closeModal } = useModalState((state) => ({
     openModal: state.openModal,
+    closeModal: state.closeModal,
   }));
 
-  return (
-    <Container>
-      <div className="flex w-full flex-col items-center gap-6">
-        <div>Bank</div>
-        <div className="flex w-full flex-col items-center gap-1">
-          <Image src="/we_logo.png" alt="we logo" width={50} height={50} />
+  useEffect(() => {
+    return () => {
+      closeModal();
+    };
+  }, [closeModal]);
 
-          <p>Bss: {bankData?.bss}</p>
-          <button
-            className="rounded-md bg-purple-900 p-2 text-white hover:bg-purple-800"
-            onClick={() =>
-              openModal({ newComponents: <BankModal type="Bss" /> })
-            }
-          >
-            Change
-          </button>
-        </div>
-        <div className="flex w-full flex-col items-center gap-1">
-          <div className=" bg-blue-900 p-1 text-white">
-            <Image
-              src="/khadmaty_logo.png"
-              alt="we logo"
-              width={96}
-              height={96}
-            />
+  return (
+    <div className="flex h-full w-full flex-col items-center gap-4">
+      <Container>
+        <div className="flex w-full  items-center gap-6">
+          <div className="flex w-full flex-col items-center gap-1">
+            <Image src="/we_logo.png" alt="we logo" width={50} height={50} />
+
+            <p>Bss: {bankData?.bss}</p>
+            <button
+              className="rounded-md bg-purple-900 p-2 text-white hover:bg-purple-800"
+              onClick={() =>
+                openModal({
+                  newComponents: (
+                    <BankModal bankNameType="Bss" transactionType="Add" />
+                  ),
+                })
+              }
+            >
+              Change
+            </button>
           </div>
-          <p>Khadmaty: {bankData?.khadmaty}</p>
-          <button
-            className="rounded-md bg-blue-900 p-2 text-white hover:bg-blue-800"
-            onClick={() =>
-              openModal({ newComponents: <BankModal type="Khadmaty" /> })
-            }
-          >
-            Change
-          </button>
+          <div className="flex w-full flex-col items-center gap-1">
+            <div className=" bg-blue-900 p-1 text-white">
+              <Image
+                src="/khadmaty_logo.png"
+                alt="we logo"
+                width={96}
+                height={40}
+              />
+            </div>
+            <p>Khadmaty: {bankData?.khadmaty}</p>
+            <button
+              className="rounded-md bg-blue-900 p-2 text-white hover:bg-blue-800"
+              onClick={() =>
+                openModal({
+                  newComponents: (
+                    <BankModal bankNameType="Khadmaty" transactionType="Add" />
+                  ),
+                })
+              }
+            >
+              Change
+            </button>
+          </div>
         </div>
-      </div>
-    </Container>
+      </Container>
+    </div>
   );
 };
 
 export default Bank;
 
-const BankModal: React.FC<{ type?: BankName }> = ({ type }) => {
+export const BankModal: React.FC<{
+  bankNameType?: BankName;
+  transactionType?: TransactionTypes;
+}> = ({ bankNameType, transactionType }) => {
   const [amount, setAmount] = useState(0);
-  const [bankName, setBankName] = useState(type || BankNameArr[0]);
-  const changeBank = trpc.user.changeBank.useMutation();
+  const [bankName, setBankName] = useState(bankNameType || BankNameArr[0]);
+  const [transaction, setTransaction] = useState(transactionType || "Add");
+
+  const { closeModal } = useModalState((state) => ({
+    closeModal: state.closeModal,
+  }));
+
+  const ctx = trpc.useContext();
+
+  const changeBank = trpc.user.changeBank.useMutation({
+    onSuccess: () => {
+      ctx.user.getBank.invalidate();
+      ctx.user.getBankChange.invalidate();
+      closeModal();
+    },
+  });
 
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="flex w-full flex-col items-center gap-4">
       {bankName === "Bss" ? (
         <div className=" ">
           <Image src="/we_logo.png" alt="we logo" width={50} height={50} />
@@ -73,7 +107,7 @@ const BankModal: React.FC<{ type?: BankName }> = ({ type }) => {
             src="/khadmaty_logo.png"
             alt="we logo"
             width={96}
-            height={96}
+            height={40}
           />
         </div>
       )}
@@ -86,14 +120,51 @@ const BankModal: React.FC<{ type?: BankName }> = ({ type }) => {
           <option key={name}>{name}</option>
         ))}
       </select>
-      <input
-        className="rounded-md border border-gray-300 p-2"
-        type="number"
-        onChange={(e) => {
-          setAmount(Number(e.target.value));
+      <div className="flex w-full items-center justify-center gap-1">
+        <input
+          className="rounded-md border border-gray-300 p-2"
+          type="number"
+          onChange={(e) => {
+            setAmount(Number(e.target.value));
+          }}
+        />
+        <select
+          onChange={(e) => setTransaction(e.target.value as TransactionTypes)}
+          value={transaction}
+          className="rounded-md border border-gray-300 px-1 py-2"
+        >
+          {TransactionsArr.map((name) => (
+            <option key={name}>{name}</option>
+          ))}
+        </select>
+      </div>
+
+      {!Number(amount) ? (
+        <p className="text-red-500">Must be a Number</p>
+      ) : (
+        <p>
+          {transaction} {amount} {transaction === "Add" ? "to" : "from"}{" "}
+          {bankName}
+        </p>
+      )}
+      <button
+        className={`w-1/4 rounded-md py-2 text-white ${
+          bankName === "Bss"
+            ? "bg-purple-900 hover:bg-purple-800"
+            : "bg-blue-900 hover:bg-blue-800"
+        }`}
+        onClick={async () => {
+          if (Number(amount)) {
+            changeBank.mutate({
+              transactionType: transaction,
+              amount,
+              bankName,
+            });
+          }
         }}
-      />
-      {!Number(amount) && <p className="text-red-500">Must be a Number</p>}
+      >
+        {changeBank.isLoading ? <LoadingAnimation color="#fff" /> : transaction}
+      </button>
     </div>
   );
 };

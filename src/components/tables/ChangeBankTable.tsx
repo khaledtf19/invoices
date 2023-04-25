@@ -1,5 +1,4 @@
 import { type FC, useState } from "react";
-import { type changeBalance } from "@prisma/client";
 import {
   createColumnHelper,
   flexRender,
@@ -20,32 +19,27 @@ import {
   TablePag,
 } from "./tables";
 import { DateFormat } from "../../utils/utils";
+import { type RouterOutputs } from "../../utils/trpc";
 
-const ChangeBalanceTable: FC<{
-  changeBalance: (changeBalance & {
-    admin: { name: string | null; email: string | null } | null;
-    user: { name: string | null; email: string | null } | null;
-  })[];
-}> = ({ changeBalance }) => {
-  const columnHelper = createColumnHelper<
-    changeBalance & {
-      admin: { name: string | null; email: string | null } | null;
-      user: { name: string | null; email: string | null } | null;
-    }
-  >();
+const ChangeBankTable: FC<{
+  changeBank: RouterOutputs["user"]["getBankChange"];
+}> = ({ changeBank }) => {
+  const columnHelper =
+    createColumnHelper<RouterOutputs["user"]["getBankChange"][number]>();
   const [filter, setFilter] = useState<ColumnFiltersState>([]);
 
   const columns = [
-    columnHelper.accessor("admin.email", {
-      size: 200,
-      cell: (info) => <span>{info.renderValue()}</span>,
-      footer: (info) => info.column.id,
-      header: () => "From Admin",
-    }),
     columnHelper.accessor("user.email", {
       size: 200,
       cell: (info) => <span>{info.renderValue()}</span>,
-      header: () => "To User",
+      footer: (info) => info.column.id,
+      header: () => "Admin",
+    }),
+    columnHelper.accessor("createdAt", {
+      size: 200,
+      cell: (info) => <span>{DateFormat({ date: info.getValue() })}</span>,
+      header: () => "Created At",
+      enableColumnFilter: false,
     }),
     columnHelper.accessor("amount", {
       size: 100,
@@ -57,15 +51,14 @@ const ChangeBalanceTable: FC<{
       cell: (info) => <span>{info.renderValue()}</span>,
       header: () => "Type",
     }),
-    columnHelper.accessor("createdAt", {
-      cell: (info) => <span>{DateFormat({ date: info.getValue() })}</span>,
+    columnHelper.accessor("bankName", {
+      cell: (info) => <span>{info.renderValue()}</span>,
       header: () => "Created At",
-      enableColumnFilter: false,
     }),
   ];
 
   const table = useReactTable({
-    data: changeBalance,
+    data: changeBank,
     columns,
     state: { columnFilters: filter },
     getCoreRowModel: getCoreRowModel(),
@@ -101,7 +94,11 @@ const ChangeBalanceTable: FC<{
         </THead>
         <TBody>
           {table.getRowModel().rows.map((row) => (
-            <TR key={row.id} route="none" rowId="none">
+            <TR
+              key={row.id}
+              route="invoice"
+              rowId={changeBank[row.index]?.invoice?.id}
+            >
               {row.getVisibleCells().map((cell) => (
                 <TD key={cell.id}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -116,4 +113,4 @@ const ChangeBalanceTable: FC<{
   );
 };
 
-export default ChangeBalanceTable;
+export default ChangeBankTable;

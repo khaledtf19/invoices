@@ -1,4 +1,4 @@
-import { type FC, useState } from "react";
+import { type FC, useState, useMemo } from "react";
 import {
   createColumnHelper,
   flexRender,
@@ -28,6 +28,17 @@ const DebtTable: FC<{ data: RouterOutputs["customer"]["getAllDebt"] }> = ({
   const columnHelper =
     createColumnHelper<RouterOutputs["customer"]["getAllDebt"][number]>();
 
+  const dataM = useMemo(
+    () =>
+      data.map((item) => {
+        if (!item.customer?.address && item.customer) {
+          item.customer.address = "-";
+        }
+        return item;
+      }),
+    [data]
+  );
+
   const [filter, setFilter] = useState<ColumnFiltersState>([]);
   const columns = [
     columnHelper.accessor("customer.name", {
@@ -42,10 +53,17 @@ const DebtTable: FC<{ data: RouterOutputs["customer"]["getAllDebt"] }> = ({
       footer: (info) => info.column.id,
       header: () => "Number",
     }),
+    columnHelper.accessor("customer.address", {
+      size: 200,
+      cell: (info) => <span>{info.renderValue()}</span>,
+      footer: (info) => info.column.id,
+      header: () => "Address",
+    }),
     columnHelper.accessor("createdAt", {
       cell: (info) => DateFormat({ date: info.getValue() }),
       footer: (info) => info.column.id,
       header: () => "Created At",
+      enableColumnFilter: false,
     }),
     columnHelper.accessor("amount", {
       size: 50,
@@ -83,7 +101,7 @@ const DebtTable: FC<{ data: RouterOutputs["customer"]["getAllDebt"] }> = ({
   ];
 
   const table = useReactTable({
-    data: data,
+    data: dataM,
     columns,
     state: { columnFilters: filter },
     getCoreRowModel: getCoreRowModel(),

@@ -69,6 +69,7 @@ const TransactionsTable: FC<{
     columnHelper.accessor("invoice.createdAt", {
       cell: (info) => <span>{DateFormat({ date: info.getValue() })}</span>,
       header: () => "Created At",
+      enableColumnFilter: false,
     }),
   ];
 
