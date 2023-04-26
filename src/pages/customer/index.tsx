@@ -21,7 +21,7 @@ const customerSchema = z.object({
   birthday: z.string().optional().nullable(),
   idNumber: z.string().max(30).nullish(),
   address: z.string().optional().nullable(),
-  mobile: z.string().array().max(5),
+  mobile: z.string().optional().nullable(),
 });
 
 type CustomerType = z.infer<typeof customerSchema>;
@@ -52,7 +52,10 @@ const MakeCustomer: NextPage = () => {
       address: data.address,
     } as CustomerType;
     try {
-      await mutateCustomer.mutateAsync(customerData);
+      await mutateCustomer.mutateAsync({
+        ...customerData,
+        mobile: [customerData?.mobile || ""],
+      });
     } catch (e) {
       console.log(e);
     }
