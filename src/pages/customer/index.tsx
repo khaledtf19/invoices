@@ -126,7 +126,7 @@ const MakeCustomer: NextPage = () => {
         <FormInput
           name="address"
           label="Address"
-          type="number"
+          type="text"
           placeholder="Address"
           register={register("address")}
           error={errors.address?.message}
