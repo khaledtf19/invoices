@@ -74,7 +74,7 @@ const TextToCopy: React.FC<{ text: string; noteId?: string }> = ({
 }) => {
   const [textS, setTextS] = useState(text);
   const ctx = trpc.useContext();
-  const updateNote = trpc.customer.updateCusomerNote.useMutation({
+  const updateNote = trpc.customer.updateCustomerNote.useMutation({
     onError: (e) => {
       const errorMessage = TrpcErrorMessage(e.message);
       if (errorMessage) {

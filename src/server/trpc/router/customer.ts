@@ -131,7 +131,7 @@ export const customerRouter = router({
 
       return { message: "done" };
     }),
-  updateCusomerNote: protectedProcedure
+  updateCustomerNote: protectedProcedure
     .input(z.object({ newText: z.string().min(3), noteId: z.string().min(5) }))
     .mutation(async ({ input, ctx }) => {
       const note = await ctx.prisma.customerNote.update({
@@ -197,5 +197,15 @@ export const customerRouter = router({
           customer: { select: { name: true, number: true, address: true } },
         },
       });
+    }),
+  updateDebtNote: protectedProcedure
+    .input(z.object({ text: z.string(), debtId: z.string().min(3) }))
+    .mutation(async ({ input, ctx }) => {
+      await ctx.prisma.customerDebt.update({
+        where: { id: input.debtId },
+        data: { note: input.text },
+      });
+
+      return { message: "done" };
     }),
 });

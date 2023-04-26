@@ -2,8 +2,12 @@ import { trpc } from "../../utils/trpc";
 import DebtTable from "../tables/DebtTable";
 import LoadingTable from "../tables/LoadingTable";
 
-const CustomerDebtModal: React.FC<{ cusomerId?: string }> = ({ cusomerId }) => {
-  const { data: debtData, isLoading } = trpc.customer.getAllDebt.useQuery({ customerId: cusomerId });
+const CustomerDebtModal: React.FC<{ customerId?: string }> = ({
+  customerId: cusomerId,
+}) => {
+  const { data: debtData, isLoading } = trpc.customer.getAllDebt.useQuery({
+    customerId: cusomerId,
+  });
 
   if (isLoading) {
     return <LoadingTable type="big" />;
