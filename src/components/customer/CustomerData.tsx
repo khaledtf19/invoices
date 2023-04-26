@@ -60,7 +60,7 @@ const CustomerData: FC<{ customerData: Customer }> = ({ customerData }) => {
             text={String(customerData.birthday)}
             Icon={BsCalendarDate}
           />
-          {customerData?.mobile.map((mNumber, i) => (
+          {customerData?.mobile?.split(",").map((mNumber, i) => (
             <IconToCopy
               key={i}
               name={`Mobile${i + 1}`}

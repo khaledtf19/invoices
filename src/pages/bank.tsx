@@ -144,20 +144,18 @@ export const BankModal: React.FC<{
         <p className="text-xl text-red-500">Must be a Number</p>
       ) : (
         <p
-          className={`text-xl ${
-            transaction === "Add" ? "text-green-600" : "text-red-600"
-          }`}
+          className={`text-xl ${transaction === "Add" ? "text-green-600" : "text-red-600"
+            }`}
         >
           {transaction === "Add" ? "+" : "-"} {amount}{" "}
           {transaction === "Add" ? "to" : "from"} {bankName}
         </p>
       )}
       <button
-        className={`w-1/4 rounded-md py-2 text-white ${
-          bankName === "Bss"
+        className={`w-1/4 rounded-md py-2 text-white ${bankName === "Bss"
             ? "bg-purple-900 hover:bg-purple-800"
             : "bg-blue-900 hover:bg-blue-800"
-        }`}
+          }`}
         onClick={async () => {
           if (Number(amount)) {
             changeBank.mutate({

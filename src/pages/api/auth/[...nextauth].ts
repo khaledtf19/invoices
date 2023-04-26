@@ -9,7 +9,7 @@ import { prisma } from "../../../server/db/client";
 export const authOptions: NextAuthOptions = {
   // Include user.id on session
   callbacks: {
-    session({ session, user }) {
+    async session({ session, user }) {
       if (session.user) {
         session.user.id = user.id;
         session.user.role = user.role;
@@ -18,10 +18,12 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async signIn({ account, profile }) {
-      if (account?.provider === "google" && profile?.email) {
-        if (env.EMAILS.split(", ").includes(profile.email)) {
-          return true;
-        }
+      if (
+        account?.provider === "google" &&
+        profile?.email &&
+        env.EMAILS.split(", ").includes(profile.email)
+      ) {
+        return true;
       }
       return false; // Do different verification for other providers that don't have `email_verified`
     },

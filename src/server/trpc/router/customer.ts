@@ -30,13 +30,11 @@ export const customerRouter = router({
             {
               number: {
                 contains: input.number || undefined,
-                mode: "insensitive",
               },
             },
             {
               name: {
                 contains: input.name || undefined,
-                mode: "insensitive",
               },
             },
           ],
@@ -51,7 +49,9 @@ export const customerRouter = router({
       if (input.number?.at(0) === "0") {
         input.number === input.number.slice(1, input.number.length);
       }
-      return await ctx.prisma.customer.create({ data: input });
+      return await ctx.prisma.customer.create({
+        data: { ...input, mobile: input.mobile[0] },
+      });
     }),
 
   getCustomerById: protectedProcedure
@@ -99,9 +99,10 @@ export const customerRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
+      const mobileString = input.mobile.join(",");
       return await ctx.prisma.customer.update({
         where: { id: input.id },
-        data: input,
+        data: { ...input, mobile: mobileString },
       });
     }),
 

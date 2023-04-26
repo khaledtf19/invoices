@@ -15,7 +15,7 @@ const LoadingCustomer = () => {
             number: String(132424242),
             idNumber: String(132424242),
             address: "address",
-            mobile: [String(132424242)],
+            mobile: String(132424242),
             birthday: "1/1/1111",
           }}
         />

@@ -148,19 +148,6 @@ const InvoiceView: FC<{
 
       {userData?.role === UserRoleArr[1] && (
         <>
-          <RedButton
-            label="Delete"
-            onClick={() => {
-              openModal({
-                newComponents: (
-                  <ModalDeleteComponent
-                    invoiceId={invoiceData.id}
-                    customerId={invoiceData.customerId}
-                  />
-                ),
-              });
-            }}
-          />
           <PrimaryButton
             label="Edit"
             onClick={async () => {
@@ -179,6 +166,19 @@ const InvoiceView: FC<{
                   <BankModal
                     transactionType="Take"
                     invoiceId={invoiceData.id}
+                  />
+                ),
+              });
+            }}
+          />
+          <RedButton
+            label="Delete"
+            onClick={() => {
+              openModal({
+                newComponents: (
+                  <ModalDeleteComponent
+                    invoiceId={invoiceData.id}
+                    customerId={invoiceData.customerId}
                   />
                 ),
               });

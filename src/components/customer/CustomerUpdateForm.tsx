@@ -14,7 +14,7 @@ const CustomerForm = z.object({
   number: z.string().min(8),
   idNumber: z.string().nullable().nullable(),
   birthday: z.string().optional().nullable(),
-  addess: z.string().optional().nullish(),
+  address: z.string().optional().nullish(),
   mobile: z
     .object({
       value: z.string().min(8).optional().nullable(),
@@ -30,7 +30,9 @@ const CustomerUpdateForm: FC<{
 }> = ({ customerData, refetch }) => {
   const emptyField = { value: "" };
 
-  const mobileArr = customerData?.mobile.map((number) => ({ value: number }));
+  const mobileArr = customerData?.mobile
+    ?.split(",")
+    .map((number) => ({ value: number }));
   const updateCustomer = trpc.customer.updateCustomer.useMutation();
 
   const { openModal } = useModalState((state) => ({
@@ -48,7 +50,7 @@ const CustomerUpdateForm: FC<{
       name: customerData.name,
       number: customerData.number,
       idNumber: customerData?.idNumber ? customerData?.idNumber : "",
-      addess: customerData.address,
+      address: customerData.address,
       birthday: customerData.birthday,
       mobile: mobileArr,
     },
@@ -68,7 +70,7 @@ const CustomerUpdateForm: FC<{
         id: customerData.id,
         name: data.name,
         number: data.number,
-        address: data.addess,
+        address: data.address,
         idNumber: data.idNumber,
         birthday: data.birthday,
         mobile: arr,
@@ -110,11 +112,11 @@ const CustomerUpdateForm: FC<{
         })}
       />
       <FormInput
-        type="addess"
+        type="address"
         label="Address"
         name="address"
         error={errors.number?.message}
-        register={register("addess")}
+        register={register("address")}
       />
       <FormInput
         type="number"

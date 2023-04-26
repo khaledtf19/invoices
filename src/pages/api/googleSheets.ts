@@ -5,7 +5,6 @@ import { env } from "../../env/server.mjs";
 import { prisma } from "../../server/db/client";
 import { type Customer } from "@prisma/client";
 
-
 const googleSheet = async (req: NextApiRequest, res: NextApiResponse) => {
   const auth = await google.auth.getClient({
     keyFilename: env.GOOGLE_APP_CRID,
@@ -30,7 +29,7 @@ const googleSheet = async (req: NextApiRequest, res: NextApiResponse) => {
       number: String(arr[6]),
       birthday: String(arr[2]),
       idNumber: String(arr[3]),
-      mobile: [String(arr[4]), String(arr[5])],
+      mobile: `${String(arr[4])},${String(arr[5])}`,
     } as Customer;
 
     return customer;

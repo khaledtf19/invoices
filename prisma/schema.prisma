@@ -7,12 +7,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-  // Further reading:
-  // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 enum BankName {
@@ -46,6 +43,9 @@ model BankChange {
   user      User?            @relation(fields: [userId], references: [id])
   invoice   Invoice?         @relation(fields: [invoiceId], references: [id])
   invoiceId String?
+
+  @@index([userId])
+  @@index([invoiceId])
 }
 
 model Bank {
@@ -74,6 +74,9 @@ model InvoiceNote {
   updatedAt   DateTime @updatedAt
   invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
   madeBy      User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([invoiceId])
 }
 
 model Invoice {
@@ -89,6 +92,9 @@ model Invoice {
   invoiceNotes  InvoiceNote[]
   transaction   Transaction?
   bankChange    BankChange[]
+
+  @@index([userId])
+  @@index([customerId])
 }
 
 model CustomerNote {
@@ -98,6 +104,9 @@ model CustomerNote {
   noteContent String
   customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
   madeBy      User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([customerId])
 }
 
 model CustomerDebt {
@@ -113,6 +122,8 @@ model CustomerDebt {
   customer   Customer?        @relation(fields: [customerId], references: [id], onDelete: Cascade)
 
   @@index([deleted])
+  @@index([userId])
+  @@index([customerId])
 }
 
 model Customer {
@@ -120,7 +131,7 @@ model Customer {
   name          String
   birthday      String?
   number        String
-  mobile        String[]
+  mobile        String?
   idNumber      String?
   address       String?
   customerNotes CustomerNote[]
@@ -138,6 +149,8 @@ model Transaction {
   viewed    Boolean @default(false)
   user      User    @relation(fields: [userId], references: [id])
   invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model changeBalance {
@@ -149,6 +162,9 @@ model changeBalance {
   createdAt DateTime         @default(now())
   admin     User?            @relation("admin", fields: [adminId], references: [id])
   user      User?            @relation("user", fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([adminId])
 }
 
 // Necessary for Next auth
@@ -168,6 +184,7 @@ model Account {
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 model Session {
@@ -176,6 +193,8 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model User {

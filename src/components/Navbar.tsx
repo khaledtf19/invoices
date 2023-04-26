@@ -1,5 +1,5 @@
 import { UserRole } from "@prisma/client";
-import { signIn, signOut } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { type ReactNode, type FC } from "react";
@@ -12,13 +12,12 @@ import {
   HiOutlineUsers,
 } from "react-icons/hi";
 import { RiSearchLine } from "react-icons/ri";
-import { useUserState } from "../hooks/userDataState";
 import { useModalState } from "../hooks/modalState";
 import CustomerDebtModal from "./customer/CustomerDebtModal";
 import { trpc } from "../utils/trpc";
 
 const Navbar = () => {
-  const { userData } = useUserState()((state) => ({ userData: state.user }));
+  const { data: session } = useSession();
   const { openModal, closeModal, isModalOpen } = useModalState((state) => ({
     isModalOpen: state.isOpen,
     openModal: state.openModal,
@@ -54,7 +53,7 @@ const Navbar = () => {
             iconActive={<IconContainer Icon={RiSearchLine} />}
           />
         </li>
-        {userData?.role === UserRole.Admin ? (
+        {session?.user?.role === UserRole.Admin ? (
           <li>
             <RouteLink
               to={"/user"}
@@ -67,7 +66,7 @@ const Navbar = () => {
       </ul>
       <ul className="flex w-full flex-col justify-end px-1 align-middle">
         <li className=" rounded-md border border-blue-600 px-1 py-2  text-center ">
-          {userData?.role === UserRole.Admin ? (
+          {session?.user?.role === UserRole.Admin ? (
             <Link href={`/bank`}>
               <p className=" text-green-600">ADMIN</p>
               {bankData ? (
@@ -80,12 +79,12 @@ const Navbar = () => {
               )}
             </Link>
           ) : (
-            <p>{userData?.userBalance} /EGP</p>
+            <p>{session?.user?.userBalance} /EGP</p>
           )}
         </li>
       </ul>
       <ul className="flex w-full flex-col justify-end gap-2 px-1 align-middle">
-        {userData?.role === UserRole.Admin ? (
+        {session?.user?.role === UserRole.Admin ? (
           <>
             <li
               className=" rounded-md border border-white bg-red-600 px-1 py-2  text-center transition-colors duration-500 hover:cursor-pointer hover:bg-red-700"
@@ -109,9 +108,9 @@ const Navbar = () => {
 
         <li
           className=" rounded-md border border-white bg-blue-700 px-1 py-2 text-center transition-colors duration-500 hover:cursor-pointer hover:bg-blue-800"
-          onClick={userData ? () => signOut() : () => signIn()}
+          onClick={session?.user ? () => signOut() : () => signIn()}
         >
-          <span>{userData ? "Sign out" : "Sign in"}</span>
+          <span>{session?.user ? "Sign out" : "Sign in"}</span>
         </li>
       </ul>
     </nav>
