@@ -8,6 +8,7 @@ const CustomerValidation = z.object({
   number: z.string().min(8).max(20),
   birthday: z.string().optional().nullable(),
   idNumber: z.string().max(30).nullish(),
+  address: z.string().optional().nullable(),
   mobile: z.string().array().max(5),
 });
 

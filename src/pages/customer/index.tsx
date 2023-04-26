@@ -14,14 +14,14 @@ import Container from "../../container/Container";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useModalState } from "../../hooks/modalState";
-import type { Customer } from "@prisma/client";
 
 const customerSchema = z.object({
-  name: z.string().min(3),
+  name: z.string().max(225).min(3),
   number: z.string().min(8).max(20),
-  idNumber: z.string().optional().nullable(),
   birthday: z.string().optional().nullable(),
-  mobile: z.string().optional().nullable(),
+  idNumber: z.string().max(30).nullish(),
+  address: z.string().optional().nullable(),
+  mobile: z.string().array().max(5),
 });
 
 type CustomerType = z.infer<typeof customerSchema>;
@@ -46,10 +46,11 @@ const MakeCustomer: NextPage = () => {
     const customerData = {
       name: data.name,
       birthday: data.birthday,
-      mobile: [data.mobile],
+      mobile: data.mobile,
       number: data.number,
       idNumber: data.idNumber,
-    } as Customer;
+      address: data.address,
+    } as CustomerType;
     try {
       await mutateCustomer.mutateAsync(customerData);
     } catch (e) {
@@ -121,6 +122,14 @@ const MakeCustomer: NextPage = () => {
           placeholder="ID"
           register={register("idNumber")}
           error={errors.idNumber?.message}
+        />
+        <FormInput
+          name="address"
+          label="Address"
+          type="number"
+          placeholder="Address"
+          register={register("address")}
+          error={errors.address?.message}
         />
         <FormInput
           name="birthday"
