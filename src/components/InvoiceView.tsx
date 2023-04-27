@@ -1,4 +1,4 @@
-import { useState, type FC, useEffect } from "react";
+import { useState, type FC, useEffect, Ref, useRef, useCallback } from "react";
 import Container from "../container/Container";
 import {
   DataFields,
@@ -17,15 +17,20 @@ import { useRouter } from "next/router";
 import { useUserState } from "../hooks/userDataState";
 import CustomerDebtComponent from "./customer/CustomerDebt";
 import { BankModal } from "../pages/bank";
+import ReactToPrint from "react-to-print";
 
 const InvoiceView: FC<{
   invoiceData: RouterOutputs["invoice"]["getInvoiceById"];
   refetch: () => void;
 }> = ({ invoiceData, refetch }) => {
   const [newStatus, setNewStatus] = useState(invoiceData.invoiceStatus?.status);
+
   const [newStatusNote, setNewStatusNote] = useState(
     invoiceData.invoiceStatus?.note
   );
+
+  const printComponentRef = useRef(null);
+
   const { openModal, closeModal } = useModalState((state) => ({
     openModal: state.openModal,
     closeModal: state.closeModal,
@@ -53,6 +58,15 @@ const InvoiceView: FC<{
     };
   }, [closeModal]);
 
+  const reactToPrintContent = useCallback(() => {
+    return printComponentRef.current;
+  }, [printComponentRef.current]);
+
+  const reactToPrintTrigger = useCallback(() => {
+
+    return <PrimaryButton label="print" />
+  }, []);
+
   return (
     <Container
       size="max-w-md"
@@ -75,14 +89,6 @@ const InvoiceView: FC<{
         text={DateFormat({ date: invoiceData.createdAt })}
       />
       <DataFields label="Created By" text={invoiceData.madeBy.name} />
-      <DataFields
-        label="Viewed"
-        text={
-          invoiceData.transaction?.viewed
-            ? "Seen by an Admin"
-            : "Waiting an Admin"
-        }
-      />
       {invoiceData.bankChange.map((bankChange) => (
         <DataFields
           key={bankChange.id}
@@ -143,6 +149,7 @@ const InvoiceView: FC<{
 
       {userData?.role === UserRoleArr[1] && (
         <>
+          <ReactToPrint content={reactToPrintContent} trigger={reactToPrintTrigger} />
           <div className="flex gap-3 w-full">
             <PrimaryButton
               label="Edit"
@@ -186,6 +193,7 @@ const InvoiceView: FC<{
           </div>
         </>
       )}
+      <div className=" hidden" ><PrintInvlicieComponent refC={printComponentRef} invoiceData={invoiceData} /></div>
     </Container>
   );
 };
@@ -241,3 +249,9 @@ const ModalDeleteComponent: FC<{ invoiceId: string; customerId: string }> = ({
     </div>
   );
 };
+
+const PrintInvlicieComponent: FC<{ invoiceData: RouterOutputs["invoice"]["getInvoiceById"]; refC: Ref<HTMLDivElement> }> = ({ refC }) => {
+  return <div ref={refC} className="flex flex-col justify-center items-center">
+
+  </div>;
+}

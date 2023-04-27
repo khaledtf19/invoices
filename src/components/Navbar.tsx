@@ -70,10 +70,10 @@ const Navbar = () => {
             <Link href={`/bank`}>
               <p className=" text-green-600">ADMIN</p>
               {bankData ? (
-                <>
-                  <p>B: {bankData?.bss}</p>
-                  <p>K: {bankData?.khadmaty}</p>
-                </>
+                <div className="flex flex-col gap-1">
+                  <p className="bg-purple-900 py-1 rounded-md" >{bankData?.bss}</p>
+                  <p className="bg-blue-900 py-1 rounded-md" >{bankData?.khadmaty}</p>
+                </div>
               ) : (
                 ""
               )}
@@ -129,15 +129,14 @@ const RouteLink: FC<{
 
   return (
     <Link
-      className={`flex  w-full items-center justify-center ${
-        router.pathname.includes(to)
-          ? to === "/"
-            ? router.pathname === "/"
-              ? "bg-blue-900 underline"
-              : ""
-            : "bg-blue-900 underline"
-          : ""
-      }  duration-400 flex-col py-2 underline-offset-4 transition-colors hover:bg-blue-900 hover:underline`}
+      className={`flex  w-full items-center justify-center ${router.pathname.includes(to)
+        ? to === "/"
+          ? router.pathname === "/"
+            ? "bg-blue-900 underline"
+            : ""
+          : "bg-blue-900 underline"
+        : ""
+        }  duration-400 flex-col py-2 underline-offset-4 transition-colors hover:bg-blue-900 hover:underline`}
       href={to}
     >
       {router.pathname.includes(to)
