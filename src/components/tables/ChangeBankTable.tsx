@@ -35,6 +35,12 @@ const ChangeBankTable: FC<{
       footer: (info) => info.column.id,
       header: () => "Admin",
     }),
+    columnHelper.accessor("invoice.customer.name", {
+      size: 200,
+      cell: (info) => <span>{info.renderValue()}</span>,
+      footer: (info) => info.column.id,
+      header: () => "invoice",
+    }),
     columnHelper.accessor("createdAt", {
       size: 200,
       cell: (info) => <span>{DateFormat({ date: info.getValue() })}</span>,
@@ -96,7 +102,7 @@ const ChangeBankTable: FC<{
           {table.getRowModel().rows.map((row) => (
             <TR
               key={row.id}
-              route="invoice"
+              route={changeBank[row.index]?.invoice?.id? "invoice" : "none"}
               rowId={changeBank[row.index]?.invoice?.id}
             >
               {row.getVisibleCells().map((cell) => (

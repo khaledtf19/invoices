@@ -27,7 +27,11 @@ const customerSchema = z.object({
 type CustomerType = z.infer<typeof customerSchema>;
 
 const MakeCustomer: NextPage = () => {
-  const mutateCustomer = trpc.customer.createCustomer.useMutation();
+  const mutateCustomer = trpc.customer.createCustomer.useMutation({
+    onSuccess: (data) => {
+      router.push(`/customer/${data.id}`);
+    },
+  });
   const {
     register,
     handleSubmit,
@@ -62,20 +66,10 @@ const MakeCustomer: NextPage = () => {
   };
 
   useEffect(() => {
-    if (mutateCustomer.isSuccess) {
-      router.push(`/customer/${mutateCustomer.data.id}`);
-    }
-
     if (mutateCustomer.error) {
       openModal({ newText: mutateCustomer.error.message });
     }
-  }, [
-    mutateCustomer.data?.id,
-    mutateCustomer.error,
-    mutateCustomer.isSuccess,
-    openModal,
-    router,
-  ]);
+  }, [mutateCustomer.error, openModal]);
 
   if (mutateCustomer.error) {
     console.log(mutateCustomer.error.message, "message here");

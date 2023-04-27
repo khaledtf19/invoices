@@ -130,14 +130,12 @@ const CreateDebtModal: React.FC<{
   refetch: () => void;
 }> = ({ customerId, refetch }) => {
   const [amount, setAmount] = useState("");
-  const [tType, setTtype] = useState<TransactionsType>("Add");
-  const addDebt = trpc.customer.createDebt.useMutation();
-
-  useEffect(() => {
-    if (addDebt.isSuccess) {
+  const [tType, setTType] = useState<TransactionsType>("Add");
+  const addDebt = trpc.customer.createDebt.useMutation({
+    onSuccess: () => {
       refetch();
-    }
-  }, [addDebt.isSuccess, refetch]);
+    },
+  });
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -162,7 +160,7 @@ const CreateDebtModal: React.FC<{
                 tType === TransactionsArr[0] ? "text-red-600" : "text-green-600"
               }`}
               onChange={(e) => {
-                setTtype(e.currentTarget.value as TransactionsType);
+                setTType(e.currentTarget.value as TransactionsType);
               }}
             >
               {TransactionsArr.map((transaction) => (

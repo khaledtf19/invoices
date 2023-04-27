@@ -6,6 +6,7 @@ import { trpc } from "../utils/trpc";
 import { useEffect, useState } from "react";
 import { BankNameArr, TransactionsArr } from "../types/utils.types";
 import { LoadingAnimation } from "../components/utils";
+import ChangeBankTable from "../components/tables/ChangeBankTable";
 
 const Bank = () => {
   const { data: bankData } = trpc.user.getBank.useQuery();
@@ -67,6 +68,7 @@ const Bank = () => {
           </div>
         </div>
       </Container>
+      {bankChangeData && <ChangeBankTable changeBank={bankChangeData} />}
     </div>
   );
 };
@@ -153,8 +155,8 @@ export const BankModal: React.FC<{
       )}
       <button
         className={`w-1/4 rounded-md py-2 text-white ${bankName === "Bss"
-            ? "bg-purple-900 hover:bg-purple-800"
-            : "bg-blue-900 hover:bg-blue-800"
+          ? "bg-purple-900 hover:bg-purple-800"
+          : "bg-blue-900 hover:bg-blue-800"
           }`}
         onClick={async () => {
           if (Number(amount)) {
