@@ -149,7 +149,7 @@ const InvoiceView: FC<{
 
       {userData?.role === UserRoleArr[1] && (
         <>
-          <ReactToPrint content={reactToPrintContent} trigger={reactToPrintTrigger} />
+          <ReactToPrint content={reactToPrintContent} trigger={reactToPrintTrigger} removeAfterPrint />
           <div className="flex gap-3 w-full">
             <PrimaryButton
               label="Edit"
@@ -250,8 +250,20 @@ const ModalDeleteComponent: FC<{ invoiceId: string; customerId: string }> = ({
   );
 };
 
-const PrintInvlicieComponent: FC<{ invoiceData: RouterOutputs["invoice"]["getInvoiceById"]; refC: Ref<HTMLDivElement> }> = ({ refC }) => {
-  return <div ref={refC} className="flex flex-col justify-center items-center">
-
+const PrintInvlicieComponent: FC<{ invoiceData: RouterOutputs["invoice"]["getInvoiceById"]; refC: Ref<HTMLDivElement> }> = ({ invoiceData, refC }) => {
+  return <div ref={refC} className="flex flex-col justify-center items-center h-full">
+    <div className="flex flex-col justify-center items-center w-2/5 h-full gap-3">
+      <DataFields label="Name" text={invoiceData.customer.name} />
+      <DataFields label="Number" text={invoiceData.customer.number} />
+      <DataFields label="Cost" text={invoiceData.cost} />
+      <DataFields label="Created At" text={DateFormat({ date: invoiceData.createdAt })} />
+      <DataFields label="Created By" text={invoiceData.madeBy.name} />
+      <div className="justify-self-end mt-20 w-full">
+        <DataFields label="موبايل لبيب حبش" text="01287591751" />
+        <DataFields label="موبايل لبيب حبش" text="01114800992" />
+        <DataFields label="ارضي لبيب حبش" text="0132428421" />
+        <DataFields label="ارضي لبيب حبش" text="0132421822" />
+      </div>
+    </div>
   </div>;
 }
