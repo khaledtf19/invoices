@@ -126,6 +126,7 @@ export const BankModal: React.FC<{
       <div className="flex w-full items-center justify-center gap-1">
         <input
           className="rounded-md border border-gray-300 p-2"
+          autoFocus={true}
           type="number"
           onChange={(e) => {
             setAmount(Number(e.target.value));
@@ -158,6 +159,17 @@ export const BankModal: React.FC<{
           ? "bg-purple-900 hover:bg-purple-800"
           : "bg-blue-900 hover:bg-blue-800"
           }`}
+        disabled={(!Number(amount))}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            changeBank.mutate({
+              transactionType: transaction,
+              amount,
+              bankName,
+              invoiceId,
+            });
+          }
+        }}
         onClick={async () => {
           if (Number(amount)) {
             changeBank.mutate({
@@ -171,6 +183,6 @@ export const BankModal: React.FC<{
       >
         {changeBank.isLoading ? <LoadingAnimation color="#fff" /> : transaction}
       </button>
-    </div>
+    </div >
   );
 };

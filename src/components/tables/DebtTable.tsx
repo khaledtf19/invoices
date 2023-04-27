@@ -21,6 +21,7 @@ import {
 } from "./tables";
 import type { RouterOutputs } from "../../utils/trpc";
 import { TransactionsArr } from "../../types/utils.types";
+import { CustomerDebtMessage } from "../customer/CustomerDebt";
 
 const DebtTable: FC<{ data: RouterOutputs["customer"]["getAllDebt"] }> = ({
   data,
@@ -59,6 +60,14 @@ const DebtTable: FC<{ data: RouterOutputs["customer"]["getAllDebt"] }> = ({
       footer: (info) => info.column.id,
       header: () => "Address",
     }),
+
+    columnHelper.accessor("note", {
+      size: 50,
+      cell: (info) => <CustomerDebtMessage noteText={info.renderValue() || ""} />,
+      footer: (info) => info.column.id,
+      header: () => "Note",
+      enableColumnFilter: false, 
+    }),
     columnHelper.accessor("createdAt", {
       cell: (info) => DateFormat({ date: info.getValue() }),
       footer: (info) => info.column.id,
@@ -67,7 +76,7 @@ const DebtTable: FC<{ data: RouterOutputs["customer"]["getAllDebt"] }> = ({
     }),
     columnHelper.accessor("amount", {
       size: 50,
-      cell: (info) => <span>{info.renderValue()}</span>,
+      cell: (info) => <span>{info.renderValue()?.toFixed(2)}</span>,
       footer: (info) => info.column.id,
       header: () => "Amount",
     }),
@@ -75,11 +84,10 @@ const DebtTable: FC<{ data: RouterOutputs["customer"]["getAllDebt"] }> = ({
       size: 50,
       cell: (info) => (
         <span
-          className={`${
-            info.getValue() === TransactionsArr[0]
-              ? "text-red-600"
-              : "text-green-500"
-          } `}
+          className={`${info.getValue() === TransactionsArr[0]
+            ? "text-red-600"
+            : "text-green-500"
+            } `}
         >
           {info.renderValue()}
         </span>
@@ -122,9 +130,9 @@ const DebtTable: FC<{ data: RouterOutputs["customer"]["getAllDebt"] }> = ({
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
                   {header.column.getCanFilter() ? (
                     <div>
                       <Filter column={header.column} table={table} />

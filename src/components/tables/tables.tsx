@@ -9,6 +9,7 @@ import {
 import { PrimaryButton } from "../utils";
 import { type Column, type Table } from "@tanstack/react-table";
 import {
+  BankNameArr,
   InvoiceStatusArr,
   TransactionsArr,
   UserRoleArr,
@@ -46,11 +47,10 @@ export const TR: FC<{
 
   return (
     <tr
-      className={` ${
-        rowId
-          ? "cursor-pointer transition-colors duration-500 hover:bg-blue-600 hover:text-white"
-          : ""
-      }   `}
+      className={` ${rowId
+        ? "cursor-pointer transition-colors duration-500 hover:bg-blue-600 hover:text-white"
+        : ""
+        }   `}
       onClick={() => {
         if (route !== "none") {
           router.push(`/${route}/${rowId}`);
@@ -84,7 +84,7 @@ export const TablePag: FC<{ table: Table<any> }> = ({ table }) => {
   return (
     <div className=" flex w-full justify-end gap-6">
       <select
-        className=" px-2 text-sm font-normal text-black"
+        className=" px-2 text-sm font-normal border rounded-md border-gray-600 text-black"
         value={table.getState().pagination.pageSize}
         onChange={(e) => {
           table.setPageSize(Number(e.target.value));
@@ -216,8 +216,8 @@ export const Filter: FC<{
             e.target.value === "all"
               ? undefined
               : e.target.value === "true"
-              ? true
-              : false
+                ? true
+                : false
           );
         }}
       >
@@ -226,6 +226,22 @@ export const Filter: FC<{
         <option value={"all"}>All</option>
       </select>
     );
+  }
+
+  if (firstValue === BankNameArr[0] || firstValue === BankNameArr[1]) {
+    return <select
+      className="px-1 text-center font-normal text-black"
+      onChange={(e) => {
+
+        column.setFilterValue(
+          e.target.value === "all" ? undefined : e.target.value
+        );
+      }} >
+      <option value={"all"}>All</option>
+      {BankNameArr.map((bank) => (
+        <option key={bank} value={bank}>{bank}</option>
+      ))}
+    </select>;
   }
 
   return (

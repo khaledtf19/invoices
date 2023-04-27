@@ -32,7 +32,7 @@ const CustomerDebt: React.FC<{
   }, [closeModal]);
 
   return (
-    <div className=" flex h-full w-full flex-col items-center p-2 text-sm">
+    <div className=" flex h-full w-full flex-col items-center p-2 text-sm relative">
       <div className=" flex h-full w-full flex-col items-center ">
         <table className=" w-full">
           <thead className=" w-full">
@@ -53,14 +53,13 @@ const CustomerDebt: React.FC<{
             {debtData.map((debt) => (
               <tr
                 key={debt.id}
-                className={` flex w-full items-center justify-evenly gap-1 text-center ${
-                  debt.type === TransactionsArr[0]
-                    ? "text-red-600"
-                    : "text-green-500"
-                } `}
+                className={` flex w-full items-center justify-evenly gap-1 text-center ${debt.type === TransactionsArr[0]
+                  ? "text-red-600"
+                  : "text-green-500"
+                  } `}
               >
                 <td
-                  className=" flex w-2/5  cursor-pointer  justify-center  border-r border-red-600"
+                  className=" flex w-2/5  cursor-pointer  justify-center items-center border-r border-red-600 relative"
                   onClick={() => {
                     openModal({
                       newComponents: (
@@ -73,7 +72,7 @@ const CustomerDebt: React.FC<{
                     });
                   }}
                 >
-                  <BsFillChatSquareTextFill size={20} />
+                  <CustomerDebtMessage noteText={debt.note || ""} />
                 </td>
                 <td className=" w-full  border-r border-red-600 ">
                   {debt.amount}
@@ -138,7 +137,7 @@ const CreateDebtModal: React.FC<{
   });
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center relative">
       {addDebt.isLoading ? (
         <div className="px-16 py-10">
           <LoadingAnimation />
@@ -156,9 +155,8 @@ const CreateDebtModal: React.FC<{
               type="number"
             />
             <select
-              className={` bg-blue-900 text-center text-xl font-bold shadow-lg  ${
-                tType === TransactionsArr[0] ? "text-red-600" : "text-green-600"
-              }`}
+              className={` bg-blue-900 text-center text-xl font-bold shadow-lg  ${tType === TransactionsArr[0] ? "text-red-600" : "text-green-600"
+                }`}
               onChange={(e) => {
                 setTType(e.currentTarget.value as TransactionsType);
               }}
@@ -228,12 +226,14 @@ const DeleteDebtModal: React.FC<{
 const DebtNoteModal: React.FC<{
   debtId: string;
   note: string;
-  refetch: () => void;
+  refetch?: () => void;
 }> = ({ debtId, note, refetch }) => {
   const [noteState, setNoteState] = useState(note);
   const updateDebtNote = trpc.customer.updateDebtNote.useMutation({
     onSuccess: () => {
-      refetch();
+      if (refetch) {
+        refetch();
+      }
     },
   });
 
@@ -244,6 +244,7 @@ const DebtNoteModal: React.FC<{
       ) : (
         <div className=" flex w-full flex-col gap-6">
           <textarea
+            autoFocus={true}
             onChange={(e) => setNoteState(e.target.value)}
             value={noteState}
             className=" min-h-[150px] resize-y bg-black p-2 text-sm text-white"
@@ -259,3 +260,21 @@ const DebtNoteModal: React.FC<{
     </div>
   );
 };
+
+
+export const CustomerDebtMessage: React.FC<{ noteText: string, }> = ({ noteText }) => {
+  const [hover, setHover] = useState(false);
+
+  const { openModal } = useModalState((state) => ({
+    openModal: state.openModal,
+  }));
+
+  return <div
+    onMouseEnter={() => setHover(true)}
+    onMouseLeave={() => setHover(false)}
+    className="relative flex items-center justify-center "
+  >
+    {hover ? <p className=" absolute top-8 w-52 h-32 z-10 flex animate-opacityAnimation items-center justify-center  rounded-md bg-white px-3 py-1 text-gray-600 border-gray-500 border shadow-lg">{noteText}</p> : ""}
+    <BsFillChatSquareTextFill size={20} /></div>
+
+}

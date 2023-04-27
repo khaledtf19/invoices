@@ -74,10 +74,6 @@ const InvoiceView: FC<{
         label="Created At"
         text={DateFormat({ date: invoiceData.createdAt })}
       />
-      <DataFields
-        label="updated At"
-        text={DateFormat({ date: invoiceData.updatedAt })}
-      />
       <DataFields label="Created By" text={invoiceData.madeBy.name} />
       <DataFields
         label="Viewed"
@@ -96,13 +92,12 @@ const InvoiceView: FC<{
         />
       ))}
       <div
-        className={` w-full ${
-          newStatus === InvoiceStatusArr[1]
-            ? "text-red-700"
-            : newStatus === InvoiceStatusArr[2]
+        className={` w-full ${newStatus === InvoiceStatusArr[1]
+          ? "text-red-700"
+          : newStatus === InvoiceStatusArr[2]
             ? "text-green-700"
             : "text-blue-700"
-        } `}
+          } `}
       >
         {userData?.role === UserRoleArr[1] ? (
           <>
@@ -148,42 +143,47 @@ const InvoiceView: FC<{
 
       {userData?.role === UserRoleArr[1] && (
         <>
-          <PrimaryButton
-            label="Edit"
-            onClick={async () => {
-              editInvoice.mutateAsync({
-                invoiceId: invoiceData.id,
-                invoiceStatus: newStatus,
-                invoiceStatusNote: newStatusNote,
-              });
-            }}
-          />
-          <SecondaryButton
-            label="Add to Bank"
-            onClick={() => {
-              openModal({
-                newComponents: (
-                  <BankModal
-                    transactionType="Take"
-                    invoiceId={invoiceData.id}
-                  />
-                ),
-              });
-            }}
-          />
-          <RedButton
-            label="Delete"
-            onClick={() => {
-              openModal({
-                newComponents: (
-                  <ModalDeleteComponent
-                    invoiceId={invoiceData.id}
-                    customerId={invoiceData.customerId}
-                  />
-                ),
-              });
-            }}
-          />
+          <div className="flex gap-3 w-full">
+            <PrimaryButton
+              label="Edit"
+              onClick={async () => {
+                editInvoice.mutateAsync({
+                  invoiceId: invoiceData.id,
+                  invoiceStatus: newStatus,
+                  invoiceStatusNote: newStatusNote,
+                });
+              }}
+            />
+            <SecondaryButton
+              label="Add to Bank"
+              onClick={() => {
+                openModal({
+                  newComponents: (
+                    <BankModal
+                      transactionType="Take"
+                      invoiceId={invoiceData.id}
+                    />
+                  ),
+                });
+              }}
+            />
+
+          </div>
+          <div className="w-2/3">
+            <RedButton
+              label="Delete"
+              onClick={() => {
+                openModal({
+                  newComponents: (
+                    <ModalDeleteComponent
+                      invoiceId={invoiceData.id}
+                      customerId={invoiceData.customerId}
+                    />
+                  ),
+                });
+              }}
+            />
+          </div>
         </>
       )}
     </Container>

@@ -20,6 +20,7 @@ import {
 } from "./tables";
 import { DateFormat } from "../../utils/utils";
 import { type RouterOutputs } from "../../utils/trpc";
+import { TransactionsArr } from "../../types/utils.types";
 
 const ChangeBankTable: FC<{
   changeBank: RouterOutputs["user"]["getBankChange"];
@@ -54,10 +55,19 @@ const ChangeBankTable: FC<{
     }),
     columnHelper.accessor("type", {
       size: 100,
-      cell: (info) => <span>{info.renderValue()}</span>,
+      cell: (info) => <span
+        className={`${info.getValue() === TransactionsArr[0]
+          ? "text-red-600"
+          : "text-green-500"
+          } `}
+      >
+        {info.renderValue()}
+      </span>
+      ,
       header: () => "Type",
     }),
     columnHelper.accessor("bankName", {
+      size: 100,
       cell: (info) => <span>{info.renderValue()}</span>,
       header: () => "Created At",
     }),
@@ -85,9 +95,9 @@ const ChangeBankTable: FC<{
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
                   {header.column.getCanFilter() ? (
                     <div>
                       <Filter column={header.column} table={table} />
@@ -102,7 +112,7 @@ const ChangeBankTable: FC<{
           {table.getRowModel().rows.map((row) => (
             <TR
               key={row.id}
-              route={changeBank[row.index]?.invoice?.id? "invoice" : "none"}
+              route={changeBank[row.index]?.invoice?.id ? "invoice" : "none"}
               rowId={changeBank[row.index]?.invoice?.id}
             >
               {row.getVisibleCells().map((cell) => (
