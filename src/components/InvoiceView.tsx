@@ -18,6 +18,15 @@ import { useUserState } from "../hooks/userDataState";
 import CustomerDebtComponent from "./customer/CustomerDebt";
 import { BankModal } from "../pages/bank";
 import ReactToPrint from "react-to-print";
+import {
+  BsFillTelephoneFill,
+  BsFillPersonBadgeFill,
+  BsCalendarDate,
+  BsBank2
+} from "react-icons/bs";
+import { BiMobile } from "react-icons/bi";
+import { AiFillDollarCircle } from "react-icons/ai"
+import { FaUserSecret } from "react-icons/fa"
 
 const InvoiceView: FC<{
   invoiceData: RouterOutputs["invoice"]["getInvoiceById"];
@@ -81,20 +90,22 @@ const InvoiceView: FC<{
       }
       openRight={invoiceData.customer.customerDebt.length > 0 ? true : false}
     >
-      <DataFields label="Name" text={invoiceData.customer.name} />
-      <DataFields label="Number" text={invoiceData.customer.number} />
-      <DataFields label="Cost" text={invoiceData.cost} />
+      <DataFields label="Name" text={invoiceData.customer.name} Icon={BsFillPersonBadgeFill} />
+      <DataFields label="Number" text={invoiceData.customer.number} Icon={BsFillTelephoneFill} />
+      <DataFields label="Cost" text={invoiceData.cost} Icon={AiFillDollarCircle} />
       <DataFields
         label="Created At"
         text={DateFormat({ date: invoiceData.createdAt })}
+        Icon={BsCalendarDate}
       />
-      <DataFields label="Created By" text={invoiceData.madeBy.name} />
+      <DataFields Icon={FaUserSecret} label="Created By" text={invoiceData.madeBy.name} />
       {invoiceData.bankChange.map((bankChange) => (
         <DataFields
           key={bankChange.id}
           label={`${bankChange.bankName} cost`}
           text={"- " + bankChange.amount}
           className=" text-red-700"
+          Icon={BsBank2}
         />
       ))}
       <div
@@ -253,16 +264,16 @@ const ModalDeleteComponent: FC<{ invoiceId: string; customerId: string }> = ({
 const PrintInvlicieComponent: FC<{ invoiceData: RouterOutputs["invoice"]["getInvoiceById"]; refC: Ref<HTMLDivElement> }> = ({ invoiceData, refC }) => {
   return <div ref={refC} className="flex flex-col justify-center w-full items-center h-full text-sm ">
     <div className="flex flex-col justify-center items-center w-[26%]  h-full gap-3">
-      <DataFields label="Name" text={invoiceData.customer.name} />
-      <DataFields label="Number" text={invoiceData.customer.number} />
-      <DataFields label="Cost" text={invoiceData.cost} />
-      <DataFields label="Created At" text={DateFormat({ date: invoiceData.createdAt })} />
-      <DataFields label="Created By" text={invoiceData.madeBy.name} />
+      <DataFields label="Name" text={invoiceData.customer.name} Icon={BsFillPersonBadgeFill} iconSize={15} />
+      <DataFields label="Number" text={invoiceData.customer.number} Icon={BsFillTelephoneFill} iconSize={15} />
+      <DataFields label="Cost" text={invoiceData.cost} Icon={AiFillDollarCircle} iconSize={15} />
+      <DataFields label="Created At" text={DateFormat({ date: invoiceData.createdAt })} Icon={BsCalendarDate} iconSize={15} />
+      <DataFields label="Created By" text={invoiceData.madeBy.name} Icon={FaUserSecret} iconSize={15} />
       <div className="justify-self-end mt-20 w-full">
-        <DataFields label="موبايل لبيب حبش" text="01287591751" />
-        <DataFields label="موبايل لبيب حبش" text="01114800992" />
-        <DataFields label="ارضي لبيب حبش" text="0132428421" />
-        <DataFields label="ارضي لبيب حبش" text="0132421822" />
+        <DataFields label="موبايل لبيب حبش" text="01287591751" Icon={BiMobile} iconSize={15} />
+        <DataFields label="موبايل لبيب حبش" text="01114800992" Icon={BiMobile} iconSize={15} />
+        <DataFields label="ارضي لبيب حبش" text="0132428421" Icon={BsFillTelephoneFill} iconSize={15} />
+        <DataFields label="ارضي لبيب حبش" text="0132421822" Icon={BsFillTelephoneFill} iconSize={15} />
       </div>
     </div>
   </div>;

@@ -47,10 +47,10 @@ export const FormInput: FC<{
   label: string;
   register: UseFormRegisterReturn<string>;
   error?:
-    | string
-    | FieldError
-    | Merge<FieldError, FieldErrorsImpl<any>>
-    | undefined;
+  | string
+  | FieldError
+  | Merge<FieldError, FieldErrorsImpl<any>>
+  | undefined;
   placeholder?: string;
   type: HTMLInputTypeAttribute;
 }> = ({ name, label, register, error, type, placeholder }) => {
@@ -153,12 +153,13 @@ export const DataFields: FC<{
   label: string;
   Icon?: IconType;
   className?: string;
-}> = ({ text, label, Icon, className }) => {
+  iconSize?: number
+}> = ({ text, label, Icon, iconSize, className }) => {
   return (
     <div className=" flex w-full flex-col ">
       <label className=" flex items-center gap-2 text-gray-700">
         {Icon ? (
-          <IconToCopy name={label} Icon={Icon} text={String(text)} size={20} />
+          <IconToCopy name={label} Icon={Icon} text={String(text)} size={iconSize || 20} />
         ) : null}
         {label}:
       </label>
@@ -188,9 +189,8 @@ export const IconToCopy: FC<{
 
   return (
     <div
-      className={`${
-        copied ? " text-green-600" : ""
-      } relative flex items-center justify-center`}
+      className={`${copied ? " text-green-600" : ""
+        } relative flex items-center justify-center`}
       onMouseOver={() => {
         setHover(true);
       }}

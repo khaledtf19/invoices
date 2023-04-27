@@ -274,7 +274,7 @@ export const CustomerDebtMessage: React.FC<{ noteText: string, }> = ({ noteText 
     onMouseLeave={() => setHover(false)}
     className="relative flex items-center justify-center "
   >
-    {hover ? <p className=" absolute top-8 w-52 h-32 z-10 flex animate-opacityAnimation items-center justify-center  rounded-md bg-white px-3 py-1 text-gray-600 border-gray-500 border shadow-lg">{noteText}</p> : ""}
+    {hover ? <p className="absolute top-8 w-52 h-32 z-10 flex animate-opacityAnimation items-center justify-center  rounded-md bg-white px-3 py-1 text-gray-600 border-gray-500 border shadow-lg">{noteText}</p> : ""}
     <BsFillChatSquareTextFill size={20} /></div>
 
 }
