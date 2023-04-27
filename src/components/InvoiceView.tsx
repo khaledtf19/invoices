@@ -252,7 +252,7 @@ const ModalDeleteComponent: FC<{ invoiceId: string; customerId: string }> = ({
 
 const PrintInvlicieComponent: FC<{ invoiceData: RouterOutputs["invoice"]["getInvoiceById"]; refC: Ref<HTMLDivElement> }> = ({ invoiceData, refC }) => {
   return <div ref={refC} className="flex flex-col justify-center w-full items-center h-full text-sm ">
-    <div className="flex flex-col justify-center items-center w-2/6 h-full gap-3">
+    <div className="flex flex-col justify-center items-center w-[26%]  h-full gap-3">
       <DataFields label="Name" text={invoiceData.customer.name} />
       <DataFields label="Number" text={invoiceData.customer.number} />
       <DataFields label="Cost" text={invoiceData.cost} />
