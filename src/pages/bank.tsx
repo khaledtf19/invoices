@@ -94,6 +94,7 @@ export const BankModal: React.FC<{
     onSuccess: () => {
       ctx.user.getBank.invalidate();
       ctx.user.getBankChange.invalidate();
+      ctx.invoice.getInvoiceById.invalidate();
       closeModal();
     },
   });
