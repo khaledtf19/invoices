@@ -57,8 +57,8 @@ const ChangeBankTable: FC<{
       size: 100,
       cell: (info) => <span
         className={`${info.getValue() === TransactionsArr[0]
-          ? "text-red-600"
-          : "text-green-500"
+          ? "text-green-600"
+          : "text-red-500"
           } `}
       >
         {info.renderValue()}

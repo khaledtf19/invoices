@@ -87,6 +87,10 @@ export const userRouter = router({
 
   getBank: adminProcedure.query(async ({ ctx }) => {
     const bank = await ctx.prisma.bank.findFirst();
+    if (bank) {
+      bank.bss = parseFloat(bank.bss.toFixed(2))
+      bank.khadmaty = parseFloat(bank.khadmaty.toFixed(2))
+    }
     return bank;
   }),
 
@@ -96,6 +100,9 @@ export const userRouter = router({
         user: true,
         invoice: { select: { customer: { select: { name: true } }, id: true } },
       },
+      orderBy: {
+        createdAt: "desc",
+      }
     });
     return bankChanges;
   }),
