@@ -15,6 +15,7 @@ import {
   UserRoleArr,
 } from "../../types/utils.types";
 
+
 export const TableComponent: FC<PropsWithChildren & { moreClass?: string }> = ({
   children,
   moreClass,
@@ -244,6 +245,16 @@ export const Filter: FC<{
     </select>;
   }
 
+  if (firstValue instanceof Date) {
+    return <div className=" flex items-center justify-center w-full">
+      <div className="relative max-w-sm flex gap-1 ">
+        <input type="date" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block pl-3 p-1  " placeholder="Select date" onChange={(e) => { column.setFilterValue((old: [Date, Date]) => [new Date(e.target.value), old?.[1]]) }} />
+        <input type="date" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  pl-3 p-1  " placeholder="Select date" onChange={(e) => { column.setFilterValue((old: [Date, Date]) => [old?.[0], new Date(e.target.value)]) }} />
+
+      </div>
+    </div>
+  }
+
   return (
     <div>
       <input
@@ -255,4 +266,18 @@ export const Filter: FC<{
       />
     </div>
   );
+};
+
+export const isWithinRange = (row: any, columnId: string, value: [Date, Date]) => {
+  const date = row.getValue(columnId) as Date;
+  const [start, end] = value;
+  //If one filter defined and date is null filter it
+  if ((start || end) && !date) return false;
+  if (start && !end) {
+    return date.getTime() >= start.getTime()
+  } else if (!start && end) {
+    return date.getTime() <= end.getTime()
+  } else if (start && end) {
+    return date.getTime() >= start.getTime() && date.getTime() <= end.getTime()
+  } else return true;
 };

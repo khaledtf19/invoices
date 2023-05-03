@@ -17,6 +17,7 @@ import {
   TableComponent,
   Filter,
   TablePag,
+  isWithinRange,
 } from "./tables";
 import { DateFormat } from "../../utils/utils";
 import { type RouterOutputs } from "../../utils/trpc";
@@ -33,20 +34,18 @@ const ChangeBankTable: FC<{
     columnHelper.accessor("user.email", {
       size: 200,
       cell: (info) => <span>{info.renderValue()}</span>,
-      footer: (info) => info.column.id,
       header: () => "Admin",
     }),
     columnHelper.accessor("invoice.customer.name", {
       size: 200,
       cell: (info) => <span>{info.renderValue()}</span>,
-      footer: (info) => info.column.id,
       header: () => "invoice",
     }),
     columnHelper.accessor("createdAt", {
       size: 200,
       cell: (info) => <span>{DateFormat({ date: info.getValue() })}</span>,
       header: () => "Created At",
-      enableColumnFilter: false,
+      filterFn: isWithinRange
     }),
     columnHelper.accessor("amount", {
       size: 100,
