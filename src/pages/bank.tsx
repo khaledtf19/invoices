@@ -5,7 +5,7 @@ import { useModalState } from "../hooks/modalState";
 import { trpc } from "../utils/trpc";
 import { useEffect, useState } from "react";
 import { BankNameArr, TransactionsArr } from "../types/utils.types";
-import { LoadingAnimation } from "../components/utils";
+import { LoadingAnimation, PrimaryButton } from "../components/utils";
 import ChangeBankTable from "../components/tables/ChangeBankTable";
 
 const Bank = () => {
@@ -15,6 +15,8 @@ const Bank = () => {
     openModal: state.openModal,
     closeModal: state.closeModal,
   }));
+
+  const getBankChangesAtDate = trpc.user.getBankdataAtaDate.useMutation()
 
   useEffect(() => {
     return () => {
@@ -66,6 +68,17 @@ const Bank = () => {
               Change
             </button>
           </div>
+        </div>
+        <div>
+          <PrimaryButton label="Get" onClick={() => {
+            console.log(new Date().toISOString());
+            getBankChangesAtDate
+              .mutate({
+                dateMax: new Date().toISOString()
+                , dateMin: new Date("5/3/2023").toISOString()
+              })
+          }} />
+          {getBankChangesAtDate.data}
         </div>
       </Container>
       {bankChangeData && <ChangeBankTable changeBank={bankChangeData} />}

@@ -100,14 +100,22 @@ const InvoiceView: FC<{
       />
       <DataFields Icon={FaUserSecret} label="Created By" text={invoiceData.madeBy.name} />
       {invoiceData.bankChange.map((bankChange) => (
-        <DataFields
-          key={bankChange.id}
-          label={`${bankChange.bankName} cost`}
-          text={"- " + bankChange.amount}
-          className=" text-red-700"
-          Icon={BsBank2}
-        />
-      ))}
+        <div className="flex w-full gap-1 items-end justify-center " key={bankChange.id}>
+          <DataFields
+            key={bankChange.id}
+            label={`${bankChange.bankName} cost`}
+            text={"- " + bankChange.amount}
+            className=" text-red-700"
+            Icon={BsBank2}
+          />
+          <div>
+            <RedButton label="X" onClick={() => {
+              openModal({ newComponents: <ModalUndoBankChange bankChangeId={bankChange.id} /> })
+            }} />
+          </div>
+        </div>
+      ))
+      }
       <div
         className={` w-full ${newStatus === InvoiceStatusArr[1]
           ? "text-red-700"
@@ -141,71 +149,75 @@ const InvoiceView: FC<{
         )}
       </div>
 
-      {userData?.role === UserRoleArr[1] ? (
-        <div className=" w-full">
-          <Input
+      {
+        userData?.role === UserRoleArr[1] ? (
+          <div className=" w-full">
+            <Input
+              label="Status Note"
+              state={newStatusNote ? newStatusNote : ""}
+              onChange={(e) => {
+                setNewStatusNote(e.target.value);
+              }}
+            />
+          </div>
+        ) : invoiceData.invoiceStatus?.note ? (
+          <DataFields
             label="Status Note"
-            state={newStatusNote ? newStatusNote : ""}
-            onChange={(e) => {
-              setNewStatusNote(e.target.value);
-            }}
+            text={invoiceData.invoiceStatus?.note}
           />
-        </div>
-      ) : invoiceData.invoiceStatus?.note ? (
-        <DataFields
-          label="Status Note"
-          text={invoiceData.invoiceStatus?.note}
-        />
-      ) : null}
+        ) : null
+      }
 
-      {userData?.role === UserRoleArr[1] && (
-        <>
-          <ReactToPrint content={reactToPrintContent} trigger={reactToPrintTrigger} removeAfterPrint />
-          <div className="flex gap-3 w-full">
-            <PrimaryButton
-              label="Edit"
-              onClick={async () => {
-                editInvoice.mutateAsync({
-                  invoiceId: invoiceData.id,
-                  invoiceStatus: newStatus,
-                  invoiceStatusNote: newStatusNote,
-                });
-              }}
-            />
-            <SecondaryButton
-              label="Add to Bank"
-              onClick={() => {
-                openModal({
-                  newComponents: (
-                    <BankModal
-                      transactionType="Take"
-                      invoiceId={invoiceData.id}
-                    />
-                  ),
-                });
-              }}
-            />
+      {
+        userData?.role === UserRoleArr[1] && (
+          <>
+            <ReactToPrint content={reactToPrintContent} trigger={reactToPrintTrigger} removeAfterPrint />
+            <div className="flex gap-3 w-full">
+              <PrimaryButton
+                label="Edit"
+                onClick={async () => {
+                  editInvoice.mutateAsync({
+                    invoiceId: invoiceData.id,
+                    invoiceStatus: newStatus,
+                    invoiceStatusNote: newStatusNote,
+                  });
+                }}
+              />
+              <SecondaryButton
+                label="Add to Bank"
+                onClick={() => {
+                  openModal({
+                    newComponents: (
+                      <BankModal
+                        transactionType="Take"
+                        invoiceId={invoiceData.id}
+                      />
+                    ),
+                  });
+                }}
+              />
 
-          </div>
-          <div className="w-2/3">
-            <RedButton
-              label="Delete"
-              onClick={() => {
-                openModal({
-                  newComponents: (
-                    <ModalDeleteComponent
-                      invoiceId={invoiceData.id}
-                      customerId={invoiceData.customerId}
-                    />
-                  ),
-                });
-              }}
-            />
-          </div>
-        </>
-      )}
+            </div>
+            <div className="w-2/3">
+              <RedButton
+                label="Delete"
+                onClick={() => {
+                  openModal({
+                    newComponents: (
+                      <ModalDeleteComponent
+                        invoiceId={invoiceData.id}
+                        customerId={invoiceData.customerId}
+                      />
+                    ),
+                  });
+                }}
+              />
+            </div>
+          </>
+        )
+      }
       <div className=" hidden" ><PrintInvlicieComponent refC={printComponentRef} invoiceData={invoiceData} /></div>
-    </Container>
+    </Container >
   );
 };
 
@@ -261,6 +273,47 @@ const ModalDeleteComponent: FC<{ invoiceId: string; customerId: string }> = ({
   );
 };
 
+const ModalUndoBankChange: FC<{ bankChangeId: string }> = ({ bankChangeId }) => {
+  const ctx = trpc.useContext()
+
+  const undoBankChange = trpc.user.undoBankChange.useMutation({
+    onSuccess: () => {
+      ctx.invoice.getInvoiceById.invalidate();
+      ctx.user.getBank.invalidate();
+    },
+  })
+
+
+  if (undoBankChange.isLoading) {
+    return (
+      <div className=" pt-5">
+        <LoadingAnimation />
+      </div>
+    );
+  }
+
+  return (
+    <div className=" flex h-52 w-full flex-col items-center">
+      <div className=" h-full">
+        <p className=" text-lg font-bold text-red-700">
+          Do you want to undo this bank change
+        </p>
+      </div>
+      <div className=" mb-1 w-2/4">
+        <RedButton
+          label="Undo"
+          onClick={() => {
+            undoBankChange.mutate({
+              id: bankChangeId,
+            });
+          }}
+        />
+      </div>
+    </div>
+  );
+};
+
+
 const PrintInvlicieComponent: FC<{ invoiceData: RouterOutputs["invoice"]["getInvoiceById"]; refC: Ref<HTMLDivElement> }> = ({ invoiceData, refC }) => {
   return <div ref={refC} className="flex flex-col justify-center w-full items-center h-full text-sm ">
     <div className="flex flex-col justify-center items-center w-[26%]  h-full gap-3">
@@ -269,7 +322,7 @@ const PrintInvlicieComponent: FC<{ invoiceData: RouterOutputs["invoice"]["getInv
       <DataFields label="Cost" text={invoiceData.cost} Icon={AiFillDollarCircle} iconSize={15} />
       <DataFields label="Created At" text={DateFormat({ date: invoiceData.createdAt })} Icon={BsCalendarDate} iconSize={15} />
       <DataFields label="Created By" text={invoiceData.madeBy.name} Icon={FaUserSecret} iconSize={15} />
-      <div className="justify-self-end mt-20 w-full">
+      <div className="justify-self-end mt-40 w-full">
         <DataFields label="موبايل لبيب حبش" text="01287591751" Icon={BiMobile} iconSize={15} />
         <DataFields label="موبايل لبيب حبش" text="01114800992" Icon={BiMobile} iconSize={15} />
         <DataFields label="ارضي لبيب حبش" text="0132428421" Icon={BsFillTelephoneFill} iconSize={15} />
