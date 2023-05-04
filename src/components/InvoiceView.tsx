@@ -100,7 +100,7 @@ const InvoiceView: FC<{
       />
       <DataFields Icon={FaUserSecret} label="Created By" text={invoiceData.madeBy.name} />
       {invoiceData.bankChange.map((bankChange) => (
-        <div className="flex w-full gap-1 items-end justify-center ">
+        <div className="flex w-full gap-1 items-end justify-center " key={bankChange.id}>
           <DataFields
             key={bankChange.id}
             label={`${bankChange.bankName} cost`}
@@ -114,7 +114,8 @@ const InvoiceView: FC<{
             }} />
           </div>
         </div>
-      ))}
+      ))
+      }
       <div
         className={` w-full ${newStatus === InvoiceStatusArr[1]
           ? "text-red-700"
@@ -148,71 +149,75 @@ const InvoiceView: FC<{
         )}
       </div>
 
-      {userData?.role === UserRoleArr[1] ? (
-        <div className=" w-full">
-          <Input
+      {
+        userData?.role === UserRoleArr[1] ? (
+          <div className=" w-full">
+            <Input
+              label="Status Note"
+              state={newStatusNote ? newStatusNote : ""}
+              onChange={(e) => {
+                setNewStatusNote(e.target.value);
+              }}
+            />
+          </div>
+        ) : invoiceData.invoiceStatus?.note ? (
+          <DataFields
             label="Status Note"
-            state={newStatusNote ? newStatusNote : ""}
-            onChange={(e) => {
-              setNewStatusNote(e.target.value);
-            }}
+            text={invoiceData.invoiceStatus?.note}
           />
-        </div>
-      ) : invoiceData.invoiceStatus?.note ? (
-        <DataFields
-          label="Status Note"
-          text={invoiceData.invoiceStatus?.note}
-        />
-      ) : null}
+        ) : null
+      }
 
-      {userData?.role === UserRoleArr[1] && (
-        <>
-          <ReactToPrint content={reactToPrintContent} trigger={reactToPrintTrigger} removeAfterPrint />
-          <div className="flex gap-3 w-full">
-            <PrimaryButton
-              label="Edit"
-              onClick={async () => {
-                editInvoice.mutateAsync({
-                  invoiceId: invoiceData.id,
-                  invoiceStatus: newStatus,
-                  invoiceStatusNote: newStatusNote,
-                });
-              }}
-            />
-            <SecondaryButton
-              label="Add to Bank"
-              onClick={() => {
-                openModal({
-                  newComponents: (
-                    <BankModal
-                      transactionType="Take"
-                      invoiceId={invoiceData.id}
-                    />
-                  ),
-                });
-              }}
-            />
+      {
+        userData?.role === UserRoleArr[1] && (
+          <>
+            <ReactToPrint content={reactToPrintContent} trigger={reactToPrintTrigger} removeAfterPrint />
+            <div className="flex gap-3 w-full">
+              <PrimaryButton
+                label="Edit"
+                onClick={async () => {
+                  editInvoice.mutateAsync({
+                    invoiceId: invoiceData.id,
+                    invoiceStatus: newStatus,
+                    invoiceStatusNote: newStatusNote,
+                  });
+                }}
+              />
+              <SecondaryButton
+                label="Add to Bank"
+                onClick={() => {
+                  openModal({
+                    newComponents: (
+                      <BankModal
+                        transactionType="Take"
+                        invoiceId={invoiceData.id}
+                      />
+                    ),
+                  });
+                }}
+              />
 
-          </div>
-          <div className="w-2/3">
-            <RedButton
-              label="Delete"
-              onClick={() => {
-                openModal({
-                  newComponents: (
-                    <ModalDeleteComponent
-                      invoiceId={invoiceData.id}
-                      customerId={invoiceData.customerId}
-                    />
-                  ),
-                });
-              }}
-            />
-          </div>
-        </>
-      )}
+            </div>
+            <div className="w-2/3">
+              <RedButton
+                label="Delete"
+                onClick={() => {
+                  openModal({
+                    newComponents: (
+                      <ModalDeleteComponent
+                        invoiceId={invoiceData.id}
+                        customerId={invoiceData.customerId}
+                      />
+                    ),
+                  });
+                }}
+              />
+            </div>
+          </>
+        )
+      }
       <div className=" hidden" ><PrintInvlicieComponent refC={printComponentRef} invoiceData={invoiceData} /></div>
-    </Container>
+    </Container >
   );
 };
 
