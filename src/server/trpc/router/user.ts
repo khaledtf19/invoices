@@ -87,11 +87,26 @@ export const userRouter = router({
 
   getBank: adminProcedure.query(async ({ ctx }) => {
     const bank = await ctx.prisma.bank.findFirst();
+
     if (bank) {
       bank.bss = parseFloat(bank.bss.toFixed(2))
       bank.khadmaty = parseFloat(bank.khadmaty.toFixed(2))
     }
     return bank;
+  }),
+
+  getBankdataAtaDate: adminProcedure.input(z.object({ dateMin: z.string().optional(), dateMax: z.string().optional() })).mutation(async ({ input, ctx }) => {
+
+    let bankChanges = await ctx.prisma.bankChange.count({
+      where: {
+        createdAt: {
+          gte: input.dateMin,
+          lte: input.dateMax,
+        },
+      },
+    })
+
+    return bankChanges
   }),
 
   getBankChange: adminProcedure.query(async ({ ctx }) => {
@@ -141,4 +156,30 @@ export const userRouter = router({
       });
       return { message: "done" };
     }),
+
+  undoBankChange: adminProcedure.input(z.object({
+    id: z.string()
+  })).mutation(async ({ input, ctx }) => {
+    let bankChange = await ctx.prisma.bankChange.findUnique({
+      where: { id: input.id },
+    });
+    if (bankChange?.type === TransactionsArr[0]) {
+      await ctx.prisma.bank.updateMany({
+        data: {
+          [bankChange.bankName.toLocaleLowerCase()]: { decrement: bankChange?.amount },
+        },
+      });
+    } else if (bankChange?.type === TransactionsArr[1]) {
+      await ctx.prisma.bank.updateMany({
+        data: {
+          [bankChange.bankName.toLocaleLowerCase()]: { increment: bankChange?.amount },
+        },
+      });
+    }
+
+    await ctx.prisma.bankChange.delete({
+      where: { id: bankChange?.id },
+    })
+    return { message: "done" };
+  })
 });
