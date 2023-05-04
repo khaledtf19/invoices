@@ -97,7 +97,7 @@ export const userRouter = router({
 
   getBankdataAtaDate: adminProcedure.input(z.object({ dateMin: z.string().optional(), dateMax: z.string().optional() })).mutation(async ({ input, ctx }) => {
 
-    let bankChanges = await ctx.prisma.bankChange.count({
+    const bankChanges = await ctx.prisma.bankChange.count({
       where: {
         createdAt: {
           gte: input.dateMin,
@@ -160,7 +160,7 @@ export const userRouter = router({
   undoBankChange: adminProcedure.input(z.object({
     id: z.string()
   })).mutation(async ({ input, ctx }) => {
-    let bankChange = await ctx.prisma.bankChange.findUnique({
+    const bankChange = await ctx.prisma.bankChange.findUnique({
       where: { id: input.id },
     });
     if (bankChange?.type === TransactionsArr[0]) {
