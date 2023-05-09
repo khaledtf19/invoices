@@ -12,7 +12,7 @@ const Admin = () => {
   const { data } = useSession();
 
   const makeAdmin = trpc.auth.makeAdmin.useMutation();
-  const makeBank = trpc.user.createNewBank.useMutation();
+  const makeBank = trpc.bank.createNewBank.useMutation();
 
   const ctx = trpc.useContext();
 
@@ -60,7 +60,7 @@ const Admin = () => {
           onClick={async () => {
             try {
               await makeBank.mutateAsync();
-              ctx.user.getBank.invalidate();
+              ctx.bank.getBank.invalidate();
             } catch (e) {
               console.log(e);
             }

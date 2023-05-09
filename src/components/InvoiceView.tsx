@@ -276,10 +276,10 @@ const ModalDeleteComponent: FC<{ invoiceId: string; customerId: string }> = ({
 const ModalUndoBankChange: FC<{ bankChangeId: string }> = ({ bankChangeId }) => {
   const ctx = trpc.useContext()
 
-  const undoBankChange = trpc.user.undoBankChange.useMutation({
+  const undoBankChange = trpc.bank.undoBankChange.useMutation({
     onSuccess: () => {
       ctx.invoice.getInvoiceById.invalidate();
-      ctx.user.getBank.invalidate();
+      ctx.bank.getBank.invalidate();
     },
   })
 

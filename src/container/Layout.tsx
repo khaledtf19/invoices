@@ -8,7 +8,7 @@ const Layout: FC<PropsWithChildren> = ({ children }) => {
       <header>
         <Navbar />
       </header>
-      <main className="flex min-h-screen w-full flex-col items-center  py-5 pl-32 pr-12 text-black">
+      <main className="flex min-h-screen w-full flex-col items-center  py-5 px-12 text-black">
         {children}
       </main>
       <Modal />

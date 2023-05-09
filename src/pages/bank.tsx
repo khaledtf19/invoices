@@ -9,14 +9,14 @@ import { LoadingAnimation, PrimaryButton } from "../components/utils";
 import ChangeBankTable from "../components/tables/ChangeBankTable";
 
 const Bank = () => {
-  const { data: bankData } = trpc.user.getBank.useQuery();
-  const { data: bankChangeData } = trpc.user.getBankChange.useQuery();
+  const { data: bankData } = trpc.bank.getBank.useQuery();
+  const { data: bankChangeData } = trpc.bank.getBankChange.useQuery();
   const { openModal, closeModal } = useModalState((state) => ({
     openModal: state.openModal,
     closeModal: state.closeModal,
   }));
 
-  const getBankChangesAtDate = trpc.user.getBankdataAtaDate.useMutation()
+  const getBankChangesAtDate = trpc.bank.getBankdataAtaDate.useMutation()
 
   useEffect(() => {
     return () => {
@@ -103,10 +103,10 @@ export const BankModal: React.FC<{
 
   const ctx = trpc.useContext();
 
-  const changeBank = trpc.user.changeBank.useMutation({
+  const changeBank = trpc.bank.changeBank.useMutation({
     onSuccess: () => {
-      ctx.user.getBank.invalidate();
-      ctx.user.getBankChange.invalidate();
+      ctx.bank.getBank.invalidate();
+      ctx.bank.getBankChange.invalidate();
       ctx.invoice.getInvoiceById.invalidate();
       closeModal();
     },
