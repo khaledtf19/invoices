@@ -24,10 +24,10 @@ import { type RouterOutputs } from "../../utils/trpc";
 import { TransactionsArr } from "../../types/utils.types";
 
 const ChangeBankTable: FC<{
-  changeBank: RouterOutputs["user"]["getBankChange"];
+  changeBank: RouterOutputs["bank"]["getBankChange"];
 }> = ({ changeBank }) => {
   const columnHelper =
-    createColumnHelper<RouterOutputs["user"]["getBankChange"][number]>();
+    createColumnHelper<RouterOutputs["bank"]["getBankChange"][number]>();
   const [filter, setFilter] = useState<ColumnFiltersState>([]);
 
   const columns = [
