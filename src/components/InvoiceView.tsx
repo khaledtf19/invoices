@@ -92,7 +92,7 @@ const InvoiceView: FC<{
     >
       <DataFields label="Name" text={invoiceData.customer.name} Icon={BsFillPersonBadgeFill} />
       <DataFields label="Number" text={invoiceData.customer.number} Icon={BsFillTelephoneFill} />
-      <DataFields label="Cost" text={invoiceData.cost} Icon={AiFillDollarCircle} />
+      <DataFields label='Cost' text={invoiceData.cost} Icon={AiFillDollarCircle} />
       <DataFields
         label="Created At"
         text={DateFormat({ date: invoiceData.createdAt })}
@@ -151,7 +151,7 @@ const InvoiceView: FC<{
 
       {
         userData?.role === UserRoleArr[1] ? (
-          <div className=" w-full">
+          <div className='w-full'>
             <Input
               label="Status Note"
               state={newStatusNote ? newStatusNote : ""}
@@ -244,7 +244,7 @@ const ModalDeleteComponent: FC<{ invoiceId: string; customerId: string }> = ({
 
   if (deleteInvoice.isLoading) {
     return (
-      <div className=" pt-5">
+      <div className=' pt-5'>
         <LoadingAnimation />
       </div>
     );

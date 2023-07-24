@@ -62,6 +62,15 @@ export const bankRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
+      const bank = await ctx.prisma.bank.findFirst();
+
+      let before;
+      if (input.bankName === "Bss") {
+        before = bank?.bss
+      } else if (input.bankName === "Khadmaty") {
+        before = bank?.khadmaty
+      }
+
       if (input.transactionType === TransactionsArr[0]) {
         await ctx.prisma.bank.updateMany({
           data: {
@@ -75,6 +84,7 @@ export const bankRouter = router({
           },
         });
       }
+
       await ctx.prisma.bankChange.create({
         data: {
           type: input.transactionType,
@@ -84,6 +94,7 @@ export const bankRouter = router({
           invoiceId: input.invoiceId,
         },
       });
+
       return { message: "done" };
     }),
 

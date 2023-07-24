@@ -1,4 +1,4 @@
-import type { PropsWithChildren, FC } from "react";
+import type { PropsWithChildren, FC } from 'react';
 import Navbar from "../components/Navbar";
 import Modal from "../components/Modal";
 
