@@ -258,7 +258,7 @@ export const Filter: FC<{
   return (
     <div>
       <input
-        className="p-1 font-normal text-black"
+        className="p-1 font-normal text-black max-w-[100px]"
         value={column.getFilterValue() ? String(column.getFilterValue()) : ""}
         onChange={(e) => {
           column.setFilterValue(e.target.value);

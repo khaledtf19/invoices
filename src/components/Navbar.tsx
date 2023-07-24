@@ -27,7 +27,7 @@ const Navbar = () => {
   const { data: bankData } = trpc.bank.getBank.useQuery();
 
   return (
-    <nav className=" sticky bottom-0 left-0 top-0 z-50 flex w-20 h-full flex-col justify-between  rounded-r-lg bg-gradient-to-b from-blue-800  to-blue-900  py-10 text-sm text-white">
+    <nav className=" sticky bottom-0 left-0 top-0 z-50 flex w-20 h-screen flex-col justify-between  rounded-r-lg bg-gradient-to-b from-blue-800  to-blue-900  py-10 text-sm text-white">
       <ul className="flex w-full flex-col gap-3">
         <li>
           <RouteLink

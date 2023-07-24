@@ -49,7 +49,6 @@ const DebtTable: FC<{ data: RouterOutputs["customer"]["getAllDebt"] }> = ({
       header: () => "Name",
     }),
     columnHelper.accessor("customer.number", {
-      size: 100,
       cell: (info) => <span>{info.renderValue()}</span>,
       footer: (info) => info.column.id,
       header: () => "Number",
@@ -69,9 +68,17 @@ const DebtTable: FC<{ data: RouterOutputs["customer"]["getAllDebt"] }> = ({
       enableColumnFilter: false, 
     }),
     columnHelper.accessor("createdAt", {
+      size: 200,
       cell: (info) => DateFormat({ date: info.getValue() }),
       footer: (info) => info.column.id,
       header: () => "Created At",
+      enableColumnFilter: false,
+    }),
+    columnHelper.accessor("updatedAt", {
+      size: 150,
+      cell: (info) => DateFormat({ date: info.getValue() }),
+      footer: (info) => info.column.id,
+      header: () => "updated At",
       enableColumnFilter: false,
     }),
     columnHelper.accessor("amount", {
