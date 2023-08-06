@@ -33,8 +33,10 @@ const Container: FC<
         {leftComponent ? (
           <div
             id="container_left"
-            className="relative flex h-5/6 items-center justify-items-center"
+            className="relative flex  items-center justify-items-center h-5/6"
           >
+          
+
             {leftOpen ? (
               <div
                 className={`absolute flex ${userData?.role === UserRole.Admin ? "h-64" : "h-52"

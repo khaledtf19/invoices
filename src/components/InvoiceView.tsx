@@ -27,6 +27,7 @@ import {
 import { BiMobile } from "react-icons/bi";
 import { AiFillDollarCircle } from "react-icons/ai"
 import { FaUserSecret } from "react-icons/fa"
+import { HiMiniArrowUturnRight } from "react-icons/hi2"
 
 const InvoiceView: FC<{
   invoiceData: RouterOutputs["invoice"]["getInvoiceById"];
@@ -44,6 +45,8 @@ const InvoiceView: FC<{
     openModal: state.openModal,
     closeModal: state.closeModal,
   }));
+
+  const router = useRouter()
 
   const ctx = trpc.useContext();
 
@@ -90,6 +93,13 @@ const InvoiceView: FC<{
       }
       openRight={invoiceData.customer.customerDebt.length > 0 ? true : false}
     >
+      <div 
+        className="absolute top-1 right-1 hover:cursor-pointer hover:text-red-700 hover:bg-gray-300 p-1 rounded-md"
+        onClick={()=>{
+          router.push(`/customer/${invoiceData.customer.id}`)
+        }}>
+        <HiMiniArrowUturnRight size={20} />
+      </div>
       <DataFields label="Name" text={invoiceData.customer.name} Icon={BsFillPersonBadgeFill} />
       <DataFields label="Number" text={invoiceData.customer.number} Icon={BsFillTelephoneFill} />
       <DataFields label='Cost' text={invoiceData.cost} Icon={AiFillDollarCircle} />
