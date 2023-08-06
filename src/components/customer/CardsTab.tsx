@@ -31,18 +31,16 @@ const CardsTab: React.FC<{
     <div className="grid h-full w-full grid-flow-row grid-cols-4 content-center items-center  gap-3">
       <TextToCopy
         text={`${
-          date.getHours() >= 12 ? "مساؤ" : "صباحؤ"
+          date.getHours() >= 12 ? "مساؤ" : "صباحو"
         } هنا \n ممكن شحن كروت\n ${customerData.number} \n ${
           customerData.name
         }`}
       />
       <TextToCopy
-        text={`${
-          date.getHours() >= 12 ? "مساؤ" : "صباحؤ"
-        } هنا \n برجاء تفعيل \n ${customerData.number}`}
+        text={`تسلم  ياغالى\nتسلم  يا باشا\nالله يبارك فيك\nهل الجيجات خلصة`}
       />
       <TextToCopy
-        text={`تمام شكرا لك سيدى الفاضل \n كل سنة وسيادتكم والاسرة الكريمه بكامل الصحه والعافيه\n تسلم  يا باشا\n لا مانع من فقد الفترة المتبقيه `}
+        text={`ممكن تجديد الباقه\nتمام شكرا لك سيدى الفاضل\nممكن تقديم طلب استكمال المبلغ`}
       />
       {customerNotes?.map((note) => (
         <TextToCopy key={note.id} text={note.noteContent} noteId={note.id} />
