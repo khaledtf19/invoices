@@ -1,21 +1,20 @@
-import { type FC, useState, useEffect } from "react";
 import { type Customer, UserRole } from "@prisma/client";
 import { useRouter } from "next/router";
-
-import { SyncLoader } from "react-spinners";
-
-import { DataFields, IconToCopy, Input, PrimaryButton } from "../utils";
-import { trpc } from "../../utils/trpc";
-import { useModalState } from "../../hooks/modalState";
+import { type FC, useEffect, useState } from "react";
+import { BiMobile } from "react-icons/bi";
 import {
-  BsCreditCard2Front,
-  BsFillTelephoneFill,
-  BsFillPersonBadgeFill,
   BsCalendarDate,
+  BsCreditCard2Front,
+  BsFillPersonBadgeFill,
+  BsFillTelephoneFill,
 } from "react-icons/bs";
 import { MdOutlineAlternateEmail } from "react-icons/md";
-import { BiMobile } from "react-icons/bi";
+import { SyncLoader } from "react-spinners";
+
+import { useModalState } from "../../hooks/modalState";
 import { useUserState } from "../../hooks/userDataState";
+import { trpc } from "../../utils/trpc";
+import { DataFields, IconToCopy, Input, PrimaryButton } from "../utils";
 
 const CustomerData: FC<{ customerData: Customer }> = ({ customerData }) => {
   const { openModal, closeModal } = useModalState((state) => ({

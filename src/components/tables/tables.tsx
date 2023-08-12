@@ -1,20 +1,20 @@
 import { InvoiceStatusEnum, UserRole } from "@prisma/client";
+import { type Column, type Table } from "@tanstack/react-table";
 import { useRouter } from "next/router";
 import {
-  type PropsWithChildren,
   type FC,
+  type PropsWithChildren,
   type ReactNode,
   useEffect,
 } from "react";
-import { PrimaryButton } from "../utils";
-import { type Column, type Table } from "@tanstack/react-table";
+
 import {
   BankNameArr,
   InvoiceStatusArr,
   TransactionsArr,
   UserRoleArr,
 } from "../../types/utils.types";
-
+import { PrimaryButton } from "../utils";
 
 export const TableComponent: FC<PropsWithChildren & { moreClass?: string }> = ({
   children,
@@ -48,10 +48,11 @@ export const TR: FC<{
 
   return (
     <tr
-      className={` ${rowId
-        ? "cursor-pointer transition-colors duration-500 hover:bg-blue-600 hover:text-white"
-        : ""
-        }   `}
+      className={` ${
+        rowId
+          ? "cursor-pointer transition-colors duration-500 hover:bg-blue-600 hover:text-white"
+          : ""
+      }   `}
       onClick={() => {
         if (route !== "none") {
           router.push(`/${route}/${rowId}`);
@@ -153,7 +154,7 @@ export const Filter: FC<{
         className=" px-2 text-sm font-normal text-black"
         onChange={(e) => {
           column.setFilterValue(
-            e.target.value === "all" ? undefined : e.target.value
+            e.target.value === "all" ? undefined : e.target.value,
           );
         }}
       >
@@ -173,7 +174,7 @@ export const Filter: FC<{
         className="text-center font-normal text-black"
         onChange={(e) => {
           column.setFilterValue(
-            e.target.value === "all" ? undefined : e.target.value
+            e.target.value === "all" ? undefined : e.target.value,
           );
         }}
       >
@@ -193,7 +194,7 @@ export const Filter: FC<{
         className="text-center font-normal text-black"
         onChange={(e) => {
           column.setFilterValue(
-            e.target.value === "all" ? undefined : e.target.value
+            e.target.value === "all" ? undefined : e.target.value,
           );
         }}
       >
@@ -217,8 +218,8 @@ export const Filter: FC<{
             e.target.value === "all"
               ? undefined
               : e.target.value === "true"
-                ? true
-                : false
+              ? true
+              : false,
           );
         }}
       >
@@ -230,29 +231,54 @@ export const Filter: FC<{
   }
 
   if (firstValue === BankNameArr[0] || firstValue === BankNameArr[1]) {
-    return <select
-      className="px-1 text-center font-normal text-black"
-      onChange={(e) => {
-
-        column.setFilterValue(
-          e.target.value === "all" ? undefined : e.target.value
-        );
-      }} >
-      <option value={"all"}>All</option>
-      {BankNameArr.map((bank) => (
-        <option key={bank} value={bank}>{bank}</option>
-      ))}
-    </select>;
+    return (
+      <select
+        className="px-1 text-center font-normal text-black"
+        onChange={(e) => {
+          column.setFilterValue(
+            e.target.value === "all" ? undefined : e.target.value,
+          );
+        }}
+      >
+        <option value={"all"}>All</option>
+        {BankNameArr.map((bank) => (
+          <option key={bank} value={bank}>
+            {bank}
+          </option>
+        ))}
+      </select>
+    );
   }
 
   if (firstValue instanceof Date) {
-    return <div className=" flex items-center justify-center w-full">
-      <div className="relative max-w-sm flex gap-1 ">
-        <input type="date" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block pl-3 p-1  " placeholder="Select date" onChange={(e) => { column.setFilterValue((old: [Date, Date]) => [new Date(e.target.value), old?.[1]]) }} />
-        <input type="date" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  pl-3 p-1  " placeholder="Select date" onChange={(e) => { column.setFilterValue((old: [Date, Date]) => [old?.[0], new Date(e.target.value)]) }} />
-
+    return (
+      <div className=" flex items-center justify-center w-full">
+        <div className="relative max-w-sm flex gap-1 ">
+          <input
+            type="date"
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block pl-3 p-1  "
+            placeholder="Select date"
+            onChange={(e) => {
+              column.setFilterValue((old: [Date, Date]) => [
+                new Date(e.target.value),
+                old?.[1],
+              ]);
+            }}
+          />
+          <input
+            type="date"
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  pl-3 p-1  "
+            placeholder="Select date"
+            onChange={(e) => {
+              column.setFilterValue((old: [Date, Date]) => [
+                old?.[0],
+                new Date(e.target.value),
+              ]);
+            }}
+          />
+        </div>
       </div>
-    </div>
+    );
   }
 
   return (
@@ -268,16 +294,20 @@ export const Filter: FC<{
   );
 };
 
-export const isWithinRange = (row: any, columnId: string, value: [Date, Date]) => {
+export const isWithinRange = (
+  row: any,
+  columnId: string,
+  value: [Date, Date],
+) => {
   const date = row.getValue(columnId) as Date;
   const [start, end] = value;
   //If one filter defined and date is null filter it
   if ((start || end) && !date) return false;
   if (start && !end) {
-    return date.getTime() >= start.getTime()
+    return date.getTime() >= start.getTime();
   } else if (!start && end) {
-    return date.getTime() <= end.getTime()
+    return date.getTime() <= end.getTime();
   } else if (start && end) {
-    return date.getTime() >= start.getTime() && date.getTime() <= end.getTime()
+    return date.getTime() >= start.getTime() && date.getTime() <= end.getTime();
   } else return true;
 };

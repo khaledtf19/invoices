@@ -1,10 +1,11 @@
-import { type PropsWithChildren, type FC } from "react";
 import { UserRole } from "@prisma/client";
-import UserData from "./UserData";
-import TransactionsTable from "../tables/TransactionsTable";
-import ChangeBalanceTable from "../tables/ChangeBalanceTable";
+import { type FC, type PropsWithChildren } from "react";
+
 import { type RouterOutputs } from "../../utils/trpc";
+import ChangeBalanceTable from "../tables/ChangeBalanceTable";
+import TransactionsTable from "../tables/TransactionsTable";
 import { PageTabs } from "../utils";
+import UserData from "./UserData";
 
 const UserPage: FC<{
   refetch: () => void;

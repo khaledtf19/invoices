@@ -2,19 +2,20 @@ import { UserRole } from "@prisma/client";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { type ReactNode, type FC } from "react";
+import { type FC, type ReactNode } from "react";
 import { type IconType } from "react-icons";
-import { AiOutlineHome, AiFillHome } from "react-icons/ai";
+import { AiFillHome, AiOutlineHome } from "react-icons/ai";
 import {
   HiOutlineUserCircle,
+  HiOutlineUsers,
   HiUserCircle,
   HiUsers,
-  HiOutlineUsers,
 } from "react-icons/hi";
 import { RiSearchLine } from "react-icons/ri";
+
 import { useModalState } from "../hooks/modalState";
-import CustomerDebtModal from "./customer/CustomerDebtModal";
 import { trpc } from "../utils/trpc";
+import CustomerDebtModal from "./customer/CustomerDebtModal";
 
 const Navbar = () => {
   const { data: session } = useSession();
@@ -71,8 +72,12 @@ const Navbar = () => {
               <p className=" text-green-600">ADMIN</p>
               {bankData ? (
                 <div className="flex flex-col gap-1">
-                  <p className="bg-purple-900 py-1 rounded-md" >{bankData?.bss}</p>
-                  <p className="bg-blue-900 py-1 rounded-md" >{bankData?.khadmaty}</p>
+                  <p className="bg-purple-900 py-1 rounded-md">
+                    {bankData?.bss}
+                  </p>
+                  <p className="bg-blue-900 py-1 rounded-md">
+                    {bankData?.khadmaty}
+                  </p>
                 </div>
               ) : (
                 ""
@@ -129,14 +134,15 @@ const RouteLink: FC<{
 
   return (
     <Link
-      className={`flex  w-full items-center justify-center ${router.pathname.includes(to)
-        ? to === "/"
-          ? router.pathname === "/"
-            ? "bg-blue-900 underline"
-            : ""
-          : "bg-blue-900 underline"
-        : ""
-        }  duration-400 flex-col py-2 underline-offset-4 transition-colors hover:bg-blue-900 hover:underline`}
+      className={`flex  w-full items-center justify-center ${
+        router.pathname.includes(to)
+          ? to === "/"
+            ? router.pathname === "/"
+              ? "bg-blue-900 underline"
+              : ""
+            : "bg-blue-900 underline"
+          : ""
+      }  duration-400 flex-col py-2 underline-offset-4 transition-colors hover:bg-blue-900 hover:underline`}
       href={to}
     >
       {router.pathname.includes(to)

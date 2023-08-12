@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
-import Container from "../container/Container";
-import { Input, PrimaryButton, SecondaryButton } from "../components/utils";
 import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+
+import { Input, PrimaryButton, SecondaryButton } from "../components/utils";
+import Container from "../container/Container";
+import { useModalState } from "../hooks/modalState";
 import { UserRoleArr } from "../types/utils.types";
 import { trpc } from "../utils/trpc";
-import { useModalState } from "../hooks/modalState";
 
 const Admin = () => {
   const [password, setPassword] = useState("");

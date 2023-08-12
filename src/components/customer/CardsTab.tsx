@@ -1,15 +1,16 @@
-import Container from "../../container/Container";
-import { BsFillChatSquareTextFill } from "react-icons/bs";
-import { type RouterOutputs, trpc } from "../../utils/trpc";
 import { useState } from "react";
+import { toast } from "react-hot-toast";
+import { BsFillChatSquareTextFill } from "react-icons/bs";
+
+import Container from "../../container/Container";
+import { type RouterOutputs, trpc } from "../../utils/trpc";
+import { TrpcErrorMessage } from "../../utils/utils";
 import {
   IconToCopy,
   LoadingAnimation,
   PrimaryButton,
   RedButton,
 } from "../utils";
-import { toast } from "react-hot-toast";
-import { TrpcErrorMessage } from "../../utils/utils";
 
 const CardsTab: React.FC<{
   customerData: RouterOutputs["customer"]["getCustomerById"];

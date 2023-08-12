@@ -1,6 +1,7 @@
 import { type FC } from "react";
-import { TBody, TD, TH, TR, THead, TableComponent } from "./tables";
+
 import { randomTableData } from "../../utils/utils";
+import { TBody, TD, TH, THead, TR, TableComponent } from "./tables";
 
 const LoadingTable: FC<{ type: "small" | "big" }> = ({ type }) => {
   return (

@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
-import { PrimaryButton, Input } from "../../components/utils";
 import { useRouter } from "next/router";
-import { trpc } from "../../utils/trpc";
-import Container from "../../container/Container";
+import { useEffect, useState } from "react";
+
 import CustomerTable from "../../components/tables/CusomerTable";
+import { Input, PrimaryButton } from "../../components/utils";
+import Container from "../../container/Container";
+import { trpc } from "../../utils/trpc";
 
 const Search = () => {
   const router = useRouter();

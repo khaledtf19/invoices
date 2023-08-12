@@ -1,8 +1,9 @@
-import { z } from "zod";
-import { router, protectedProcedure } from "../trpc";
-import { UserRoleArr, InvoiceStatusArr } from "../../../types/utils.types";
-import { TRPCError } from "@trpc/server";
 import { UserRole } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
+
+import { InvoiceStatusArr, UserRoleArr } from "../../../types/utils.types";
+import { protectedProcedure, router } from "../trpc";
 
 export const invoiceRouter = router({
   makeInvoice: protectedProcedure
@@ -85,7 +86,7 @@ export const invoiceRouter = router({
         invoiceId: z.string(),
         invoiceStatus: z.enum(InvoiceStatusArr).optional(),
         invoiceStatusNote: z.string().nullish(),
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       if (ctx.session.user.role !== UserRoleArr[1]) {

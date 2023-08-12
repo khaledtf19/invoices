@@ -1,27 +1,28 @@
-import { type FC, useState, useMemo } from "react";
 import {
+  type ColumnFiltersState,
   createColumnHelper,
   flexRender,
   getCoreRowModel,
-  useReactTable,
   getFilteredRowModel,
   getPaginationRowModel,
-  type ColumnFiltersState,
+  useReactTable,
 } from "@tanstack/react-table";
+import { type FC, useMemo, useState } from "react";
+
+import { TransactionsArr } from "../../types/utils.types";
+import type { RouterOutputs } from "../../utils/trpc";
 import { DateFormat } from "../../utils/utils";
+import { CustomerDebtMessage } from "../customer/CustomerDebt";
 import {
+  Filter,
   TBody,
   TD,
   TH,
-  TR,
   THead,
+  TR,
   TableComponent,
-  Filter,
   TablePag,
 } from "./tables";
-import type { RouterOutputs } from "../../utils/trpc";
-import { TransactionsArr } from "../../types/utils.types";
-import { CustomerDebtMessage } from "../customer/CustomerDebt";
 
 const DebtTable: FC<{ data: RouterOutputs["customer"]["getAllDebt"] }> = ({
   data,
@@ -37,7 +38,7 @@ const DebtTable: FC<{ data: RouterOutputs["customer"]["getAllDebt"] }> = ({
         }
         return item;
       }),
-    [data]
+    [data],
   );
 
   const [filter, setFilter] = useState<ColumnFiltersState>([]);
@@ -62,10 +63,12 @@ const DebtTable: FC<{ data: RouterOutputs["customer"]["getAllDebt"] }> = ({
 
     columnHelper.accessor("note", {
       size: 50,
-      cell: (info) => <CustomerDebtMessage noteText={info.renderValue() || ""} />,
+      cell: (info) => (
+        <CustomerDebtMessage noteText={info.renderValue() || ""} />
+      ),
       footer: (info) => info.column.id,
       header: () => "Note",
-      enableColumnFilter: false, 
+      enableColumnFilter: false,
     }),
     columnHelper.accessor("createdAt", {
       size: 200,
@@ -91,10 +94,11 @@ const DebtTable: FC<{ data: RouterOutputs["customer"]["getAllDebt"] }> = ({
       size: 50,
       cell: (info) => (
         <span
-          className={`${info.getValue() === TransactionsArr[0]
-            ? "text-red-600"
-            : "text-green-500"
-            } `}
+          className={`${
+            info.getValue() === TransactionsArr[0]
+              ? "text-red-600"
+              : "text-green-500"
+          } `}
         >
           {info.renderValue()}
         </span>
@@ -137,9 +141,9 @@ const DebtTable: FC<{ data: RouterOutputs["customer"]["getAllDebt"] }> = ({
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
                   {header.column.getCanFilter() ? (
                     <div>
                       <Filter column={header.column} table={table} />

@@ -1,8 +1,8 @@
 import { type NextPage } from "next";
 
-import { trpc } from "../utils/trpc";
-import LoadingTable from "../components/tables/LoadingTable";
 import InvoicesTable from "../components/tables/InvoicesTable";
+import LoadingTable from "../components/tables/LoadingTable";
+import { trpc } from "../utils/trpc";
 
 const Home: NextPage = () => {
   const { data: invoicesData, isLoading } =

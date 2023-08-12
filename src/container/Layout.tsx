@@ -1,6 +1,7 @@
-import type { PropsWithChildren, FC } from 'react';
-import Navbar from "../components/Navbar";
+import type { FC, PropsWithChildren } from "react";
+
 import Modal from "../components/Modal";
+import Navbar from "../components/Navbar";
 
 const Layout: FC<PropsWithChildren> = ({ children }) => {
   return (

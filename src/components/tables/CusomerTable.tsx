@@ -1,6 +1,7 @@
 import { type FC } from "react";
-import { TBody, TD, TH, TR, THead, TableComponent } from "./tables";
+
 import LoadingTable from "./LoadingTable";
+import { TBody, TD, TH, THead, TR, TableComponent } from "./tables";
 
 const CustomerTable: FC<{
   customers:

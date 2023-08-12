@@ -1,7 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { router, protectedProcedure, adminProcedure } from "../trpc";
+import { adminProcedure, protectedProcedure, router } from "../trpc";
 
 const CustomerValidation = z.object({
   name: z.string().max(225).min(3),
@@ -18,7 +18,7 @@ export const customerRouter = router({
       z.object({
         number: z.string().optional(),
         name: z.string().optional(),
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       if (input.number?.at(0) === "0") {
@@ -79,7 +79,7 @@ export const customerRouter = router({
     .input(
       z.object({
         customerId: z.string().min(5),
-      })
+      }),
     )
     .query(async ({ input, ctx }) => {
       return await ctx.prisma.customerNote.findMany({
@@ -93,11 +93,11 @@ export const customerRouter = router({
         id: z.string(),
         name: z.string().max(225).min(3),
         number: z.string().min(8),
-        address: z.string().min(2).optional().nullable(),
+        address: z.string().optional().nullable(),
         birthday: z.string().optional().nullable(),
         idNumber: z.string().optional().nullish(),
         mobile: z.string().min(8).array().max(5),
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       const mobileString = input.mobile.join(",");
@@ -146,7 +146,7 @@ export const customerRouter = router({
         customerId: z.string().min(3),
         amount: z.number(),
         type: z.enum(["Add", "Take"]),
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       await ctx.prisma.customerDebt.create({

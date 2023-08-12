@@ -1,27 +1,28 @@
-import { type FC, useState } from "react";
 import {
+  type ColumnFiltersState,
   createColumnHelper,
   flexRender,
   getCoreRowModel,
-  useReactTable,
   getFilteredRowModel,
   getPaginationRowModel,
-  type ColumnFiltersState,
+  useReactTable,
 } from "@tanstack/react-table";
+import { type FC, useState } from "react";
+
+import { TransactionsArr } from "../../types/utils.types";
+import { type RouterOutputs } from "../../utils/trpc";
+import { DateFormat } from "../../utils/utils";
 import {
+  Filter,
   TBody,
   TD,
   TH,
-  TR,
   THead,
+  TR,
   TableComponent,
-  Filter,
   TablePag,
   isWithinRange,
 } from "./tables";
-import { DateFormat } from "../../utils/utils";
-import { type RouterOutputs } from "../../utils/trpc";
-import { TransactionsArr } from "../../types/utils.types";
 
 const ChangeBankTable: FC<{
   changeBank: RouterOutputs["bank"]["getBankChange"];
@@ -45,7 +46,7 @@ const ChangeBankTable: FC<{
       size: 200,
       cell: (info) => <span>{DateFormat({ date: info.getValue() })}</span>,
       header: () => "Created At",
-      filterFn: isWithinRange
+      filterFn: isWithinRange,
     }),
     columnHelper.accessor("amount", {
       size: 100,
@@ -54,15 +55,17 @@ const ChangeBankTable: FC<{
     }),
     columnHelper.accessor("type", {
       size: 100,
-      cell: (info) => <span
-        className={`${info.getValue() === TransactionsArr[0]
-          ? "text-green-600"
-          : "text-red-500"
+      cell: (info) => (
+        <span
+          className={`${
+            info.getValue() === TransactionsArr[0]
+              ? "text-green-600"
+              : "text-red-500"
           } `}
-      >
-        {info.renderValue()}
-      </span>
-      ,
+        >
+          {info.renderValue()}
+        </span>
+      ),
       header: () => "Type",
     }),
     columnHelper.accessor("bankName", {
@@ -94,9 +97,9 @@ const ChangeBankTable: FC<{
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
                   {header.column.getCanFilter() ? (
                     <div>
                       <Filter column={header.column} table={table} />

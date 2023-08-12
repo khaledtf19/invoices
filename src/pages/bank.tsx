@@ -1,12 +1,13 @@
+import { type BankName, type TransactionTypes } from "@prisma/client";
 import Image from "next/image";
-import { type TransactionTypes, type BankName } from "@prisma/client";
+import { useEffect, useState } from "react";
+
+import ChangeBankTable from "../components/tables/ChangeBankTable";
+import { LoadingAnimation, PrimaryButton } from "../components/utils";
 import Container from "../container/Container";
 import { useModalState } from "../hooks/modalState";
-import { trpc } from "../utils/trpc";
-import { useEffect, useState } from "react";
 import { BankNameArr, TransactionsArr } from "../types/utils.types";
-import { LoadingAnimation, PrimaryButton } from "../components/utils";
-import ChangeBankTable from "../components/tables/ChangeBankTable";
+import { trpc } from "../utils/trpc";
 
 const Bank = () => {
   const { data: bankData } = trpc.bank.getBank.useQuery();
@@ -16,7 +17,7 @@ const Bank = () => {
     closeModal: state.closeModal,
   }));
 
-  const getBankChangesAtDate = trpc.bank.getBankdataAtaDate.useMutation()
+  const getBankChangesAtDate = trpc.bank.getBankdataAtaDate.useMutation();
 
   useEffect(() => {
     return () => {
@@ -70,14 +71,16 @@ const Bank = () => {
           </div>
         </div>
         <div>
-          <PrimaryButton label="Get" onClick={() => {
-            console.log(new Date().toISOString());
-            getBankChangesAtDate
-              .mutate({
-                dateMax: new Date().toISOString()
-                , dateMin: new Date("5/3/2023").toISOString()
-              })
-          }} />
+          <PrimaryButton
+            label="Get"
+            onClick={() => {
+              console.log(new Date().toISOString());
+              getBankChangesAtDate.mutate({
+                dateMax: new Date().toISOString(),
+                dateMin: new Date("5/3/2023").toISOString(),
+              });
+            }}
+          />
           {getBankChangesAtDate.data}
         </div>
       </Container>
@@ -161,19 +164,21 @@ export const BankModal: React.FC<{
         <p className="text-xl text-red-500">Must be a Number</p>
       ) : (
         <p
-          className={`text-xl ${transaction === "Add" ? "text-green-600" : "text-red-600"
-            }`}
+          className={`text-xl ${
+            transaction === "Add" ? "text-green-600" : "text-red-600"
+          }`}
         >
           {transaction === "Add" ? "+" : "-"} {amount}{" "}
           {transaction === "Add" ? "to" : "from"} {bankName}
         </p>
       )}
       <button
-        className={`w-1/4 rounded-md py-2 text-white ${bankName === "Bss"
-          ? "bg-purple-900 hover:bg-purple-800"
-          : "bg-blue-900 hover:bg-blue-800"
-          }`}
-        disabled={(!Number(amount))}
+        className={`w-1/4 rounded-md py-2 text-white ${
+          bankName === "Bss"
+            ? "bg-purple-900 hover:bg-purple-800"
+            : "bg-blue-900 hover:bg-blue-800"
+        }`}
+        disabled={!Number(amount)}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
             changeBank.mutate({
@@ -197,6 +202,6 @@ export const BankModal: React.FC<{
       >
         {changeBank.isLoading ? <LoadingAnimation color="#fff" /> : transaction}
       </button>
-    </div >
+    </div>
   );
 };

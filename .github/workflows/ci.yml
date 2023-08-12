@@ -6,11 +6,11 @@ env:
   DATABASE_URL: "https://fake.com"
   NEXTAUTH_URL: "http://localhost:3000"
   ADMIN_PASSWORD: "https://fake1.com"
-  NEXTAUTH_SECRET: "fake" 
+  NEXTAUTH_SECRET: "fake"
   GOOGLE_CLIENT_SECRET: "fake"
   GOOGLE_CLIENT_ID: "fake"
   GOOGLE_APP_CRID: "./"
-  GOOGLE_SHEET_ID: "fakeID" 
+  GOOGLE_SHEET_ID: "fakeID"
   EMAILS: "fake@gamil.com"
 
 jobs:

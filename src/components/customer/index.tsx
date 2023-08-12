@@ -1,13 +1,12 @@
+import { type Customer, type CustomerNote, UserRole } from "@prisma/client";
 import { type FC, useState } from "react";
-import { type Customer, UserRole, type CustomerNote } from "@prisma/client";
 
 import Container from "../../container/Container";
-import { Toggle } from "../utils";
-
 import { useUserState } from "../../hooks/userDataState";
+import { Toggle } from "../utils";
 import CustomerData from "./CustomerData";
-import CustomerUpdateForm from "./CustomerUpdateForm";
 import CustomerDebt from "./CustomerDebt";
+import CustomerUpdateForm from "./CustomerUpdateForm";
 
 const CustomerView: FC<{
   customerData: Customer & {

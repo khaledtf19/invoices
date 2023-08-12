@@ -1,5 +1,26 @@
-import { useState, type FC, useEffect, Ref, useRef, useCallback } from "react";
+import type { InvoiceStatusEnum } from "@prisma/client";
+import { useRouter } from "next/router";
+import { type FC, Ref, useCallback, useEffect, useRef, useState } from "react";
+import { AiFillDollarCircle } from "react-icons/ai";
+import { BiMobile } from "react-icons/bi";
+import {
+  BsBank2,
+  BsCalendarDate,
+  BsFillPersonBadgeFill,
+  BsFillTelephoneFill,
+} from "react-icons/bs";
+import { FaUserSecret } from "react-icons/fa";
+import { HiMiniArrowUturnRight } from "react-icons/hi2";
+import ReactToPrint from "react-to-print";
+
 import Container from "../container/Container";
+import { useModalState } from "../hooks/modalState";
+import { useUserState } from "../hooks/userDataState";
+import { BankModal } from "../pages/bank";
+import { InvoiceStatusArr, UserRoleArr } from "../types/utils.types";
+import { type RouterOutputs, trpc } from "../utils/trpc";
+import { DateFormat } from "../utils/utils";
+import CustomerDebtComponent from "./customer/CustomerDebt";
 import {
   DataFields,
   Input,
@@ -8,26 +29,6 @@ import {
   RedButton,
   SecondaryButton,
 } from "./utils";
-import type { InvoiceStatusEnum } from "@prisma/client";
-import { DateFormat } from "../utils/utils";
-import { InvoiceStatusArr, UserRoleArr } from "../types/utils.types";
-import { type RouterOutputs, trpc } from "../utils/trpc";
-import { useModalState } from "../hooks/modalState";
-import { useRouter } from "next/router";
-import { useUserState } from "../hooks/userDataState";
-import CustomerDebtComponent from "./customer/CustomerDebt";
-import { BankModal } from "../pages/bank";
-import ReactToPrint from "react-to-print";
-import {
-  BsFillTelephoneFill,
-  BsFillPersonBadgeFill,
-  BsCalendarDate,
-  BsBank2
-} from "react-icons/bs";
-import { BiMobile } from "react-icons/bi";
-import { AiFillDollarCircle } from "react-icons/ai"
-import { FaUserSecret } from "react-icons/fa"
-import { HiMiniArrowUturnRight } from "react-icons/hi2"
 
 const InvoiceView: FC<{
   invoiceData: RouterOutputs["invoice"]["getInvoiceById"];
@@ -36,7 +37,7 @@ const InvoiceView: FC<{
   const [newStatus, setNewStatus] = useState(invoiceData.invoiceStatus?.status);
 
   const [newStatusNote, setNewStatusNote] = useState(
-    invoiceData.invoiceStatus?.note
+    invoiceData.invoiceStatus?.note,
   );
 
   const printComponentRef = useRef(null);
@@ -46,7 +47,7 @@ const InvoiceView: FC<{
     closeModal: state.closeModal,
   }));
 
-  const router = useRouter()
+  const router = useRouter();
 
   const ctx = trpc.useContext();
 
@@ -75,8 +76,7 @@ const InvoiceView: FC<{
   }, [printComponentRef.current]);
 
   const reactToPrintTrigger = useCallback(() => {
-
-    return <PrimaryButton label="print" />
+    return <PrimaryButton label="print" />;
   }, []);
 
   return (
@@ -93,24 +93,44 @@ const InvoiceView: FC<{
       }
       openRight={invoiceData.customer.customerDebt.length > 0 ? true : false}
     >
-      <div 
+      <div
         className="absolute top-1 right-1 hover:cursor-pointer hover:text-red-700 hover:bg-gray-300 p-1 rounded-md"
-        onClick={()=>{
-          router.push(`/customer/${invoiceData.customer.id}`)
-        }}>
+        onClick={() => {
+          router.push(`/customer/${invoiceData.customer.id}`);
+        }}
+      >
         <HiMiniArrowUturnRight size={20} />
       </div>
-      <DataFields label="Name" text={invoiceData.customer.name} Icon={BsFillPersonBadgeFill} />
-      <DataFields label="Number" text={invoiceData.customer.number} Icon={BsFillTelephoneFill} />
-      <DataFields label='Cost' text={invoiceData.cost} Icon={AiFillDollarCircle} />
+      <DataFields
+        label="Name"
+        text={invoiceData.customer.name}
+        Icon={BsFillPersonBadgeFill}
+      />
+      <DataFields
+        label="Number"
+        text={invoiceData.customer.number}
+        Icon={BsFillTelephoneFill}
+      />
+      <DataFields
+        label="Cost"
+        text={invoiceData.cost}
+        Icon={AiFillDollarCircle}
+      />
       <DataFields
         label="Created At"
         text={DateFormat({ date: invoiceData.createdAt })}
         Icon={BsCalendarDate}
       />
-      <DataFields Icon={FaUserSecret} label="Created By" text={invoiceData.madeBy.name} />
+      <DataFields
+        Icon={FaUserSecret}
+        label="Created By"
+        text={invoiceData.madeBy.name}
+      />
       {invoiceData.bankChange.map((bankChange) => (
-        <div className="flex w-full gap-1 items-end justify-center " key={bankChange.id}>
+        <div
+          className="flex w-full gap-1 items-end justify-center "
+          key={bankChange.id}
+        >
           <DataFields
             key={bankChange.id}
             label={`${bankChange.bankName} cost`}
@@ -119,20 +139,27 @@ const InvoiceView: FC<{
             Icon={BsBank2}
           />
           <div>
-            <RedButton label="X" onClick={() => {
-              openModal({ newComponents: <ModalUndoBankChange bankChangeId={bankChange.id} /> })
-            }} />
+            <RedButton
+              label="X"
+              onClick={() => {
+                openModal({
+                  newComponents: (
+                    <ModalUndoBankChange bankChangeId={bankChange.id} />
+                  ),
+                });
+              }}
+            />
           </div>
         </div>
-      ))
-      }
+      ))}
       <div
-        className={` w-full ${newStatus === InvoiceStatusArr[1]
-          ? "text-red-700"
-          : newStatus === InvoiceStatusArr[2]
+        className={` w-full ${
+          newStatus === InvoiceStatusArr[1]
+            ? "text-red-700"
+            : newStatus === InvoiceStatusArr[2]
             ? "text-green-700"
             : "text-blue-700"
-          } `}
+        } `}
       >
         {userData?.role === UserRoleArr[1] ? (
           <>
@@ -159,75 +186,79 @@ const InvoiceView: FC<{
         )}
       </div>
 
-      {
-        userData?.role === UserRoleArr[1] ? (
-          <div className='w-full'>
-            <Input
-              label="Status Note"
-              state={newStatusNote ? newStatusNote : ""}
-              onChange={(e) => {
-                setNewStatusNote(e.target.value);
+      {userData?.role === UserRoleArr[1] ? (
+        <div className="w-full">
+          <Input
+            label="Status Note"
+            state={newStatusNote ? newStatusNote : ""}
+            onChange={(e) => {
+              setNewStatusNote(e.target.value);
+            }}
+          />
+        </div>
+      ) : invoiceData.invoiceStatus?.note ? (
+        <DataFields
+          label="Status Note"
+          text={invoiceData.invoiceStatus?.note}
+        />
+      ) : null}
+
+      {userData?.role === UserRoleArr[1] && (
+        <>
+          <ReactToPrint
+            content={reactToPrintContent}
+            trigger={reactToPrintTrigger}
+            removeAfterPrint
+          />
+          <div className="flex gap-3 w-full">
+            <PrimaryButton
+              label="Edit"
+              onClick={async () => {
+                editInvoice.mutateAsync({
+                  invoiceId: invoiceData.id,
+                  invoiceStatus: newStatus,
+                  invoiceStatusNote: newStatusNote,
+                });
+              }}
+            />
+            <SecondaryButton
+              label="Add to Bank"
+              onClick={() => {
+                openModal({
+                  newComponents: (
+                    <BankModal
+                      transactionType="Take"
+                      invoiceId={invoiceData.id}
+                    />
+                  ),
+                });
               }}
             />
           </div>
-        ) : invoiceData.invoiceStatus?.note ? (
-          <DataFields
-            label="Status Note"
-            text={invoiceData.invoiceStatus?.note}
-          />
-        ) : null
-      }
-
-      {
-        userData?.role === UserRoleArr[1] && (
-          <>
-            <ReactToPrint content={reactToPrintContent} trigger={reactToPrintTrigger} removeAfterPrint />
-            <div className="flex gap-3 w-full">
-              <PrimaryButton
-                label="Edit"
-                onClick={async () => {
-                  editInvoice.mutateAsync({
-                    invoiceId: invoiceData.id,
-                    invoiceStatus: newStatus,
-                    invoiceStatusNote: newStatusNote,
-                  });
-                }}
-              />
-              <SecondaryButton
-                label="Add to Bank"
-                onClick={() => {
-                  openModal({
-                    newComponents: (
-                      <BankModal
-                        transactionType="Take"
-                        invoiceId={invoiceData.id}
-                      />
-                    ),
-                  });
-                }}
-              />
-
-            </div>
-            <div className="w-2/3">
-              <RedButton
-                label="Delete"
-                onClick={() => {
-                  openModal({
-                    newComponents: (
-                      <ModalDeleteComponent
-                        invoiceId={invoiceData.id}
-                        customerId={invoiceData.customerId}
-                      />
-                    ),
-                  });
-                }}
-              />
-            </div>
-          </>
-        )
-      }
-      <div className=" hidden" ><PrintInvlicieComponent refC={printComponentRef} invoiceData={invoiceData} /></div>
-    </Container >
+          <div className="w-2/3">
+            <RedButton
+              label="Delete"
+              onClick={() => {
+                openModal({
+                  newComponents: (
+                    <ModalDeleteComponent
+                      invoiceId={invoiceData.id}
+                      customerId={invoiceData.customerId}
+                    />
+                  ),
+                });
+              }}
+            />
+          </div>
+        </>
+      )}
+      <div className=" hidden">
+        <PrintInvlicieComponent
+          refC={printComponentRef}
+          invoiceData={invoiceData}
+        />
+      </div>
+    </Container>
   );
 };
 
@@ -254,7 +285,7 @@ const ModalDeleteComponent: FC<{ invoiceId: string; customerId: string }> = ({
 
   if (deleteInvoice.isLoading) {
     return (
-      <div className=' pt-5'>
+      <div className=" pt-5">
         <LoadingAnimation />
       </div>
     );
@@ -283,16 +314,17 @@ const ModalDeleteComponent: FC<{ invoiceId: string; customerId: string }> = ({
   );
 };
 
-const ModalUndoBankChange: FC<{ bankChangeId: string }> = ({ bankChangeId }) => {
-  const ctx = trpc.useContext()
+const ModalUndoBankChange: FC<{ bankChangeId: string }> = ({
+  bankChangeId,
+}) => {
+  const ctx = trpc.useContext();
 
   const undoBankChange = trpc.bank.undoBankChange.useMutation({
     onSuccess: () => {
       ctx.invoice.getInvoiceById.invalidate();
       ctx.bank.getBank.invalidate();
     },
-  })
-
+  });
 
   if (undoBankChange.isLoading) {
     return (
@@ -323,21 +355,73 @@ const ModalUndoBankChange: FC<{ bankChangeId: string }> = ({ bankChangeId }) => 
   );
 };
 
-
-const PrintInvlicieComponent: FC<{ invoiceData: RouterOutputs["invoice"]["getInvoiceById"]; refC: Ref<HTMLDivElement> }> = ({ invoiceData, refC }) => {
-  return <div ref={refC} className="flex flex-col justify-center w-full items-center h-full text-sm ">
-    <div className="flex flex-col justify-center items-center w-[26%]  h-full gap-3">
-      <DataFields label="Name" text={invoiceData.customer.name} Icon={BsFillPersonBadgeFill} iconSize={15} />
-      <DataFields label="Number" text={invoiceData.customer.number} Icon={BsFillTelephoneFill} iconSize={15} />
-      <DataFields label="Cost" text={invoiceData.cost} Icon={AiFillDollarCircle} iconSize={15} />
-      <DataFields label="Created At" text={DateFormat({ date: invoiceData.createdAt })} Icon={BsCalendarDate} iconSize={15} />
-      <DataFields label="Created By" text={invoiceData.madeBy.name} Icon={FaUserSecret} iconSize={15} />
-      <div className="justify-self-end mt-40 w-full">
-        <DataFields label="موبايل لبيب حبش" text="01287591751" Icon={BiMobile} iconSize={15} />
-        <DataFields label="موبايل لبيب حبش" text="01114800992" Icon={BiMobile} iconSize={15} />
-        <DataFields label="ارضي لبيب حبش" text="0132428421" Icon={BsFillTelephoneFill} iconSize={15} />
-        <DataFields label="ارضي لبيب حبش" text="0132421822" Icon={BsFillTelephoneFill} iconSize={15} />
+const PrintInvlicieComponent: FC<{
+  invoiceData: RouterOutputs["invoice"]["getInvoiceById"];
+  refC: Ref<HTMLDivElement>;
+}> = ({ invoiceData, refC }) => {
+  return (
+    <div
+      ref={refC}
+      className="flex flex-col justify-center w-full items-center h-full text-sm "
+    >
+      <div className="flex flex-col justify-center items-center w-[26%]  h-full gap-3">
+        <DataFields
+          label="Name"
+          text={invoiceData.customer.name}
+          Icon={BsFillPersonBadgeFill}
+          iconSize={15}
+        />
+        <DataFields
+          label="Number"
+          text={invoiceData.customer.number}
+          Icon={BsFillTelephoneFill}
+          iconSize={15}
+        />
+        <DataFields
+          label="Cost"
+          text={invoiceData.cost}
+          Icon={AiFillDollarCircle}
+          iconSize={15}
+        />
+        <DataFields
+          label="Created At"
+          text={DateFormat({ date: invoiceData.createdAt })}
+          Icon={BsCalendarDate}
+          iconSize={15}
+        />
+        <DataFields
+          label="Created By"
+          text={invoiceData.madeBy.name}
+          Icon={FaUserSecret}
+          iconSize={15}
+        />
+        <div className="justify-self-end mt-40 w-full">
+          <DataFields
+            label="موبايل لبيب حبش"
+            text="01287591751"
+            Icon={BiMobile}
+            iconSize={15}
+          />
+          <DataFields
+            label="موبايل لبيب حبش"
+            text="01114800992"
+            Icon={BiMobile}
+            iconSize={15}
+          />
+          <DataFields
+            label="ارضي لبيب حبش"
+            text="0132428421"
+            Icon={BsFillTelephoneFill}
+            iconSize={15}
+          />
+          <DataFields
+            label="ارضي لبيب حبش"
+            text="0132421822"
+            Icon={BsFillTelephoneFill}
+            iconSize={15}
+          />
+        </div>
       </div>
     </div>
-  </div>;
-}
+  );
+};

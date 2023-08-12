@@ -1,9 +1,7 @@
-import {
-  TransactionsArr,
-  ZTransactions,
-} from "../../../types/utils.types";
-import { router, adminProcedure } from "../trpc";
 import { z } from "zod";
+
+import { TransactionsArr, ZTransactions } from "../../../types/utils.types";
+import { adminProcedure, router } from "../trpc";
 
 export const userRouter = router({
   getAllUsers: adminProcedure.query(async ({ ctx }) => {
@@ -50,7 +48,7 @@ export const userRouter = router({
         userId: z.string().min(5),
         amount: z.number().min(5),
         type: ZTransactions,
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       if (input.type === TransactionsArr[0]) {
@@ -76,5 +74,4 @@ export const userRouter = router({
 
       return { message: "Done" };
     }),
-
 });

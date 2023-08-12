@@ -1,25 +1,26 @@
-import { type FC, useState } from "react";
 import { type Transaction } from "@prisma/client";
 import {
+  type ColumnFiltersState,
   createColumnHelper,
   flexRender,
   getCoreRowModel,
-  useReactTable,
   getFilteredRowModel,
   getPaginationRowModel,
-  type ColumnFiltersState,
+  useReactTable,
 } from "@tanstack/react-table";
+import { type FC, useState } from "react";
+
+import { DateFormat } from "../../utils/utils";
 import {
+  Filter,
   TBody,
   TD,
   TH,
-  TR,
   THead,
+  TR,
   TableComponent,
-  Filter,
   TablePag,
 } from "./tables";
-import { DateFormat } from "../../utils/utils";
 
 const TransactionsTable: FC<{
   transactions: (Transaction & {
@@ -96,7 +97,7 @@ const TransactionsTable: FC<{
                     ? null
                     : flexRender(
                         header.column.columnDef.header,
-                        header.getContext()
+                        header.getContext(),
                       )}
                   {header.column.getCanFilter() ? (
                     <div>

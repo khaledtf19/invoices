@@ -14,11 +14,10 @@ const config = {
     defaultLocale: "en",
   },
   typescript: {
-    ignoreBuildErrors: true
-  }
-  , eslint: {
-    ignoreDuringBuilds: true
+    ignoreBuildErrors: true,
   },
-
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 export default config;

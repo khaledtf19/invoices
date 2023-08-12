@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
-import { trpc } from "../../utils/trpc";
 
 import UserPage from "../../components/userPage";
+import { trpc } from "../../utils/trpc";
 
 const User = () => {
   const router = useRouter();

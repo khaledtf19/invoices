@@ -1,5 +1,6 @@
 import { useSession } from "next-auth/react";
 import React from "react";
+
 import { useUserState } from "../../hooks/userDataState";
 
 const Profile = () => {
