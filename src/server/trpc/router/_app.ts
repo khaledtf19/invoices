@@ -10,7 +10,7 @@ export const appRouter = router({
   customer: customerRouter,
   invoice: invoiceRouter,
   user: userRouter,
-  bank: bankRouter
+  bank: bankRouter,
 });
 
 // export type definition of API

@@ -1,4 +1,5 @@
 import { type FC } from "react";
+
 import { useModalState } from "../hooks/modalState";
 import { PrimaryButton } from "./utils";
 

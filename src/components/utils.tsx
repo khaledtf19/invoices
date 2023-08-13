@@ -2,20 +2,21 @@ import {
   type ChangeEventHandler,
   type FC,
   type HTMLInputTypeAttribute,
-  useState,
   useEffect,
+  useState,
 } from "react";
+import CopyToClipboard from "react-copy-to-clipboard";
 import type {
   FieldError,
   FieldErrorsImpl,
   Merge,
   UseFormRegisterReturn,
 } from "react-hook-form";
-import { SyncLoader } from "react-spinners";
-import Container from "../container/Container";
-import CopyToClipboard from "react-copy-to-clipboard";
 import { type IconType } from "react-icons";
 import { BsCreditCard2Front } from "react-icons/bs";
+import { SyncLoader } from "react-spinners";
+
+import Container from "../container/Container";
 
 export const Input: FC<{
   name?: string;
@@ -47,10 +48,10 @@ export const FormInput: FC<{
   label: string;
   register: UseFormRegisterReturn<string>;
   error?:
-  | string
-  | FieldError
-  | Merge<FieldError, FieldErrorsImpl<any>>
-  | undefined;
+    | string
+    | FieldError
+    | Merge<FieldError, FieldErrorsImpl<any>>
+    | undefined;
   placeholder?: string;
   type: HTMLInputTypeAttribute;
 }> = ({ name, label, register, error, type, placeholder }) => {
@@ -153,13 +154,18 @@ export const DataFields: FC<{
   label: string;
   Icon?: IconType;
   className?: string;
-  iconSize?: number
+  iconSize?: number;
 }> = ({ text, label, Icon, iconSize, className }) => {
   return (
     <div className=" flex w-full flex-col ">
       <label className=" flex items-center gap-2 text-gray-700">
         {Icon ? (
-          <IconToCopy name={label} Icon={Icon} text={String(text)} size={iconSize || 20} />
+          <IconToCopy
+            name={label}
+            Icon={Icon}
+            text={String(text)}
+            size={iconSize || 20}
+          />
         ) : null}
         {label}:
       </label>
@@ -189,8 +195,9 @@ export const IconToCopy: FC<{
 
   return (
     <div
-      className={`${copied ? " text-green-600" : ""
-        } relative flex items-center justify-center`}
+      className={`${
+        copied ? " text-green-600" : ""
+      } relative flex items-center justify-center`}
       onMouseOver={() => {
         setHover(true);
       }}
@@ -283,7 +290,7 @@ export const PageTabs: FC<{
           </div>
         ))}
       </div>
-      <div className="flex w-full items-start justify-center rounded-md border border-gray-900 p-5">
+      <div className="flex w-full items-start justify-center rounded-md border border-gray-900 p-1">
         {tabs[selectedTab]?.component}
       </div>
     </div>

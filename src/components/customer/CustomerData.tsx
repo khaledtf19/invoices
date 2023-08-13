@@ -1,21 +1,20 @@
-import { type FC, useState, useEffect } from "react";
 import { type Customer, UserRole } from "@prisma/client";
 import { useRouter } from "next/router";
-
-import { SyncLoader } from "react-spinners";
-
-import { DataFields, IconToCopy, Input, PrimaryButton } from "../utils";
-import { trpc } from "../../utils/trpc";
-import { useModalState } from "../../hooks/modalState";
+import { type FC, useEffect, useState } from "react";
+import { BiMobile } from "react-icons/bi";
 import {
-  BsCreditCard2Front,
-  BsFillTelephoneFill,
-  BsFillPersonBadgeFill,
   BsCalendarDate,
+  BsCreditCard2Front,
+  BsFillPersonBadgeFill,
+  BsFillTelephoneFill,
 } from "react-icons/bs";
 import { MdOutlineAlternateEmail } from "react-icons/md";
-import { BiMobile } from "react-icons/bi";
+import { SyncLoader } from "react-spinners";
+
+import { useModalState } from "../../hooks/modalState";
 import { useUserState } from "../../hooks/userDataState";
+import { trpc } from "../../utils/trpc";
+import { DataFields, IconToCopy, Input, PrimaryButton } from "../utils";
 
 const CustomerData: FC<{ customerData: Customer }> = ({ customerData }) => {
   const { openModal, closeModal } = useModalState((state) => ({
@@ -31,42 +30,17 @@ const CustomerData: FC<{ customerData: Customer }> = ({ customerData }) => {
   }, [closeModal]);
 
   return (
-    <div className=" flex w-full flex-col gap-4 ">
-      <DataFields
-        label="Name"
-        text={customerData.name}
-        Icon={BsFillPersonBadgeFill}
-      />
-      <DataFields
-        label="Number"
-        text={customerData.number}
-        Icon={BsFillTelephoneFill}
-      />
-      <DataFields
-        label="Address"
-        text={customerData.address}
-        Icon={MdOutlineAlternateEmail}
-      />
+    <div className=" flex w-full flex-col gap-2 ">
+      <DataFields label="Name" text={customerData.name} Icon={BsFillPersonBadgeFill} />
+      <DataFields label="Number" text={customerData.number} Icon={BsFillTelephoneFill} />
+      <DataFields label="Address" text={customerData.address} Icon={MdOutlineAlternateEmail} />
 
       {user?.role === UserRole.Admin ? (
         <div className=" flex justify-between px-10">
-          <IconToCopy
-            name="ID"
-            text={String(customerData.idNumber)}
-            Icon={BsCreditCard2Front}
-          />
-          <IconToCopy
-            name="birthday"
-            text={String(customerData.birthday)}
-            Icon={BsCalendarDate}
-          />
+          <IconToCopy name="ID" text={String(customerData.idNumber)} Icon={BsCreditCard2Front} />
+          <IconToCopy name="birthday" text={String(customerData.birthday)} Icon={BsCalendarDate} />
           {customerData?.mobile?.split(",").map((mNumber, i) => (
-            <IconToCopy
-              key={i}
-              name={`Mobile${i + 1}`}
-              text={String(mNumber)}
-              Icon={BiMobile}
-            />
+            <IconToCopy key={i} name={`Mobile${i + 1}`} text={String(mNumber)} Icon={BiMobile} />
           ))}
         </div>
       ) : (
@@ -111,7 +85,7 @@ const ModalComponent: FC<{
 
   return (
     <div className=" flex flex-col items-center justify-center gap-5  px-20 py-5">
-      {createInvoice.isLoading ? (
+      {createInvoice.isLoading || createInvoice.data?.id ? (
         <div className="px-16 py-10">
           <SyncLoader color="#312e81" />
         </div>
@@ -126,11 +100,7 @@ const ModalComponent: FC<{
                 setCost(e.target.value);
               }}
             />
-            {Number(cost) ? (
-              <p></p>
-            ) : (
-              <p className=" text-red-700">MUST BE A NUMBER</p>
-            )}
+            {Number(cost) ? <p></p> : <p className=" text-red-700">MUST BE A NUMBER</p>}
           </div>
           <div className="w-2/3">
             <PrimaryButton

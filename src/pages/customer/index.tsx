@@ -1,19 +1,19 @@
-import type { NextPage } from "next";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 import {
   FormInput,
   LoadingAnimation,
   PrimaryButton,
 } from "../../components/utils";
-import { trpc } from "../../utils/trpc";
 import Container from "../../container/Container";
-import { useEffect } from "react";
-import { useRouter } from "next/router";
 import { useModalState } from "../../hooks/modalState";
+import { trpc } from "../../utils/trpc";
 
 const customerSchema = z.object({
   name: z.string().max(225).min(3),

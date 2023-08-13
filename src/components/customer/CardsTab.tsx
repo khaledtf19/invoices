@@ -1,15 +1,11 @@
-import Container from "../../container/Container";
-import { BsFillChatSquareTextFill } from "react-icons/bs";
-import { type RouterOutputs, trpc } from "../../utils/trpc";
 import { useState } from "react";
-import {
-  IconToCopy,
-  LoadingAnimation,
-  PrimaryButton,
-  RedButton,
-} from "../utils";
 import { toast } from "react-hot-toast";
+import { BsFillChatSquareTextFill } from "react-icons/bs";
+
+import Container from "../../container/Container";
+import { type RouterOutputs, trpc } from "../../utils/trpc";
 import { TrpcErrorMessage } from "../../utils/utils";
+import { IconToCopy, LoadingAnimation, PrimaryButton, RedButton } from "../utils";
 
 const CardsTab: React.FC<{
   customerData: RouterOutputs["customer"]["getCustomerById"];
@@ -19,8 +15,9 @@ const CardsTab: React.FC<{
   if (!customerData) {
     return <></>;
   }
-  const { data: customerNotes, refetch } =
-    trpc.customer.getCustomersNotes.useQuery({ customerId: customerData?.id });
+  const { data: customerNotes, refetch } = trpc.customer.getCustomersNotes.useQuery({
+    customerId: customerData?.id,
+  });
   const createNote = trpc.customer.createCustomerNote.useMutation({
     onSuccess: () => {
       refetch();
@@ -30,17 +27,13 @@ const CardsTab: React.FC<{
   return (
     <div className="grid h-full w-full grid-flow-row grid-cols-4 content-center items-center  gap-3">
       <TextToCopy
-        text={`${
-          date.getHours() >= 12 ? "مساؤ" : "صباحو"
-        } هنا \n ممكن شحن كروت\n ${customerData.number} \n ${
-          customerData.name
-        }`}
+        text={`${date.getHours() >= 12 ? "مساؤ" : "صباحو"} هنا \n ممكن شحن كروت\n ${
+          customerData.number
+        } \n ${customerData.name}`}
       />
+      <TextToCopy text={`تسلم  ياغالى\nتسلم  يا باشا\nالله يبارك فيك\nهل الجيجات خلصة`} />
       <TextToCopy
-        text={`تسلم  ياغالى\nتسلم  يا باشا\nالله يبارك فيك\nهل الجيجات خلصة`}
-      />
-      <TextToCopy
-        text={`ممكن تجديد الباقه\nتمام شكرا لك سيدى الفاضل\nممكن تقديم طلب استكمال المبلغ`}
+        text={`ممكن تجديد الباقه\nتمام شكرا لك سيدى الفاضل\nممكن تقديم طلب استكمال المبلغ\nلا مانع من فقد المتبقي`}
       />
       {customerNotes?.map((note) => (
         <TextToCopy key={note.id} text={note.noteContent} noteId={note.id} />
@@ -55,7 +48,7 @@ const CardsTab: React.FC<{
             });
           }}
         >
-          +
+          {createNote.isLoading ? <LoadingAnimation /> : "+"}
         </div>
       ) : (
         ""
@@ -66,10 +59,7 @@ const CardsTab: React.FC<{
 
 export default CardsTab;
 
-const TextToCopy: React.FC<{ text: string; noteId?: string }> = ({
-  text,
-  noteId,
-}) => {
+const TextToCopy: React.FC<{ text: string; noteId?: string }> = ({ text, noteId }) => {
   const [textS, setTextS] = useState(text);
   const ctx = trpc.useContext();
   const updateNote = trpc.customer.updateCustomerNote.useMutation({
@@ -94,15 +84,7 @@ const TextToCopy: React.FC<{ text: string; noteId?: string }> = ({
 
   return (
     <div className="flex flex-col items-center justify-center text-lg">
-      <Container>
-        <label>
-          <IconToCopy
-            name="Text"
-            text={textS}
-            Icon={BsFillChatSquareTextFill}
-            size={20}
-          />
-        </label>
+      <Container size="max-w-sm">
         <textarea
           className="min-h-[100px]  w-full resize-y bg-black p-2 text-right text-sm  text-white"
           onChange={(e) => {
@@ -129,6 +111,9 @@ const TextToCopy: React.FC<{ text: string; noteId?: string }> = ({
                     } catch (e) {}
                   }}
                 />
+                <label>
+                  <IconToCopy name="Text" text={textS} Icon={BsFillChatSquareTextFill} size={20} />
+                </label>
                 <RedButton
                   label="Delete"
                   onClick={async () => {

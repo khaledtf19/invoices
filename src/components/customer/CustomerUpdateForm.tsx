@@ -1,13 +1,12 @@
-import { type FC, useEffect } from "react";
-import { type Customer } from "@prisma/client";
-import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-import { FormInput, PrimaryButton, SecondaryButton } from "../utils";
-import { useModalState } from "../../hooks/modalState";
-
+import { type Customer } from "@prisma/client";
+import { type FC, useEffect } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
+
+import { useModalState } from "../../hooks/modalState";
 import { trpc } from "../../utils/trpc";
+import { FormInput, PrimaryButton, SecondaryButton } from "../utils";
 
 const CustomerForm = z.object({
   name: z.string().min(3),

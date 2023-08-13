@@ -1,24 +1,23 @@
-import { type FC, useState } from "react";
+import { type User } from "@prisma/client";
 import {
-  type User,
-} from "@prisma/client";
-import {
+  type ColumnFiltersState,
   createColumnHelper,
   flexRender,
   getCoreRowModel,
-  useReactTable,
   getFilteredRowModel,
   getPaginationRowModel,
-  type ColumnFiltersState,
+  useReactTable,
 } from "@tanstack/react-table";
+import { type FC, useState } from "react";
+
 import {
+  Filter,
   TBody,
   TD,
   TH,
-  TR,
   THead,
+  TR,
   TableComponent,
-  Filter,
   TablePag,
 } from "./tables";
 
@@ -71,7 +70,7 @@ export const UsersTable: FC<{ users: User[] }> = ({ users }) => {
                     ? null
                     : flexRender(
                         header.column.columnDef.header,
-                        header.getContext()
+                        header.getContext(),
                       )}
                   {header.column.getCanFilter() ? (
                     <div>

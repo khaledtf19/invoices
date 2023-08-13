@@ -1,10 +1,11 @@
 import { useRouter } from "next/router";
-import { trpc } from "../../utils/trpc";
+
 import CustomerView from "../../components/customer";
+import CardsTab from "../../components/customer/CardsTab";
 import LoadingCustomer from "../../components/customer/LoadingCustomer";
 import InvoicesTable from "../../components/tables/InvoicesTable";
 import { PageTabs } from "../../components/utils";
-import CardsTab from "../../components/customer/CardsTab";
+import { trpc } from "../../utils/trpc";
 
 const Customer = () => {
   const router = useRouter();
@@ -19,7 +20,7 @@ const Customer = () => {
     {
       customerId: String(id),
     },
-    { refetchOnWindowFocus: false }
+    { refetchOnWindowFocus: false },
   );
 
   if (isLoading || isRefetching) {
@@ -31,7 +32,7 @@ const Customer = () => {
   }
 
   return (
-    <div className="flex w-full flex-col items-center justify-center gap-10 pb-5">
+    <div className="flex w-full flex-col items-center justify-center gap-2 pb-5">
       <CustomerView
         customerData={customerData}
         refetch={() => {
@@ -39,9 +40,23 @@ const Customer = () => {
         }}
       />
 
-      <PageTabs tabs={[{
-        tabName: "Invoices", component: customerData.invoices.length === 0 ? <h1>No Invoices</h1> : <InvoicesTable invoices={customerData.invoices} />
-      }, { tabName: "Cards", component: <CardsTab customerData={customerData} /> }]} />
+      <PageTabs
+        tabs={[
+          {
+            tabName: "Invoices",
+            component:
+              customerData.invoices.length === 0 ? (
+                <h1>No Invoices</h1>
+              ) : (
+                <InvoicesTable invoices={customerData.invoices} />
+              ),
+          },
+          {
+            tabName: "Cards",
+            component: <CardsTab customerData={customerData} />,
+          },
+        ]}
+      />
     </div>
   );
 };

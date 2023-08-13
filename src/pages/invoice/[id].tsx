@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
-import { trpc } from "../../utils/trpc";
 
 import InvoiceView from "../../components/InvoiceView";
 import { LoadingInvoice } from "../../components/utils";
+import { trpc } from "../../utils/trpc";
 
 const InvoiceById = () => {
   const router = useRouter();
@@ -16,7 +16,7 @@ const InvoiceById = () => {
     {
       invoiceId: String(id),
     },
-    { refetchOnWindowFocus: false }
+    { refetchOnWindowFocus: false },
   );
 
   if (isFetching) {

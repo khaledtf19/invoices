@@ -1,8 +1,8 @@
-import { initTRPC, TRPCError } from "@trpc/server";
+import { UserRole } from "@prisma/client";
+import { TRPCError, initTRPC } from "@trpc/server";
 import superjson from "superjson";
 
 import { type Context } from "./context";
-import { UserRole } from "@prisma/client";
 
 const t = initTRPC.context<Context>().create({
   transformer: superjson,

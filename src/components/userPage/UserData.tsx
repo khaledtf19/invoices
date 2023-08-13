@@ -1,12 +1,15 @@
-import { useState, type FC, useEffect } from "react";
-import { useSession } from "next-auth/react";
 import { type User, UserRole } from "@prisma/client";
-import { trpc } from "../../utils/trpc";
+import { useSession } from "next-auth/react";
+import { type FC, useEffect, useState } from "react";
 
-import Container from "../../container/Container";
 import { Input, PrimaryButton } from "../../components/utils";
+import Container from "../../container/Container";
 import { useModalState } from "../../hooks/modalState";
-import { TransactionsArr, type TransactionsType } from "../../types/utils.types";
+import {
+  TransactionsArr,
+  type TransactionsType,
+} from "../../types/utils.types";
+import { trpc } from "../../utils/trpc";
 
 const UserData: FC<{ userData: User; refetch: () => void }> = ({
   userData,
