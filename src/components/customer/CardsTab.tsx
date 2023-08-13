@@ -5,7 +5,12 @@ import { BsFillChatSquareTextFill } from "react-icons/bs";
 import Container from "../../container/Container";
 import { type RouterOutputs, trpc } from "../../utils/trpc";
 import { TrpcErrorMessage } from "../../utils/utils";
-import { IconToCopy, LoadingAnimation, PrimaryButton, RedButton } from "../utils";
+import {
+  IconToCopy,
+  LoadingAnimation,
+  PrimaryButton,
+  RedButton,
+} from "../utils";
 
 const CardsTab: React.FC<{
   customerData: RouterOutputs["customer"]["getCustomerById"];
@@ -15,9 +20,10 @@ const CardsTab: React.FC<{
   if (!customerData) {
     return <></>;
   }
-  const { data: customerNotes, refetch } = trpc.customer.getCustomersNotes.useQuery({
-    customerId: customerData?.id,
-  });
+  const { data: customerNotes, refetch } =
+    trpc.customer.getCustomersNotes.useQuery({
+      customerId: customerData?.id,
+    });
   const createNote = trpc.customer.createCustomerNote.useMutation({
     onSuccess: () => {
       refetch();
@@ -27,11 +33,15 @@ const CardsTab: React.FC<{
   return (
     <div className="grid h-full w-full grid-flow-row grid-cols-4 content-center items-center  gap-3">
       <TextToCopy
-        text={`${date.getHours() >= 12 ? "مساؤ" : "صباحو"} هنا \n ممكن شحن كروت\n ${
-          customerData.number
-        } \n ${customerData.name}`}
+        text={`${
+          date.getHours() >= 12 ? "مساؤ" : "صباحو"
+        } هنا \n ممكن شحن كروت\n ${customerData.number} \n ${
+          customerData.name
+        }`}
       />
-      <TextToCopy text={`تسلم  ياغالى\nتسلم  يا باشا\nالله يبارك فيك\nهل الجيجات خلصة`} />
+      <TextToCopy
+        text={`تسلم  ياغالى\nتسلم  يا باشا\nالله يبارك فيك\nهل الجيجات خلصة`}
+      />
       <TextToCopy
         text={`ممكن تجديد الباقه\nتمام شكرا لك سيدى الفاضل\nممكن تقديم طلب استكمال المبلغ\nلا مانع من فقد المتبقي`}
       />
@@ -59,7 +69,10 @@ const CardsTab: React.FC<{
 
 export default CardsTab;
 
-const TextToCopy: React.FC<{ text: string; noteId?: string }> = ({ text, noteId }) => {
+const TextToCopy: React.FC<{ text: string; noteId?: string }> = ({
+  text,
+  noteId,
+}) => {
   const [textS, setTextS] = useState(text);
   const ctx = trpc.useContext();
   const updateNote = trpc.customer.updateCustomerNote.useMutation({
@@ -93,13 +106,13 @@ const TextToCopy: React.FC<{ text: string; noteId?: string }> = ({ text, noteId 
           value={textS}
         />
 
-        {noteId ? (
-          <div className=" flex items-center justify-center gap-3">
-            {updateNote.isLoading || deleteNote.isLoading ? (
-              <LoadingAnimation />
-            ) : (
-              <>
-                {" "}
+        <div className=" flex items-center justify-center gap-3">
+          {updateNote.isLoading || deleteNote.isLoading ? (
+            <LoadingAnimation />
+          ) : (
+            <>
+              {" "}
+              {noteId ? (
                 <PrimaryButton
                   label="Update"
                   onClick={async () => {
@@ -111,9 +124,18 @@ const TextToCopy: React.FC<{ text: string; noteId?: string }> = ({ text, noteId 
                     } catch (e) {}
                   }}
                 />
-                <label>
-                  <IconToCopy name="Text" text={textS} Icon={BsFillChatSquareTextFill} size={20} />
-                </label>
+              ) : (
+                ""
+              )}
+              <label>
+                <IconToCopy
+                  name="Text"
+                  text={textS}
+                  Icon={BsFillChatSquareTextFill}
+                  size={20}
+                />
+              </label>
+              {noteId ? (
                 <RedButton
                   label="Delete"
                   onClick={async () => {
@@ -122,12 +144,12 @@ const TextToCopy: React.FC<{ text: string; noteId?: string }> = ({ text, noteId 
                     } catch {}
                   }}
                 />
-              </>
-            )}{" "}
-          </div>
-        ) : (
-          ""
-        )}
+              ) : (
+                ""
+              )}
+            </>
+          )}{" "}
+        </div>
       </Container>
     </div>
   );
