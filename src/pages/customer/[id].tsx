@@ -32,7 +32,7 @@ const Customer = () => {
   }
 
   return (
-    <div className="flex w-full flex-col items-center justify-center gap-10 pb-5">
+    <div className="flex w-full flex-col items-center justify-center gap-2 pb-5">
       <CustomerView
         customerData={customerData}
         refetch={() => {

@@ -290,7 +290,7 @@ export const PageTabs: FC<{
           </div>
         ))}
       </div>
-      <div className="flex w-full items-start justify-center rounded-md border border-gray-900 p-5">
+      <div className="flex w-full items-start justify-center rounded-md border border-gray-900 p-1">
         {tabs[selectedTab]?.component}
       </div>
     </div>
