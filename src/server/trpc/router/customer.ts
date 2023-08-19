@@ -58,16 +58,7 @@ export const customerRouter = router({
   getCustomerById: protectedProcedure
     .input(z.object({ customerId: z.string() }))
     .query(async ({ input, ctx }) => {
-      let globalNote = await ctx.prisma.customerNote.findFirst({
-        where: { global: true },
-      });
-
-      if (!globalNote?.id) {
-        globalNote = await ctx.prisma.customerNote.create({
-          data: { noteContent: "", global: true, userId: ctx.session.user.id },
-        });
-      }
-      let result = await ctx.prisma.customer.findUnique({
+      return await ctx.prisma.customer.findUnique({
         where: { id: input.customerId },
         include: {
           invoices: {
@@ -78,12 +69,9 @@ export const customerRouter = router({
             take: 10,
             orderBy: { createdAt: "desc" },
           },
-          customerNotes: true,
           customerDebt: { where: { deleted: false } },
         },
       });
-    result?.customerNotes.push(globalNote)
-    return result 
     }),
 
   getCustomersNotes: protectedProcedure
@@ -93,9 +81,21 @@ export const customerRouter = router({
       })
     )
     .query(async ({ input, ctx }) => {
-      return await ctx.prisma.customerNote.findMany({
+      let globalNote = await ctx.prisma.customerNote.findFirst({
+        where: { global: true },
+      });
+
+      if (!globalNote?.id) {
+        globalNote = await ctx.prisma.customerNote.create({
+          data: { noteContent: "", global: true, userId: ctx.session.user.id },
+        });
+      }
+
+      const result = await ctx.prisma.customerNote.findMany({
         where: { customerId: input.customerId },
       });
+      result.unshift(globalNote);
+      return result;
     }),
 
   updateCustomer: adminProcedure

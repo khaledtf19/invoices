@@ -7,6 +7,7 @@ import {
 } from "react";
 
 import { useUserState } from "../hooks/userDataState";
+import { cn } from "../utils/utils";
 
 const Container: FC<
   PropsWithChildren & {
@@ -15,9 +16,11 @@ const Container: FC<
     rightComponent?: ReactNode;
     openLeft?: boolean;
     openRight?: boolean;
+  className?: string
   }
 > = ({
   children,
+  className,
   size,
   leftComponent,
   rightComponent,
@@ -30,7 +33,7 @@ const Container: FC<
   const { userData } = useUserState()((state) => ({ userData: state.user }));
 
   return (
-    <div className="relative flex w-full items-center justify-center ">
+    <div className={cn("relative flex w-full items-center justify-center ")}>
       {leftComponent ? (
         <div
           id="container_left"
@@ -70,9 +73,9 @@ const Container: FC<
       )}
 
       <div
-        className={`flex w-full ${
+        className={cn(`flex w-full ${
           size ? size : "max-w-md"
-        }  z-10 flex-col items-center gap-3 self-center rounded-lg border border-gray-400 bg-white p-4 shadow-2xl drop-shadow-xl`}
+        }  z-10 flex-col items-center gap-3 self-center rounded-lg border border-gray-400 bg-white p-4 shadow-2xl drop-shadow-xl`, className) }
       >
         {children}
       </div>
