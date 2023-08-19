@@ -10,7 +10,6 @@ import CustomerUpdateForm from "./CustomerUpdateForm";
 
 const CustomerView: FC<{
   customerData: Customer & {
-    customerNotes: CustomerNote[];
     customerDebt: CustomerDebt[];
   };
   refetch: () => void;
