@@ -18,7 +18,7 @@ export const customerRouter = router({
       z.object({
         number: z.string().optional(),
         name: z.string().optional(),
-      }),
+      })
     )
     .mutation(async ({ input, ctx }) => {
       if (input.number?.at(0) === "0") {
@@ -58,7 +58,16 @@ export const customerRouter = router({
   getCustomerById: protectedProcedure
     .input(z.object({ customerId: z.string() }))
     .query(async ({ input, ctx }) => {
-      return await ctx.prisma.customer.findUnique({
+      let globalNote = await ctx.prisma.customerNote.findFirst({
+        where: { global: true },
+      });
+
+      if (!globalNote?.id) {
+        globalNote = await ctx.prisma.customerNote.create({
+          data: { noteContent: "", global: true, userId: ctx.session.user.id },
+        });
+      }
+      let result = await ctx.prisma.customer.findUnique({
         where: { id: input.customerId },
         include: {
           invoices: {
@@ -73,13 +82,15 @@ export const customerRouter = router({
           customerDebt: { where: { deleted: false } },
         },
       });
+    result?.customerNotes.push(globalNote)
+    return result 
     }),
 
   getCustomersNotes: protectedProcedure
     .input(
       z.object({
         customerId: z.string().min(5),
-      }),
+      })
     )
     .query(async ({ input, ctx }) => {
       return await ctx.prisma.customerNote.findMany({
@@ -97,7 +108,7 @@ export const customerRouter = router({
         birthday: z.string().optional().nullable(),
         idNumber: z.string().optional().nullish(),
         mobile: z.string().min(8).array().max(5),
-      }),
+      })
     )
     .mutation(async ({ input, ctx }) => {
       const mobileString = input.mobile.join(",");
@@ -146,7 +157,7 @@ export const customerRouter = router({
         customerId: z.string().min(3),
         amount: z.number(),
         type: z.enum(["Add", "Take"]),
-      }),
+      })
     )
     .mutation(async ({ input, ctx }) => {
       await ctx.prisma.customerDebt.create({

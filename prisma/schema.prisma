@@ -99,12 +99,13 @@ model Invoice {
 }
 
 model CustomerNote {
-  id          String   @id @default(cuid())
-  customerId  String
+  id          String    @id @default(cuid())
+  customerId  String?
   userId      String
   noteContent String
-  customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  madeBy      User     @relation(fields: [userId], references: [id])
+  customer    Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  madeBy      User      @relation(fields: [userId], references: [id])
+  global      Boolean   @default(false)
 
   @@index([userId])
   @@index([customerId])
