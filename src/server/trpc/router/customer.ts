@@ -18,7 +18,7 @@ export const customerRouter = router({
       z.object({
         number: z.string().optional(),
         name: z.string().optional(),
-      }),
+      })
     )
     .mutation(async ({ input, ctx }) => {
       if (input.number?.at(0) === "0") {
@@ -69,7 +69,6 @@ export const customerRouter = router({
             take: 10,
             orderBy: { createdAt: "desc" },
           },
-          customerNotes: true,
           customerDebt: { where: { deleted: false } },
         },
       });
@@ -79,12 +78,24 @@ export const customerRouter = router({
     .input(
       z.object({
         customerId: z.string().min(5),
-      }),
+      })
     )
     .query(async ({ input, ctx }) => {
-      return await ctx.prisma.customerNote.findMany({
+      let globalNote = await ctx.prisma.customerNote.findFirst({
+        where: { global: true },
+      });
+
+      if (!globalNote?.id) {
+        globalNote = await ctx.prisma.customerNote.create({
+          data: { noteContent: "", global: true, userId: ctx.session.user.id },
+        });
+      }
+
+      const result = await ctx.prisma.customerNote.findMany({
         where: { customerId: input.customerId },
       });
+      result.unshift(globalNote);
+      return result;
     }),
 
   updateCustomer: adminProcedure
@@ -97,7 +108,7 @@ export const customerRouter = router({
         birthday: z.string().optional().nullable(),
         idNumber: z.string().optional().nullish(),
         mobile: z.string().min(8).array().max(5),
-      }),
+      })
     )
     .mutation(async ({ input, ctx }) => {
       const mobileString = input.mobile.join(",");
@@ -146,7 +157,7 @@ export const customerRouter = router({
         customerId: z.string().min(3),
         amount: z.number(),
         type: z.enum(["Add", "Take"]),
-      }),
+      })
     )
     .mutation(async ({ input, ctx }) => {
       await ctx.prisma.customerDebt.create({

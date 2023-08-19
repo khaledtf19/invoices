@@ -46,7 +46,7 @@ const CardsTab: React.FC<{
         text={`ممكن تجديد الباقه\nتمام شكرا لك سيدى الفاضل\nممكن تقديم طلب استكمال المبلغ\nلا مانع من فقد المتبقي`}
       />
       {customerNotes?.map((note) => (
-        <TextToCopy key={note.id} text={note.noteContent} noteId={note.id} />
+        <TextToCopy key={note.id} text={note.noteContent} noteId={note.id} global={note.global} />
       ))}
       {customerNotes && customerNotes?.length < 5 ? (
         <div
@@ -69,9 +69,10 @@ const CardsTab: React.FC<{
 
 export default CardsTab;
 
-const TextToCopy: React.FC<{ text: string; noteId?: string }> = ({
+const TextToCopy: React.FC<{ text: string; noteId?: string, global?:boolean }> = ({
   text,
   noteId,
+  global
 }) => {
   const [textS, setTextS] = useState(text);
   const ctx = trpc.useContext();
@@ -97,9 +98,9 @@ const TextToCopy: React.FC<{ text: string; noteId?: string }> = ({
 
   return (
     <div className="flex flex-col items-center justify-center text-lg">
-      <Container size="max-w-sm">
+      <Container size="max-w-sm" className={`${global&& "border-yellow-400 border-4"}`}>
         <textarea
-          className="min-h-[100px]  w-full resize-y bg-black p-2 text-right text-sm  text-white"
+          className={`min-h-[100px]  w-full resize-y bg-black p-2 text-right text-sm  text-white `}
           onChange={(e) => {
             setTextS(e.target.value);
           }}

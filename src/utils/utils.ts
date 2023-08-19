@@ -1,3 +1,6 @@
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
 export const BigNumberLength = 999_999_999_999_999;
 export const MinNumberLength = 9999;
 
@@ -74,3 +77,7 @@ export const randomTableData = [
     idNumber: "123456789",
   },
 ];
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
