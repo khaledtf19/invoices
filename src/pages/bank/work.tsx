@@ -1,28 +1,72 @@
-import * as React from "react";
 
+import { useEffect, useState } from "react";
 import { RedButton } from "../../components/utils";
 import Container from "../../container/Container";
+import { trpc } from "../../utils/trpc";
 
-export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 const Work = () => {
-  const [cells, setcells] = React.useState([0]);
+  const [cells, setcells] = useState([0, 0]);
+  const [result, setResult] = useState(0);
+
+  const {data}= trpc.bank.getBank.useQuery()
+
+  const addCell = () => {
+    setcells([...cells, 0]);
+  };
+
+  const removeCell: (p: { idx: number }) => void = ({ idx }) => {
+    setcells(cells.filter((_, i) => (i === idx ? false : true)));
+  };
+
+  const updateCell: (p: { idx: number; value: number }) => void = ({
+    idx,
+    value,
+  }) => {
+    setcells((old) => {
+      old[idx] = value;
+      return old;
+    });
+  };
+
 
   return (
     <Container>
-      <div className="flex w-full ">
-        <CellContainer />
+      <div className="w-full flex flex-col gap-3 items-center">
+        {cells.map((value, idx) => (
+          <div className="flex w-full " key={idx}>
+            <CellContainer
+              idx={idx}
+              updateCell={updateCell}
+              removeCell={removeCell}
+              value={value}
+            />
+          </div>
+        ))}
+        <div className="w-fit h-fit bg-green-700 text-white px-2 rounded-full cursor-pointer"
+          onClick={()=>{
+            addCell()
+          }}
+        >
+          +
+        </div>
       </div>
     </Container>
   );
 };
 
 export default Work;
-export const CellContainer = () => {
+export const CellContainer: React.FC<{
+  updateCell: (p: { idx: number; value: number }) => void;
+  removeCell: (p: { idx: number }) => void;
+  idx: number;
+  value: number
+}> = () => {
   return (
     <div className="flex w-full gap-2">
-      <Cell />
+      <input 
+        className="w-full border border-gray-900 p-1 outline-none"
+      />
       <div className="w-10">
         <RedButton label="X" />
       </div>
@@ -30,14 +74,3 @@ export const CellContainer = () => {
   );
 };
 
-export const Cell = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ type, className, ...props }) => {
-    return (
-      <input
-        type={type}
-        className="w-full border border-gray-900 p-1 outline-none"
-      />
-    );
-  },
-);
-Cell.displayName = "Cell"
