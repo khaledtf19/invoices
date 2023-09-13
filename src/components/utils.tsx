@@ -32,7 +32,7 @@ export const Input: FC<{
         {label}:
       </label>
       <input
-        type={type ? type : ""}
+        type={type ? type : "text"}
         name={name}
         value={state}
         onChange={onChange}

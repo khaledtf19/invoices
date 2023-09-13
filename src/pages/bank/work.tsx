@@ -11,7 +11,7 @@ const Work = () => {
 
   return (
     <Container>
-      <div className="w-full flex">
+      <div className="flex w-full ">
         <CellContainer />
       </div>
     </Container>
@@ -38,5 +38,6 @@ export const Cell = React.forwardRef<HTMLInputElement, InputProps>(
         className="w-full border border-gray-900 p-1 outline-none"
       />
     );
-  }
+  },
 );
+Cell.displayName = "Cell"
