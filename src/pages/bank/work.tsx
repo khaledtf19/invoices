@@ -8,6 +8,7 @@ import { trpc } from "../../utils/trpc";
 const Work = () => {
   const [cells, setcells] = useState([0, 0]);
   const [result, setResult] = useState(0);
+  const [resultType, setResultType] = useState("sum")
 
   const {data}= trpc.bank.getBank.useQuery()
 

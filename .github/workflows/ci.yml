@@ -18,17 +18,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+
       - name: Checkout
         uses: actions/checkout@v2
 
       - name: Install Dependencies
-        run: yarn install
+        run: bun install
 
       - name: Typecheck
-        run: yarn run typecheck
+        run: bun run typecheck
 
       - name: Lint
-        run: yarn run lint
+        run: bun run lint
 
       - name: Print Environment Variable
         run: echo $MY_ENV_VAR
