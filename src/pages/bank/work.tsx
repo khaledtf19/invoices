@@ -8,9 +8,9 @@ import { BankNameArr } from "../../types/utils.types";
 import { trpc } from "../../utils/trpc";
 
 const Work = () => {
-  const [cells, setcells] = useState([0, 0]);
+  const [cells, setcells] = useState<number[]>([0, 0]);
   const [result, setResult] = useState(0);
-  const [resultType, setResultType] = useState("sum");
+  const [resultType, setResultType] = useState<"+" | "-">("+");
   const [bankName, setBankName] = useState<BankName>(BankName.Khadmaty);
 
   const { data, isSuccess } = trpc.bank.getBank.useQuery();
@@ -23,7 +23,7 @@ const Work = () => {
     setcells(cells.filter((_, i) => (i === idx ? false : true)));
   };
 
-  const updateCell: (p: { idx: number; value: number }) => void = ({
+  const updateCell: (p: { idx: number; value: number}) => void = ({
     idx,
     value,
   }) => {
@@ -41,24 +41,33 @@ const Work = () => {
     });
   }, [isSuccess, bankName]);
 
+  useEffect(() => {
+    setResult(
+      cells.reduce((old, v) => {
+        if (resultType === "+") return old + v;
+        return  v - old;
+      }, 0),
+    );
+  }, [bankName, resultType, cells]);
+
   return (
     <Container>
       <div className="flex w-full flex-col items-center gap-3">
-        <div className="w-full h-[50px] flex items-center justify-center">
-        {bankName === "Bss" ? (
-          <div className=" ">
-            <Image src="/we_logo.png" alt="we logo" width={50} height={50} />
-          </div>
-        ) : (
-          <div className=" bg-blue-900 p-1 text-white">
-            <Image
-              src="/khadmaty_logo.png"
-              alt="we logo"
-              width={96}
-              height={40}
-            />
-          </div>
-        )}
+        <div className="flex h-[50px] w-full items-center justify-center">
+          {bankName === "Bss" ? (
+            <div className=" ">
+              <Image src="/we_logo.png" alt="we logo" width={50} height={50} />
+            </div>
+          ) : (
+            <div className=" bg-blue-900 p-1 text-white">
+              <Image
+                src="/khadmaty_logo.png"
+                alt="khadmaty logo"
+                width={96}
+                height={40}
+              />
+            </div>
+          )}
         </div>
         <div className="flex gap-3">
           <select
@@ -70,7 +79,13 @@ const Work = () => {
               <option key={name}>{name}</option>
             ))}
           </select>
-          <select className="rounded-md border border-gray-300 p-2 text-center">
+          <select
+            className="rounded-md border border-gray-300 p-2 text-center"
+            onChange={(e) => {
+              setResultType(e.target.value as "+" | "-");
+            }}
+            value={resultType}
+          >
             <option>+</option>
             <option>-</option>
           </select>
@@ -86,6 +101,7 @@ const Work = () => {
             />
           </div>
         ))}
+        <p>{result.toFixed(2)}</p>
         {cells.length !== 15 ? (
           <div
             className="h-fit w-fit cursor-pointer rounded-full bg-green-700 px-2 text-white"
@@ -116,11 +132,11 @@ export const CellContainer: React.FC<{
         className="w-full border border-gray-900 p-1 outline-none"
         type="number"
         onChange={(e) => {
-          Number(e.target.value)
+          Number(e.target.value) >= 0
             ? updateCell({ value: Number(e.target.value), idx: idx })
             : "";
         }}
-        value={value}
+        value={value? value: ""}
       />
 
       {idx === 0 ? (
