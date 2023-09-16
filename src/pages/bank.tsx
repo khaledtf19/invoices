@@ -117,20 +117,22 @@ export const BankModal: React.FC<{
 
   return (
     <div className="flex w-full flex-col items-center gap-4">
-      {bankName === "Bss" ? (
-        <div className=" ">
-          <Image src="/we_logo.png" alt="we logo" width={50} height={50} />
-        </div>
-      ) : (
-        <div className=" bg-blue-900 p-1 text-white">
-          <Image
-            src="/khadmaty_logo.png"
-            alt="we logo"
-            width={96}
-            height={40}
-          />
-        </div>
-      )}
+      <div className="flex h-[50px] w-full items-center justify-center">
+        {bankName === "Bss" ? (
+          <div className=" ">
+            <Image src="/we_logo.png" alt="we logo" width={50} height={50} />
+          </div>
+        ) : (
+          <div className=" bg-blue-900 p-1 text-white">
+            <Image
+              src="/khadmaty_logo.png"
+              alt="we logo"
+              width={96}
+              height={40}
+            />
+          </div>
+        )}
+      </div>
       <select
         onChange={(e) => setBankName(e.target.value as BankName)}
         value={bankName}
