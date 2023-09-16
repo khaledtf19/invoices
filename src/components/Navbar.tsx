@@ -67,8 +67,8 @@ const Navbar = () => {
           </li>
             <li>
               <RouteLink 
-                to={"/bank/work"}
-                name="Work"
+                to={"/bank/cells"}
+                name="Cells"
                 icon={<IconContainer Icon={FaNetworkWired}/>}
                 iconActive={<IconContainer Icon={FaNetworkWired}/>}
               />

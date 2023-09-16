@@ -7,7 +7,7 @@ import Container from "../../container/Container";
 import { BankNameArr } from "../../types/utils.types";
 import { trpc } from "../../utils/trpc";
 
-const Work = () => {
+const Cells = () => {
   const [cells, setcells] = useState<number[]>([0, 0]);
   const [result, setResult] = useState(0);
   const [resultType, setResultType] = useState<"+" | "-">("+");
@@ -42,11 +42,12 @@ const Work = () => {
   }, [isSuccess, bankName]);
 
   useEffect(() => {
+   
     setResult(
       cells.reduce((old, v) => {
         if (resultType === "+") return old + v;
-        return  v - old;
-      }, 0),
+        return old - v 
+      }),
     );
   }, [bankName, resultType, cells]);
 
@@ -119,7 +120,7 @@ const Work = () => {
   );
 };
 
-export default Work;
+export default Cells;
 export const CellContainer: React.FC<{
   updateCell: (p: { idx: number; value: number }) => void;
   removeCell: (p: { idx: number }) => void;
