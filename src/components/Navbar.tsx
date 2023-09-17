@@ -16,6 +16,7 @@ import { RiSearchLine } from "react-icons/ri";
 import { useModalState } from "../hooks/modalState";
 import { trpc } from "../utils/trpc";
 import CustomerDebtModal from "./customer/CustomerDebtModal";
+import { FaNetworkWired } from "react-icons/fa";
 
 const Navbar = () => {
   const { data: session } = useSession();
@@ -55,6 +56,7 @@ const Navbar = () => {
           />
         </li>
         {session?.user?.role === UserRole.Admin ? (
+          <>
           <li>
             <RouteLink
               to={"/user"}
@@ -63,6 +65,15 @@ const Navbar = () => {
               iconActive={<IconContainer Icon={HiUsers} />}
             />
           </li>
+            <li>
+              <RouteLink 
+                to={"/bank/cells"}
+                name="Cells"
+                icon={<IconContainer Icon={FaNetworkWired}/>}
+                iconActive={<IconContainer Icon={FaNetworkWired}/>}
+              />
+            </li>
+          </>
         ) : null}
       </ul>
       <ul className="flex w-full flex-col justify-end px-1 align-middle">
