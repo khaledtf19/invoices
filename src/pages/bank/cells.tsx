@@ -102,7 +102,7 @@ const Cells = () => {
             />
           </div>
         ))}
-        <p>{result.toFixed(2)}</p>
+        <p className="w-full bg-gray-600 text-center p-2 text-white">{result.toFixed(2)}</p>
         {cells.length !== 15 ? (
           <div
             className="h-fit w-fit cursor-pointer rounded-full bg-green-700 px-2 text-white"
