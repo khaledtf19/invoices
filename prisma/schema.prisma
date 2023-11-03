@@ -112,17 +112,18 @@ model CustomerNote {
 }
 
 model CustomerDebt {
-  id         String           @id @default(cuid())
-  customerId String?
-  amount     Int
-  createdAt  DateTime         @default(now())
-  updatedAt  DateTime         @default(now()) @updatedAt
-  note       String?
-  deleted    Boolean          @default(false)
-  type       TransactionTypes @default(Add)
-  userId     String?
-  deletedBy  User?            @relation(fields: [userId], references: [id])
-  customer   Customer?        @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  id          String           @id @default(cuid())
+  customerId  String?
+  amount      Int
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @default(now()) @updatedAt
+  note        String?
+  deleted     Boolean          @default(false)
+  type        TransactionTypes @default(Add)
+  userId      String?
+  deletedBy   User?            @relation(fields: [userId], references: [id])
+  customer    Customer?        @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  isImportant Boolean?         @default(true)
 
   @@index([deleted])
   @@index([userId])
