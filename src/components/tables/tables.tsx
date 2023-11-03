@@ -22,7 +22,7 @@ export const TableComponent: FC<PropsWithChildren & { moreClass?: string }> = ({
 }) => {
   return (
     <table
-      className={` w-full p-2 shadow-2xl ${moreClass} min-h-0 animate-opacityAnimation text-sm`}
+      className={` min-w-full p-2 shadow-2xl ${moreClass} min-h-0 animate-opacityAnimation text-sm`}
     >
       {children}
     </table>
@@ -71,7 +71,7 @@ export const TH: FC<PropsWithChildren & { size: number }> = ({
   return (
     <th
       className={` border p-2 text-center shadow-sm `}
-      style={{ width: size }}
+      style={{ width: size? size: "auto" }}
     >
       {children}
     </th>
