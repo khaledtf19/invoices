@@ -18,7 +18,7 @@ export const customerRouter = router({
       z.object({
         number: z.string().optional(),
         name: z.string().optional(),
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       if (input.number?.at(0) === "0") {
@@ -78,7 +78,7 @@ export const customerRouter = router({
     .input(
       z.object({
         customerId: z.string().min(5),
-      })
+      }),
     )
     .query(async ({ input, ctx }) => {
       let globalNote = await ctx.prisma.customerNote.findFirst({
@@ -108,7 +108,7 @@ export const customerRouter = router({
         birthday: z.string().optional().nullable(),
         idNumber: z.string().optional().nullish(),
         mobile: z.string().min(8).array().max(5),
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       const mobileString = input.mobile.join(",");
@@ -157,7 +157,8 @@ export const customerRouter = router({
         customerId: z.string().min(3),
         amount: z.number(),
         type: z.enum(["Add", "Take"]),
-      })
+        isImportant: z.boolean(),
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       await ctx.prisma.customerDebt.create({
@@ -165,6 +166,7 @@ export const customerRouter = router({
           customerId: input.customerId,
           amount: input.amount,
           type: input.type,
+          isImportant: input.isImportant,
         },
       });
 
@@ -217,6 +219,23 @@ export const customerRouter = router({
         data: { note: input.text },
       });
 
+      return { message: "done" };
+    }),
+
+  updateDebtIsImportant: adminProcedure
+    .input(
+      z.object({
+        debtId: z.string().min(3),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const debt = await ctx.prisma.customerDebt.findUnique({
+        where: { id: input.debtId },
+      });
+      await ctx.prisma.customerDebt.update({
+        where: { id: input.debtId },
+        data: { isImportant: !debt?.isImportant },
+      });
       return { message: "done" };
     }),
 });
