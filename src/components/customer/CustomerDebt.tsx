@@ -26,6 +26,11 @@ const CustomerDebt: React.FC<{
     openModal: state.openModal,
     closeModal: state.closeModal,
   }));
+  const updateImportnat = trpc.customer.updateDebtIsImportant.useMutation({
+    onSuccess:()=>{
+      refetch()
+    }
+  })
 
   useEffect(() => {
     return closeModal();
@@ -40,6 +45,7 @@ const CustomerDebt: React.FC<{
               <th className=" flex w-2/5  justify-center">
                 <BsFillChatSquareTextFill size={20} />
               </th>
+              <th>_</th>
               <th className=" w-full">
                 <p>Amount</p>
               </th>
@@ -73,6 +79,17 @@ const CustomerDebt: React.FC<{
                   }}
                 >
                   <CustomerDebtMessage noteText={debt.note || ""} />
+                </td>
+                <td className=" border-r border-red-600 pr-1">
+                  <input 
+                    type="checkbox" 
+                    defaultChecked={debt.isImportant||false} 
+                    onChange={async (e)=>{
+                      updateImportnat.mutate({debtId: debt.id})
+                    }}
+                    disabled={updateImportnat.isLoading}
+                  />
+
                 </td>
                 <td className=" w-full  border-r border-red-600 ">
                   {debt.amount}
@@ -130,6 +147,7 @@ const CreateDebtModal: React.FC<{
 }> = ({ customerId, refetch }) => {
   const [amount, setAmount] = useState("");
   const [tType, setTType] = useState<TransactionsType>("Add");
+  const [isImportant, setIsImportnat] = useState<boolean>(true)
   const addDebt = trpc.customer.createDebt.useMutation({
     onSuccess: () => {
       refetch();
@@ -171,6 +189,12 @@ const CreateDebtModal: React.FC<{
             <p className=" text-red-600">
               {Number(amount) ? "" : "Must Be A Number"}
             </p>
+            <input 
+                type="checkbox" 
+                checked={isImportant} 
+                onChange={(e)=>{setIsImportnat(e.target.checked)}}
+                className="h-6"
+              />
           </div>
           <div>
             <PrimaryButton
@@ -181,6 +205,7 @@ const CreateDebtModal: React.FC<{
                     amount: Number(amount),
                     customerId: customerId,
                     type: tType,
+                    isImportant: isImportant
                   });
                 }
               }}
@@ -227,7 +252,7 @@ const DebtNoteModal: React.FC<{
   debtId: string;
   note: string;
   refetch?: () => void;
-}> = ({ debtId, note, refetch }) => {
+}> = ({ debtId, note, refetch}) => {
   const [noteState, setNoteState] = useState(note);
   const updateDebtNote = trpc.customer.updateDebtNote.useMutation({
     onSuccess: () => {
@@ -249,6 +274,8 @@ const DebtNoteModal: React.FC<{
             value={noteState}
             className=" min-h-[150px] resize-y bg-black p-2 text-sm text-white"
           />
+
+
           <SecondaryButton
             label="Update"
             onClick={() => {

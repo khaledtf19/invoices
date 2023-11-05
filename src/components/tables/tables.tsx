@@ -139,9 +139,13 @@ export const Filter: FC<{
     .flatRows[0]?.getValue(column.id);
 
   useEffect(() => {
-    if (typeof firstValue === "boolean") {
+    if (column.id === "deleted") {
       column.setFilterValue(false);
     }
+    if(column.id === "isImportant"){
+      column.setFilterValue(true)
+    }
+   
   }, []);
 
   if (typeof firstValue === "number") {
@@ -207,8 +211,13 @@ export const Filter: FC<{
       </select>
     );
   }
+  if(column.id === "isImportant") {
+    return <input type="checkbox" defaultChecked={true} onChange={(e)=>{
+      column.setFilterValue(e.target.checked || undefined)
+    }}/>
+  }
 
-  if (firstValue === true || firstValue === false) {
+  if (column.id === "deleted") {
     return (
       <select
         defaultValue={"false"}

@@ -1,5 +1,5 @@
 // Prisma adapter for NextAuth, optional and can be removed
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { PrismaAdapter } from "@auth/prisma-adapter";
 import NextAuth, { type NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
@@ -29,6 +29,7 @@ export const authOptions: NextAuthOptions = {
     },
   },
   // Configure one or more authentication providers
+  // eslint-disable-next-line 
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
