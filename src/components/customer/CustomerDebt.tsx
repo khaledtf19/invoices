@@ -26,9 +26,11 @@ const CustomerDebt: React.FC<{
     openModal: state.openModal,
     closeModal: state.closeModal,
   }));
-  const updateImportnat = trpc.customer.updateDebtIsImportant.useMutation({onSuccess:()=>{
-    refetch()
-  }})
+  const updateImportnat = trpc.customer.updateDebtIsImportant.useMutation({
+    onSuccess:()=>{
+      refetch()
+    }
+  })
 
   useEffect(() => {
     return closeModal();
@@ -85,6 +87,7 @@ const CustomerDebt: React.FC<{
                     onChange={async (e)=>{
                       updateImportnat.mutate({debtId: debt.id})
                     }}
+                    disabled={updateImportnat.isLoading}
                   />
 
                 </td>

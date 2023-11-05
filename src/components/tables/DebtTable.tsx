@@ -45,7 +45,7 @@ const DebtTable: FC<{ data: RouterOutputs["customer"]["getAllDebt"] }> = ({
   const columns = [
     columnHelper.accessor("customer.name", {
       size: 200,
-      cell: (info) => <span>{info.renderValue()}</span>,
+      cell: (info) => <span className="truncate w-40">{info.renderValue()}</span>,
       footer: (info) => info.column.id,
       header: () => "Name",
     }),
@@ -55,8 +55,8 @@ const DebtTable: FC<{ data: RouterOutputs["customer"]["getAllDebt"] }> = ({
       header: () => "Number",
     }),
     columnHelper.accessor("customer.address", {
-      size: 200,
-      cell: (info) => <span>{info.renderValue()}</span>,
+      size: 100,
+      cell: (info) => <p className="truncate w-40">{info.renderValue()}</p>,
       footer: (info) => info.column.id,
       header: () => "Address",
     }),
@@ -72,14 +72,14 @@ const DebtTable: FC<{ data: RouterOutputs["customer"]["getAllDebt"] }> = ({
     }),
     columnHelper.accessor("createdAt", {
       size: 200,
-      cell: (info) => DateFormat({ date: info.getValue() }),
+      cell: (info) => <p className="text-sm">{DateFormat({ date: info.getValue() })}</p>,
       footer: (info) => info.column.id,
       header: () => "Created At",
       enableColumnFilter: false,
     }),
     columnHelper.accessor("updatedAt", {
       size: 150,
-      cell: (info) => DateFormat({ date: info.getValue() }),
+      cell: (info) =><p className="text-xs">{DateFormat({ date: info.getValue() })}</p>,
       footer: (info) => info.column.id,
       header: () => "updated At",
       enableColumnFilter: false,
@@ -89,6 +89,12 @@ const DebtTable: FC<{ data: RouterOutputs["customer"]["getAllDebt"] }> = ({
       cell: (info) => <span>{info.renderValue()?.toFixed(2)}</span>,
       footer: (info) => info.column.id,
       header: () => "Amount",
+      enableColumnFilter: false
+    }),
+    columnHelper.accessor("isImportant",{
+      size:50,
+      cell: (info)=><div><input type="checkbox" checked={info.getValue()||false} /> </div>,
+      header: ()=> "I"
     }),
     columnHelper.accessor("type", {
       size: 50,
