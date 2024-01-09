@@ -7,6 +7,7 @@ import GoogleProvider from "next-auth/providers/google";
 import { env } from "../../../env/server.mjs";
 import { db } from "../../../server/db/client";
 import NextAuth from "next-auth/next";
+import { UserRole } from "@prisma/client";
 
 export const authOptions: NextAuthOptions = {
   // Include user.id on session
@@ -14,8 +15,8 @@ export const authOptions: NextAuthOptions = {
     async session({ session, user }) {
       if (session.user) {
         session.user.id = user.id;
-        session.user.role = user.role;
-        session.user.userBalance = user.userBalance;
+        session.user.role = user.role || UserRole.User;
+        session.user.userBalance = user.userBalance || 0;
       }
       return session;
     },
