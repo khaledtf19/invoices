@@ -166,7 +166,7 @@ export const invoiceRouter = router({
           await ctx.prisma.cards.create({ data: { value: number } });
         });
       }
-      let oldCalc = await ctx.prisma.calculateCards.findUnique({
+      const oldCalc = await ctx.prisma.calculateCards.findUnique({
         where: { cost: input.cost },
       });
       if (oldCalc) {
@@ -177,7 +177,7 @@ export const invoiceRouter = router({
         where: { value: { in: input.cards } },
       });
 
-      let newCalc = await ctx.prisma.calculateCards.create({
+      const newCalc = await ctx.prisma.calculateCards.create({
         data: { cost: input.cost, cards: { connect: cards } },
         include: { cards: true },
       });
