@@ -1,8 +1,9 @@
-import { UserRole } from "@prisma/client";
+import { Cards, UserRole } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { InvoiceStatusArr, UserRoleArr } from "../../../types/utils.types";
+import { CardsArr } from "../../../utils/utils";
 import { protectedProcedure, router } from "../trpc";
 
 export const invoiceRouter = router({
@@ -151,4 +152,66 @@ export const invoiceRouter = router({
       take: 50,
     });
   }),
+
+
+  addCalcCards: protectedProcedure
+    .input(
+      z.object({
+        cost: z.number().min(5),
+        cards: z.number().array(),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      if ((await ctx.prisma.cards.count()) === 0) {
+        CardsArr.forEach(async (number) => {
+          await ctx.prisma.cards.create({ data: { value: number } });
+        });
+      }
+      let oldCalc = await ctx.prisma.calculateCards.findUnique({
+        where: { cost: input.cost },
+      });
+      if (oldCalc) {
+        return oldCalc;
+      }
+
+      const cards = await ctx.prisma.cards.findMany({
+        where: { value: { in: input.cards } },
+      });
+
+      let newCalc = await ctx.prisma.calculateCards.create({
+        data: { cost: input.cost, cards: { connect: cards } },
+        include: { cards: true },
+      });
+
+      return newCalc;
+    }),
+
+  updateCalcCards: protectedProcedure
+    .input(
+      z.object({ id: z.string().min(3), cardsIds: z.string().array().min(1) }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const cards = await ctx.prisma.cards.findMany({
+        where: { id: { in: input.cardsIds } },
+      });
+      if (cards.length === 0) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Can't find any of the cards",
+        });
+      }
+      const calc = await ctx.prisma.calculateCards.update({
+        where: { id: input.id },
+        data: { cards: { set: cards } },
+      });
+      return calc;
+    }),
+
+    deleteCalcCard: protectedProcedure.input(z.object({id: z.string().min(1)})).mutation(async ({input, ctx})=>{
+      await ctx.prisma.calculateCards.delete({where: {id: input.id}})
+    
+      return {message: "deleted succesfully"}
+    })
 });
+
+

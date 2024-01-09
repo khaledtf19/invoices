@@ -98,6 +98,24 @@ model Invoice {
   @@index([customerId])
 }
 
+model CalculateCards {
+  id    String  @id @default(cuid())
+  cost  Float
+  cards Cards[]
+
+  @@unique([cost])
+  @@index([cost])
+}
+
+model Cards {
+  id             String           @id @default(cuid())
+  value          Float
+  calculateCards CalculateCards[]
+
+  @@unique([value])
+  @@index([value])
+}
+
 model CustomerNote {
   id          String    @id @default(cuid())
   customerId  String?
