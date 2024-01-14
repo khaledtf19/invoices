@@ -153,6 +153,12 @@ export const invoiceRouter = router({
     });
   }),
 
+  getAllCalc: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.calculateCards.findMany({
+      include: { cards: true },
+    });
+  }),
+
   addCalcCards: protectedProcedure
     .input(
       z.object({
@@ -206,11 +212,11 @@ export const invoiceRouter = router({
       return calc;
     }),
 
-    deleteCalcCard: protectedProcedure.input(z.object({id: z.string().min(1)})).mutation(async ({input, ctx})=>{
-      await ctx.prisma.calculateCards.delete({where: {id: input.id}})
-    
-      return {message: "deleted succesfully"}
-    })
+  deleteCalcCard: protectedProcedure
+    .input(z.object({ id: z.string().min(1) }))
+    .mutation(async ({ input, ctx }) => {
+      await ctx.prisma.calculateCards.delete({ where: { id: input.id } });
+
+      return { message: "deleted succesfully" };
+    }),
 });
-
-

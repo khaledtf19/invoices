@@ -97,7 +97,7 @@ export const BankModal: React.FC<{
   invoiceId?: string;
 }> = ({ bankNameType, transactionType, invoiceId }) => {
   const [amount, setAmount] = useState(0);
-  const [bankName, setBankName] = useState(bankNameType || BankNameArr[0]);
+  const [bankName, setBankName] = useState(bankNameType || BankNameArr[1]);
   const [transaction, setTransaction] = useState(transactionType || "Add");
 
   const { closeModal } = useModalState((state) => ({

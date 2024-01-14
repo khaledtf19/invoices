@@ -49,7 +49,7 @@ const InvoiceView: FC<{
 
   const router = useRouter();
 
-  const ctx = trpc.useContext();
+  const ctx = trpc.useUtils();
 
   const { userData } = useUserState()((state) => ({ userData: state.user }));
 
