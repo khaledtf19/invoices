@@ -159,28 +159,52 @@ export const invoiceRouter = router({
     });
   }),
 
+  getCalcById: protectedProcedure
+    .input(z.object({ id: z.string().min(1) }))
+    .mutation(async ({ input, ctx }) => {
+      let res = await ctx.prisma.calculateCards.findUnique({
+        where: { id: input.id },
+        include: { cards: true },
+      });
+    if (!res) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "this could not find this calc",
+      });
+    }
+    return res;
+    }),
+
+  getCardsPrices: protectedProcedure.query(async ({ ctx }) => {
+    let cards = await ctx.prisma.cards.findMany();
+    if (cards.length === 0) {
+      return await ctx.prisma.cards.createMany({
+        data: CardsArr.map((v) => ({ value: v })),
+      });
+    }
+    return cards;
+  }),
+
   addCalcCards: protectedProcedure
     .input(
       z.object({
         cost: z.number().min(5),
-        cards: z.number().array(),
+        cardsIds: z.string().array(),
       }),
     )
     .query(async ({ input, ctx }) => {
-      if ((await ctx.prisma.cards.count()) === 0) {
-        CardsArr.forEach(async (number) => {
-          await ctx.prisma.cards.create({ data: { value: number } });
-        });
-      }
       const oldCalc = await ctx.prisma.calculateCards.findUnique({
         where: { cost: input.cost },
       });
       if (oldCalc) {
-        return oldCalc;
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "this card already exist",
+        });
       }
 
       const cards = await ctx.prisma.cards.findMany({
-        where: { value: { in: input.cards } },
+        where: { id: { in: input.cardsIds } },
       });
 
       const newCalc = await ctx.prisma.calculateCards.create({

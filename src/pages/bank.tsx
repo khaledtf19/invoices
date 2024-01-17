@@ -104,7 +104,7 @@ export const BankModal: React.FC<{
     closeModal: state.closeModal,
   }));
 
-  const ctx = trpc.useContext();
+  const ctx = trpc.useUtils();
 
   const changeBank = trpc.bank.changeBank.useMutation({
     onSuccess: () => {

@@ -6,9 +6,7 @@ import { type FC, type ReactNode } from "react";
 import { type IconType } from "react-icons";
 import { AiFillHome, AiOutlineHome } from "react-icons/ai";
 import {
-  HiOutlineUserCircle,
   HiOutlineUsers,
-  HiUserCircle,
   HiUsers,
 } from "react-icons/hi";
 import { RiSearchLine } from "react-icons/ri";
@@ -17,6 +15,7 @@ import { useModalState } from "../hooks/modalState";
 import { trpc } from "../utils/trpc";
 import CustomerDebtModal from "./customer/CustomerDebtModal";
 import { FaNetworkWired } from "react-icons/fa";
+import { PiCards, PiCardsFill } from "react-icons/pi";
 
 const Navbar = () => {
   const { data: session } = useSession();
@@ -41,10 +40,10 @@ const Navbar = () => {
         </li>
         <li>
           <RouteLink
-            to={"/profile"}
-            name="Profile"
-            icon={<IconContainer Icon={HiOutlineUserCircle} />}
-            iconActive={<IconContainer Icon={HiUserCircle} />}
+            to={"/cards"}
+            name="Cards"
+            icon={<IconContainer Icon={PiCards} />}
+            iconActive={< IconContainer Icon={PiCardsFill} />}
           />
         </li>
         <li>
