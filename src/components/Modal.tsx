@@ -7,6 +7,7 @@ const Modal: FC = () => {
   const { isOpen, closeModal, text, components, onClickName, onClick, width } =
     useModalState((state) => state);
 
+
   if (!isOpen) {
     return <></>;
   }

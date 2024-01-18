@@ -11,6 +11,7 @@ interface ModalStateType {
   changeIsOpen: () => void;
   changeText: (newText: string) => void;
   changeOnClick: (newOnclick: () => void) => void;
+  changeComponent: ({newComponent}: {newComponent: ReactNode})=> void,
   openModal: (prams: {
     newOnclick?: () => void;
     newText?: string;
@@ -30,6 +31,7 @@ export const useModalState = create<ModalStateType>((set) => ({
   changeIsOpen: () => set((state) => ({ isOpen: !state.isOpen })),
   changeText: (newText) => set(() => ({ text: newText })),
   changeOnClick: (newOnclick) => set(() => ({ onClick: newOnclick })),
+  changeComponent: ({newComponent})=> set(()=> ({components: newComponent})),
   openModal: ({ newOnclick, newText, newComponents, newWidth }) =>
     set(() => ({
       text: newText,

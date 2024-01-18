@@ -73,17 +73,16 @@ model Invoice {
 }
 
 model CalculateCards {
-  id    String  @id @default(cuid())
-  cost  Float   @unique
-  cards Cards[]
+  id     String @id @default(cuid())
+  cost   Float  @unique
+  values Json?
 
   @@index([cost])
 }
 
 model Cards {
-  id             String           @id @default(cuid())
-  value          Float            @unique
-  calculateCards CalculateCards[]
+  id    String @id @default(cuid())
+  value Float  @unique
 
   @@index([value])
 }
