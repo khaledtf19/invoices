@@ -6,6 +6,7 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   useReactTable,
+  getFacetedMinMaxValues,
 } from "@tanstack/react-table";
 import { type FC, useState } from "react";
 
@@ -43,7 +44,7 @@ const CardsTable: FC<{
         const nums = info.getValue() as number[]
        return ( <div className="flex gap-1">
           {nums.map((v, i) => (
-            <span>
+            <span key={i}>
               {i == 0 ? "" : " + "} {v}
             </span>
           ))}
@@ -64,6 +65,7 @@ const CardsTable: FC<{
     onColumnFiltersChange: setFilter,
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getFacetedMinMaxValues: getFacetedMinMaxValues(),
   });
 
   const { openModal, closeModal } = useModalState((state) => ({

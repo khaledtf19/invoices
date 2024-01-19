@@ -26,12 +26,6 @@ export function AddOrUpdateCardsModal({ id }: { id?: string }) {
       context.invoice.getAllCalc.invalidate();
     },
   });
-  const deleteCalc = trpc.invoice.deleteCalcCard.useMutation({
-    onSuccess: () => {
-      closeModal();
-      context.invoice.getAllCalc.invalidate();
-    },
-  });
   const getCalcById = trpc.invoice.getCalcById.useMutation({
     onSuccess: (data) => {
       setCost(data.cost.toString());
@@ -117,14 +111,7 @@ export function AddOrUpdateCardsModal({ id }: { id?: string }) {
             label="Delete"
             onClick={() => {
               changeComponent({
-                newComponent: (
-                  <DeleteCalcModal
-                    onClick={async () => {
-                      await deleteCalc.mutateAsync({ id });
-                      closeModal();
-                    }}
-                  />
-                ),
+                newComponent: <DeleteCalcModal id={id} />,
               });
             }}
           />
@@ -136,12 +123,34 @@ export function AddOrUpdateCardsModal({ id }: { id?: string }) {
   );
 }
 
-function DeleteCalcModal({ onClick }: { onClick: () => void }) {
+function DeleteCalcModal({ id }: { id: string }) {
+  const context = trpc.useUtils();
+
+  const { closeModal } = useModalState((state) => ({
+    closeModal: state.closeModal,
+  }));
+
+  const deleteCalc = trpc.invoice.deleteCalcCard.useMutation({
+    onSuccess: () => {
+      context.invoice.getAllCalc.invalidate();
+      closeModal();
+    },
+  });
+
+  if (deleteCalc.isLoading) {
+    return <LoadingAnimation />;
+  }
+
   return (
     <div className="flex h-full min-h-0 w-full flex-col items-center justify-center gap-5">
       <p className="text-red-500">Do you want to delete this ?</p>
       <div className="w-3/6">
-        <RedButton label="Delete" onClick={onClick} />
+        <RedButton
+          label="Delete"
+          onClick={() => {
+            deleteCalc.mutate({ id });
+          }}
+        />
       </div>
     </div>
   );
