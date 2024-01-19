@@ -8,6 +8,7 @@ import {
   BsCalendarDate,
   BsFillPersonBadgeFill,
   BsFillTelephoneFill,
+  BsStars,
 } from "react-icons/bs";
 import { FaUserSecret } from "react-icons/fa";
 import { HiMiniArrowUturnRight } from "react-icons/hi2";
@@ -23,6 +24,7 @@ import { DateFormat } from "../utils/utils";
 import CustomerDebtComponent from "./customer/CustomerDebt";
 import {
   DataFields,
+  IconToCopy,
   Input,
   LoadingAnimation,
   PrimaryButton,
@@ -58,6 +60,13 @@ const InvoiceView: FC<{
       ctx.invoice.getInvoiceById.invalidate();
     },
   });
+  const cardsNeeded = trpc.invoice.getCalcCardsForInvoice.useMutation();
+
+  useEffect(() => {
+    if (invoiceData.bankChange[0]?.id) {
+      cardsNeeded.mutate({ bankChangeId: invoiceData.bankChange[0]?.id });
+    }
+  }, [invoiceData]);
 
   useEffect(() => {
     if (editInvoice.error) {
@@ -94,7 +103,7 @@ const InvoiceView: FC<{
       openRight={invoiceData.customer.customerDebt.length > 0 ? true : false}
     >
       <div
-        className="absolute top-1 right-1 hover:cursor-pointer hover:text-red-700 hover:bg-gray-300 p-1 rounded-md"
+        className="absolute right-1 top-1 rounded-md p-1 hover:cursor-pointer hover:bg-gray-300 hover:text-red-700"
         onClick={() => {
           router.push(`/customer/${invoiceData.customer.id}`);
         }}
@@ -128,7 +137,7 @@ const InvoiceView: FC<{
       />
       {invoiceData.bankChange.map((bankChange) => (
         <div
-          className="flex w-full gap-1 items-end justify-center "
+          className="flex w-full items-end justify-center gap-1 "
           key={bankChange.id}
         >
           <DataFields
@@ -152,13 +161,41 @@ const InvoiceView: FC<{
           </div>
         </div>
       ))}
+      {invoiceData.bankChange[0] && cardsNeeded.data ? (
+        // text={`${cardsNeeded.data.cost}${"&nbsp;"} ->> ${(
+        //  cardsNeeded.data.values as string[]
+        // ).map((num, i) => `${i !== 0? "+" :""} ${num} `)}`}
+        <div className=" flex w-full flex-col ">
+          <label className=" flex items-center gap-2 text-gray-700">
+            <IconToCopy
+              name={"cardsNeeded"}
+              Icon={BsStars}
+              text={String("")}
+              size={20}
+            />
+            Cards Needed:
+          </label>
+          <div className={` flex gap-5 bg-gray-300 p-1`}>
+            <p className="font-bold text-green-700">{cardsNeeded.data.cost}</p>
+            <div className="flex gap-2">
+              {(cardsNeeded.data.values as number[]).map((num, i) => (
+                <p>
+                  {i !== 0 ? "+" : ""} {num}
+                </p>
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : (
+        ""
+      )}
       <div
         className={` w-full ${
           newStatus === InvoiceStatusArr[1]
             ? "text-red-700"
             : newStatus === InvoiceStatusArr[2]
-            ? "text-green-700"
-            : "text-blue-700"
+              ? "text-green-700"
+              : "text-blue-700"
         } `}
       >
         {userData?.role === UserRoleArr[1] ? (
@@ -210,7 +247,7 @@ const InvoiceView: FC<{
             trigger={reactToPrintTrigger}
             removeAfterPrint
           />
-          <div className="flex gap-3 w-full">
+          <div className="flex w-full gap-3">
             <PrimaryButton
               label="Edit"
               onClick={async () => {
@@ -362,9 +399,9 @@ const PrintInvlicieComponent: FC<{
   return (
     <div
       ref={refC}
-      className="flex flex-col justify-center w-full items-center h-full text-sm "
+      className="flex h-full w-full flex-col items-center justify-center text-sm "
     >
-      <div className="flex flex-col justify-center items-center w-[26%]  h-full gap-3">
+      <div className="flex h-full w-[26%] flex-col items-center  justify-center gap-3">
         <DataFields
           label="Name"
           text={invoiceData.customer.name}
@@ -395,7 +432,7 @@ const PrintInvlicieComponent: FC<{
           Icon={FaUserSecret}
           iconSize={15}
         />
-        <div className="justify-self-end mt-40 w-full">
+        <div className="mt-40 w-full justify-self-end">
           <DataFields
             label="موبايل لبيب حبش"
             text="01287591751"

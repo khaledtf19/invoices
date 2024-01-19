@@ -1,4 +1,4 @@
-import { Cards, Prisma, UserRole } from "@prisma/client";
+import { Prisma, UserRole } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
@@ -203,7 +203,10 @@ export const invoiceRouter = router({
       }
 
       const newCalc = await ctx.prisma.calculateCards.create({
-        data: { cost: input.cost, values: input.cardsValues as Prisma.JsonArray },
+        data: {
+          cost: input.cost,
+          values: input.cardsValues as Prisma.JsonArray,
+        },
       });
 
       return newCalc;
@@ -220,7 +223,10 @@ export const invoiceRouter = router({
     .mutation(async ({ input, ctx }) => {
       const calc = await ctx.prisma.calculateCards.update({
         where: { id: input.id },
-        data: { cost: input.newCost, values: input.cardsValues as Prisma.JsonArray },
+        data: {
+          cost: input.newCost,
+          values: input.cardsValues as Prisma.JsonArray,
+        },
       });
       return calc;
     }),
@@ -231,5 +237,15 @@ export const invoiceRouter = router({
       await ctx.prisma.calculateCards.delete({ where: { id: input.id } });
 
       return { message: "deleted succesfully" };
+    }),
+  getCalcCardsForInvoice: protectedProcedure
+    .input(z.object({ bankChangeId: z.string() }))
+    .mutation(async ({ input, ctx }) => {
+      const bankCost = await ctx.prisma.bankChange.findUnique({
+        where: { id: input.bankChangeId },
+      });
+      return await ctx.prisma.calculateCards.findFirst({
+        where: { cost: { gt: bankCost?.amount } },
+      });
     }),
 });
