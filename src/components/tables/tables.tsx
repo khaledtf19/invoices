@@ -15,6 +15,7 @@ import {
   UserRoleArr,
 } from "../../types/utils.types";
 import { PrimaryButton } from "../utils";
+import { Console, log } from "console";
 
 export const TableComponent: FC<PropsWithChildren & { moreClass?: string }> = ({
   children,
@@ -71,7 +72,7 @@ export const TH: FC<PropsWithChildren & { size: number }> = ({
   return (
     <th
       className={` border p-2 text-center shadow-sm `}
-      style={{ width: size? size: "auto" }}
+      style={{ width: size ? size : "auto" }}
     >
       {children}
     </th>
@@ -86,7 +87,7 @@ export const TablePag: FC<{ table: Table<any> }> = ({ table }) => {
   return (
     <div className=" flex w-full justify-end gap-6">
       <select
-        className=" px-2 text-sm font-normal border rounded-md border-gray-600 text-black"
+        className=" rounded-md border border-gray-600 px-2 text-sm font-normal text-black"
         value={table.getState().pagination.pageSize}
         onChange={(e) => {
           table.setPageSize(Number(e.target.value));
@@ -142,11 +143,27 @@ export const Filter: FC<{
     if (column.id === "deleted") {
       column.setFilterValue(false);
     }
-    if(column.id === "isImportant"){
-      column.setFilterValue(true)
+    if (column.id === "isImportant") {
+      column.setFilterValue(true);
     }
-   
+if (column.id === "cost") {
+    }
   }, []);
+
+  if (column.id === "cost") {
+    return (
+      <div>
+        <input
+          type="number"
+          className="max-w-[100px] p-1 font-normal text-black"
+          value={(column.getFilterValue() as [number, number])?.[0] ?? ''}
+          onChange={(e) => {
+            column.setFilterValue((old: [number, number])=>[e.target.value, old?.[1]]);
+          }}
+        />
+      </div>
+    );
+  }
 
   if (typeof firstValue === "number") {
     return <></>;
@@ -211,10 +228,16 @@ export const Filter: FC<{
       </select>
     );
   }
-  if(column.id === "isImportant") {
-    return <input type="checkbox" defaultChecked={true} onChange={(e)=>{
-      column.setFilterValue(e.target.checked || undefined)
-    }}/>
+  if (column.id === "isImportant") {
+    return (
+      <input
+        type="checkbox"
+        defaultChecked={true}
+        onChange={(e) => {
+          column.setFilterValue(e.target.checked || undefined);
+        }}
+      />
+    );
   }
 
   if (column.id === "deleted") {
@@ -227,8 +250,8 @@ export const Filter: FC<{
             e.target.value === "all"
               ? undefined
               : e.target.value === "true"
-              ? true
-              : false,
+                ? true
+                : false,
           );
         }}
       >
@@ -261,11 +284,11 @@ export const Filter: FC<{
 
   if (firstValue instanceof Date) {
     return (
-      <div className=" flex items-center justify-center w-full">
-        <div className="relative max-w-sm flex gap-1 ">
+      <div className=" flex w-full items-center justify-center">
+        <div className="relative flex max-w-sm gap-1 ">
           <input
             type="date"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block pl-3 p-1  "
+            className="block rounded-lg border border-gray-300 bg-gray-50 p-1 pl-3 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500  "
             placeholder="Select date"
             onChange={(e) => {
               column.setFilterValue((old: [Date, Date]) => [
@@ -276,7 +299,7 @@ export const Filter: FC<{
           />
           <input
             type="date"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  pl-3 p-1  "
+            className="block rounded-lg border border-gray-300 bg-gray-50 p-1 pl-3 text-sm text-gray-900  focus:border-blue-500 focus:ring-blue-500  "
             placeholder="Select date"
             onChange={(e) => {
               column.setFilterValue((old: [Date, Date]) => [
@@ -293,7 +316,7 @@ export const Filter: FC<{
   return (
     <div>
       <input
-        className="p-1 font-normal text-black max-w-[100px]"
+        className="max-w-[100px] p-1 font-normal text-black"
         value={column.getFilterValue() ? String(column.getFilterValue()) : ""}
         onChange={(e) => {
           column.setFilterValue(e.target.value);

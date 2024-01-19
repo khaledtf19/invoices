@@ -3,7 +3,7 @@ import { google } from "googleapis";
 import { type NextApiRequest, type NextApiResponse } from "next";
 
 import { env } from "../../env/server.mjs";
-import { prisma } from "../../server/db/client";
+import { db as prisma } from "../../server/db/client";
 
 const googleSheet = async (req: NextApiRequest, res: NextApiResponse) => {
   const auth = await google.auth.getClient({

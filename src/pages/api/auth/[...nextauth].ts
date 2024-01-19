@@ -1,10 +1,13 @@
-// Prisma adapter for NextAuth, optional and can be removed
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import NextAuth, { type NextAuthOptions } from "next-auth";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import {
+  type NextAuthOptions,
+} from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
 import { env } from "../../../env/server.mjs";
-import { prisma } from "../../../server/db/client";
+import { db } from "../../../server/db/client";
+import NextAuth from "next-auth/next";
+import { UserRole } from "@prisma/client";
 
 export const authOptions: NextAuthOptions = {
   // Include user.id on session
@@ -12,8 +15,8 @@ export const authOptions: NextAuthOptions = {
     async session({ session, user }) {
       if (session.user) {
         session.user.id = user.id;
-        session.user.role = user.role;
-        session.user.userBalance = user.userBalance;
+        session.user.role = user.role || UserRole.User;
+        session.user.userBalance = user.userBalance || 0;
       }
       return session;
     },
@@ -29,8 +32,8 @@ export const authOptions: NextAuthOptions = {
     },
   },
   // Configure one or more authentication providers
-  // eslint-disable-next-line 
-  adapter: PrismaAdapter(prisma),
+  // eslint-disable-next-line
+  adapter: PrismaAdapter(db),
   providers: [
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,
@@ -40,4 +43,4 @@ export const authOptions: NextAuthOptions = {
   ],
 };
 
-export default NextAuth(authOptions);
+export default NextAuth(authOptions)

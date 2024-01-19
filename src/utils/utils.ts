@@ -81,3 +81,7 @@ export const randomTableData = [
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+export const CardsArr = [
+  150.0, 100.0, 75.0, 60.0, 50.0, 40.0, 30.0, 29.0, 17.5, 11.5, 10.5, 8.0, 6.0,
+] as const;
