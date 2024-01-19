@@ -162,9 +162,6 @@ const InvoiceView: FC<{
         </div>
       ))}
       {invoiceData.bankChange[0] && cardsNeeded.data ? (
-        // text={`${cardsNeeded.data.cost}${"&nbsp;"} ->> ${(
-        //  cardsNeeded.data.values as string[]
-        // ).map((num, i) => `${i !== 0? "+" :""} ${num} `)}`}
         <div className=" flex w-full flex-col ">
           <label className=" flex items-center gap-2 text-gray-700">
             <IconToCopy
