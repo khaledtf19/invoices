@@ -33,7 +33,7 @@ export function AddOrUpdateCardsModal({ id }: { id?: string }) {
     },
   });
 
-  let context = trpc.useUtils();
+  const context = trpc.useUtils();
 
   useEffect(() => {
     if (id) {
