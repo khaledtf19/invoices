@@ -83,7 +83,15 @@ export function AddOrUpdateCardsModal({ id }: { id?: string }) {
       </div>
       <div className="flex min-h-12 w-full flex-wrap gap-2 rounded-md bg-indigo-900 p-2 text-2xl text-white">
         {currCards.map((card, i) => (
-          <p key={i}>
+          <p
+            key={i}
+            className="hover:text-red-500"
+            onClick={() => {
+              let arr = [...currCards];
+              arr.splice(i, 1);
+              setCards(arr);
+            }}
+          >
             {i !== 0 && "-"} {card}
           </p>
         ))}
