@@ -176,7 +176,7 @@ const InvoiceView: FC<{
             <p className="font-bold text-green-700">{cardsNeeded.data.cost}</p>
             <div className="flex gap-2">
               {(cardsNeeded.data.values as number[]).map((num, i) => (
-                <p>
+                <p key={i}>
                   {i !== 0 ? "+" : ""} {num}
                 </p>
               ))}
