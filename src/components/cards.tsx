@@ -87,7 +87,7 @@ export function AddOrUpdateCardsModal({ id }: { id?: string }) {
             key={i}
             className="hover:text-red-500"
             onClick={() => {
-              let arr = [...currCards];
+              const arr = [...currCards];
               arr.splice(i, 1);
               setCards(arr);
             }}
