@@ -68,9 +68,8 @@ const CardsTable: FC<{
     getFacetedMinMaxValues: getFacetedMinMaxValues(),
   });
 
-  const { openModal, closeModal } = useModalState((state) => ({
+  const { openModal} = useModalState((state) => ({
     openModal: state.openModal,
-    closeModal: state.closeModal,
   }));
 
   return (
