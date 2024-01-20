@@ -7,6 +7,7 @@ import { Input, LoadingAnimation, PrimaryButton, RedButton } from "./utils";
 export function AddOrUpdateCardsModal({ id }: { id?: string }) {
   const [currCost, setCost] = useState("");
   const [currCards, setCards] = useState<number[]>([]);
+  const [currCard, setCurrCard] = useState(6);
 
   const { closeModal, changeComponent } = useModalState((state) => ({
     closeModal: state.closeModal,
@@ -67,19 +68,31 @@ export function AddOrUpdateCardsModal({ id }: { id?: string }) {
             // setCost(result);
           }}
         />
-        <select className="h-8  self-end border border-black px-2">
-          {prices.map((price) => (
-            <option
-              key={price.id}
-              onClick={() => {
-                setCards([...currCards, price.value]);
-              }}
-              value={price.value}
-            >
-              {price.value}
-            </option>
-          ))}
-        </select>
+        <div className="flex h-full gap-2  self-end">
+          <select
+            className="h-8  border border-black px-2"
+            defaultValue={currCard}
+            value={currCard}
+            onChange={(e) => {
+              setCurrCard(Number(e.target.value))
+            }}
+          >
+            {prices.map((price) => (
+              <option key={price.id} value={price.value}>
+                {price.value}
+              </option>
+            ))}
+          </select>
+          <button
+            className="mb-1 self-end border border-gray-500 bg-green-600 px-2 hover:bg-green-500"
+            onClick={() => {
+              setCards([...currCards, currCard])
+
+            }}
+          >
+            +
+          </button>
+        </div>
       </div>
       <div className="flex min-h-12 w-full flex-wrap gap-2 rounded-md bg-indigo-900 p-2 text-2xl text-white">
         {currCards.map((card, i) => (
