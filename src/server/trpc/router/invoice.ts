@@ -245,7 +245,7 @@ export const invoiceRouter = router({
         where: { id: input.bankChangeId },
       });
       return await ctx.prisma.calculateCards.findFirst({
-        where: { cost: { gt: bankCost?.amount } },
+        where: { cost: { gte: bankCost?.amount } },
       });
     }),
 });
