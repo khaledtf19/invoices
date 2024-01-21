@@ -81,7 +81,7 @@ export const customerRouter = router({
       }),
     )
     .query(async ({ input, ctx }) => {
-      let globalNote = await ctx.prisma.customerNote.findMany({
+      const globalNote = await ctx.prisma.customerNote.findMany({
         where: { global: true },
       });
 
