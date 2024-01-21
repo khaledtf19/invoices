@@ -81,12 +81,12 @@ export const customerRouter = router({
       }),
     )
     .query(async ({ input, ctx }) => {
-      let globalNote = await ctx.prisma.customerNote.findFirst({
+      let globalNote = await ctx.prisma.customerNote.findMany({
         where: { global: true },
       });
 
-      if (!globalNote?.id) {
-        globalNote = await ctx.prisma.customerNote.create({
+      if (globalNote.length != 2) {
+         await ctx.prisma.customerNote.create({
           data: { noteContent: "", global: true, userId: ctx.session.user.id },
         });
       }
@@ -94,7 +94,7 @@ export const customerRouter = router({
       const result = await ctx.prisma.customerNote.findMany({
         where: { customerId: input.customerId },
       });
-      result.unshift(globalNote);
+      result.unshift(...globalNote);
       return result;
     }),
 
