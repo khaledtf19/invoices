@@ -35,7 +35,7 @@ const CardsTab: React.FC<{
       <TextToCopy
         text={`${
           date.getHours() >= 12 ? "مساؤ" : "صباحو"
-        } هنا \n ممكن شحن كروت\n ${customerData.number} \n ${
+        } هنا \nممكن شحن كروت انترنت\n ${customerData.number} \n ${
           customerData.name
         }`}
       />

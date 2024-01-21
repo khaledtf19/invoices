@@ -7,11 +7,13 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { type FC, useState } from "react";
+import { type FC, useEffect, useState } from "react";
 
+import { useModalState } from "../../hooks/modalState";
 import { TransactionsArr } from "../../types/utils.types";
 import { type RouterOutputs } from "../../utils/trpc";
 import { DateFormat } from "../../utils/utils";
+import { ModalUndoBankChange } from "../InvoiceView";
 import {
   Filter,
   TBody,
@@ -30,6 +32,11 @@ const ChangeBankTable: FC<{
   const columnHelper =
     createColumnHelper<RouterOutputs["bank"]["getBankChange"][number]>();
   const [filter, setFilter] = useState<ColumnFiltersState>([]);
+
+  const { closeModal, openModal } = useModalState((state) => ({
+    openModal: state.openModal,
+    closeModal: state.closeModal,
+  }));
 
   const columns = [
     columnHelper.accessor("user.email", {
@@ -86,6 +93,10 @@ const ChangeBankTable: FC<{
     getPaginationRowModel: getPaginationRowModel(),
   });
 
+  useEffect(() => {
+    return closeModal();
+  }, []);
+
   return (
     <div className=" flex w-full flex-col gap-4">
       <TableComponent>
@@ -116,6 +127,17 @@ const ChangeBankTable: FC<{
               key={row.id}
               route={changeBank[row.index]?.invoice?.id ? "invoice" : "none"}
               rowId={changeBank[row.index]?.invoice?.id}
+              onClick={() => {
+                if (!changeBank[row.index]?.invoice?.id) {
+                  openModal({
+                    newComponents: (
+                      <ModalUndoBankChange
+                        bankChangeId={changeBank[row.index]?.id || "id"}
+                      />
+                    ),
+                  });
+                }
+              }}
             >
               {row.getVisibleCells().map((cell) => (
                 <TD key={cell.id}>

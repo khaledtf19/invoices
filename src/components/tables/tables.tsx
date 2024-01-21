@@ -15,7 +15,6 @@ import {
   UserRoleArr,
 } from "../../types/utils.types";
 import { PrimaryButton } from "../utils";
-import { Console, log } from "console";
 
 export const TableComponent: FC<PropsWithChildren & { moreClass?: string }> = ({
   children,
@@ -44,19 +43,24 @@ export const TR: FC<{
   children: ReactNode;
   rowId?: string | null;
   route: "none" | "customer" | "invoice" | "user";
-}> = ({ children, rowId, route }) => {
+  onClick?: () => void;
+}> = ({ children, rowId, route, onClick }) => {
   const router = useRouter();
 
   return (
     <tr
       className={` ${
-        rowId
+        (rowId || onClick)
           ? "cursor-pointer transition-colors duration-500 hover:bg-blue-600 hover:text-white"
           : ""
       }   `}
       onClick={() => {
         if (route !== "none") {
           router.push(`/${route}/${rowId}`);
+        } else {
+          if (onClick) {
+            onClick();
+          }
         }
       }}
     >
@@ -146,7 +150,7 @@ export const Filter: FC<{
     if (column.id === "isImportant") {
       column.setFilterValue(true);
     }
-if (column.id === "cost") {
+    if (column.id === "cost") {
     }
   }, []);
 
@@ -156,9 +160,12 @@ if (column.id === "cost") {
         <input
           type="number"
           className="max-w-[100px] p-1 font-normal text-black"
-          value={(column.getFilterValue() as [number, number])?.[0] ?? ''}
+          value={(column.getFilterValue() as [number, number])?.[0] ?? ""}
           onChange={(e) => {
-            column.setFilterValue((old: [number, number])=>[e.target.value, old?.[1]]);
+            column.setFilterValue((old: [number, number]) => [
+              e.target.value,
+              old?.[1],
+            ]);
           }}
         />
       </div>
