@@ -154,7 +154,7 @@ export const invoiceRouter = router({
   }),
 
   getAllCalc: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.prisma.calculateCards.findMany({ orderBy: {cost: "desc"} });
+    return await ctx.prisma.calculateCards.findMany({ orderBy: {cost: "asc"} });
   }),
 
   getCalcById: protectedProcedure

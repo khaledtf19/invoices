@@ -23,7 +23,7 @@
     "@trpc/server": "^10.21.1",
     "clsx": "^2.0.0",
     "googleapis": "^111.0.0",
-    "next": "latest",
+    "next": "14.1.0",
     "next-auth": "latest",
     "react": "latest",
     "react-copy-to-clipboard": "^5.1.0",
