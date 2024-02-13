@@ -146,14 +146,16 @@ model Transaction {
 }
 
 model changeBalance {
-  id        String           @id @default(cuid())
-  adminId   String
-  userId    String
-  amount    Float
-  type      TransactionTypes
-  createdAt DateTime         @default(now())
-  admin     User?            @relation("admin", fields: [adminId], references: [id])
-  user      User?            @relation("user", fields: [userId], references: [id])
+  id            String           @id @default(cuid())
+  adminId       String
+  userId        String
+  amount        Float
+  type          TransactionTypes
+  createdAt     DateTime         @default(now())
+  admin         User?            @relation("admin", fields: [adminId], references: [id])
+  user          User?            @relation("user", fields: [userId], references: [id])
+  balanceBefore Float            @default(0)
+  balanceAfter  Float            @default(0)
 
   @@index([userId])
   @@index([adminId])

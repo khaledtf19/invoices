@@ -89,6 +89,12 @@ export const bankRouter = router({
       if (!bankChanged) {
         throw new TRPCError({ code: "BAD_REQUEST" });
       }
+      const afterBank = await ctx.prisma.bank.findFirst();
+      if (!afterBank) {
+
+        throw new TRPCError({ code: "BAD_REQUEST" });
+      }
+
 
       await ctx.prisma.bankChange.create({
         data: {
@@ -97,6 +103,8 @@ export const bankRouter = router({
           bankName: input.bankName,
           userId: ctx.session.user.id,
           invoiceId: input.invoiceId,
+          before: before,
+          after: input.bankName === "Bss" ? afterBank.bss : afterBank.khadmaty
         },
       });
 
