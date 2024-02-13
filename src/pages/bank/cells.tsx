@@ -8,7 +8,7 @@ import { BankNameArr } from "../../types/utils.types";
 import { trpc } from "../../utils/trpc";
 
 const Cells = () => {
-  let [cells, setcells] = useState<number[]>([0, 0]);
+  const [cells, setcells] = useState<number[]>([0, 0]);
   const [result, setResult] = useState(0);
   const [resultType, setResultType] = useState<"+" | "-">("+");
   const [bankName, setBankName] = useState<BankName>(BankName.Khadmaty);
