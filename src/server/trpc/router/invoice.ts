@@ -1,4 +1,5 @@
-import { Prisma, UserRole } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
+import { UserRole } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
@@ -154,7 +155,7 @@ export const invoiceRouter = router({
   }),
 
   getAllCalc: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.prisma.calculateCards.findMany({ orderBy: {cost: "asc"} });
+    return await ctx.prisma.calculateCards.findMany({ orderBy: { cost: "asc" } });
   }),
 
   getCalcById: protectedProcedure
@@ -246,6 +247,7 @@ export const invoiceRouter = router({
       });
       return await ctx.prisma.calculateCards.findFirst({
         where: { cost: { gte: bankCost?.amount } },
+        orderBy: { cost: "asc" }
       });
     }),
 });

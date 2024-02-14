@@ -44,6 +44,7 @@ const ChangeBankTable: FC<{
       cell: (info) => <span>{info.renderValue()}</span>,
       header: () => "Admin",
     }),
+
     columnHelper.accessor("invoice.customer.name", {
       size: 200,
       cell: (info) => <span>{info.renderValue()}</span>,
@@ -55,6 +56,17 @@ const ChangeBankTable: FC<{
       header: () => "Created At",
       filterFn: isWithinRange,
     }),
+
+    columnHelper.accessor("before", {
+      size: 100,
+      cell: (info) => <span>{info.renderValue()?.toFixed(2)}</span>,
+      header: () => "Before",
+    }),
+    columnHelper.accessor("after", {
+      size: 100,
+      cell: (info) => <span>{info.renderValue()?.toFixed(2)}</span>,
+      header: () => "After",
+    }),
     columnHelper.accessor("amount", {
       size: 100,
       cell: (info) => <span>{info.renderValue()}</span>,
@@ -64,11 +76,10 @@ const ChangeBankTable: FC<{
       size: 100,
       cell: (info) => (
         <span
-          className={`${
-            info.getValue() === TransactionsArr[0]
-              ? "text-green-600"
-              : "text-red-500"
-          } `}
+          className={`${info.getValue() === TransactionsArr[0]
+            ? "text-green-600"
+            : "text-red-500"
+            } `}
         >
           {info.renderValue()}
         </span>
@@ -108,9 +119,9 @@ const ChangeBankTable: FC<{
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )}
                   {header.column.getCanFilter() ? (
                     <div>
                       <Filter column={header.column} table={table} />

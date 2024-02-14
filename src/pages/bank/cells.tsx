@@ -23,7 +23,7 @@ const Cells = () => {
     setcells(cells.filter((_, i) => (i === idx ? false : true)));
   };
 
-  const updateCell: (p: { idx: number; value: number}) => void = ({
+  const updateCell: (p: { idx: number; value: number }) => void = ({
     idx,
     value,
   }) => {
@@ -42,11 +42,11 @@ const Cells = () => {
   }, [isSuccess, bankName]);
 
   useEffect(() => {
-   
+
     setResult(
       cells.reduce((old, v) => {
         if (resultType === "+") return old + v;
-        return old - v 
+        return old - v
       }),
     );
   }, [bankName, resultType, cells]);
@@ -137,7 +137,7 @@ export const CellContainer: React.FC<{
             ? updateCell({ value: Number(e.target.value), idx: idx })
             : "";
         }}
-        value={value? value: ""}
+        value={value ? value : ""}
       />
 
       {idx === 0 ? (
