@@ -1,4 +1,4 @@
-import { CustomerDebt } from "@prisma/client";
+import { type CustomerDebt } from "@prisma/client";
 import { BsFillChatSquareTextFill } from "react-icons/bs";
 import { DateFormat } from "../../utils/utils";
 import {
