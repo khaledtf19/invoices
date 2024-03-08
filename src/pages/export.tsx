@@ -26,6 +26,18 @@ export default function ExportPage(){
       exportData(data, "deptData")
     }
   })
+
+  const customersCards = trpc.export.getAllCustomersCards.useMutation({
+    onSuccess: (data)=>{
+      exportData(data, "customersCardsData")
+    }
+  })
+
+  const calcCards = trpc.export.getAllCalcCards.useMutation({
+    onSuccess: (data)=>{
+      exportData(data, "calcCardsData")
+    }
+  })
     
   const exportData = (data:unknown, name: string) => {
     const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
@@ -54,5 +66,13 @@ export default function ExportPage(){
     <PrimaryButton onClick={async ()=>{
       await cusomersDept.mutateAsync()
     }} label="Customers Debt" />
+
+    <PrimaryButton onClick={async ()=>{
+      await customersCards.mutateAsync()
+    }} label="Cusomer Cards" />
+
+    <PrimaryButton onClick={async ()=>{
+      await calcCards.mutateAsync()
+    }} label="Calc Cards" />
   </div>
 }
