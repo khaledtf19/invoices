@@ -174,7 +174,9 @@ export const invoiceRouter = router({
     }),
 
   getCardsPrices: protectedProcedure.query(async ({ ctx }) => {
-    let cards = await ctx.prisma.cards.findMany();
+    let cards = await ctx.prisma.cards.findMany({
+      orderBy: { value: "asc" },
+    });
     if (cards.length === 0) {
       await ctx.prisma.cards.createMany({
         data: CardsArr.map((v) => ({ value: v })),
